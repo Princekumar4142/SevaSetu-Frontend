@@ -1,0 +1,230 @@
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setSlot, setCategory, selectCartAddress, selectCartCategory } from "../store/slices/cartSlice";
+import Button from "../components/Button";
+import WorkerPreviewSection from "../components/booking/WorkerPreviewSection";
+
+const generateNextDays = () => {
+  const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const result = [];
+  const today = new Date();
+
+  for (let i = 0; i < 5; i++) {
+    const d = new Date();
+    d.setDate(today.getDate() + i);
+    result.push({
+      label: i === 0 ? "Today" : i === 1 ? "Tomorrow" : days[d.getDay()],
+      subLabel: `${d.getDate()} ${months[d.getMonth()]}`,
+      day: d.getDate(),
+      fullDate: d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" }),
+    });
+  }
+  return result;
+};
+
+const DATES = generateNextDays();
+
+const TIME_SLOTS = [
+  { time: "08:00 AM", period: "Morning" },
+  { time: "09:00 AM", period: "Morning", popular: true },
+  { time: "10:00 AM", period: "Morning" },
+  { time: "11:00 AM", period: "Morning" },
+  { time: "12:00 PM", period: "Afternoon" },
+  { time: "01:30 PM", period: "Afternoon" },
+  { time: "03:00 PM", period: "Afternoon" },
+  { time: "04:30 PM", period: "Evening" },
+  { time: "05:30 PM", period: "Evening", popular: true },
+  { time: "06:30 PM", period: "Evening" },
+  { time: "07:30 PM", period: "Evening" },
+  { time: "08:30 PM", period: "Night" },
+];
+
+export default function BookingSlot() {
+  const { categoryId } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const address = useSelector(selectCartAddress);
+  const cartCategory = useSelector(selectCartCategory);
+  const activeCategory = categoryId || cartCategory || "custom-services";
+
+  const [selectedDate, setSelectedDate] = useState(DATES[0]);
+  const [selectedTime, setSelectedTime] = useState(TIME_SLOTS[1].time);
+
+  const handleProceed = () => {
+    dispatch(setSlot({ date: selectedDate.fullDate, time: selectedTime }));
+    if (activeCategory) dispatch(setCategory(activeCategory));
+    navigate("/customer/checkout/payment");
+  };
+
+  return (
+    <div className="flex flex-col min-h-screen bg-surface-container-lowest md:bg-surface pb-28">
+      {/* Top Header */}
+      <div className="sticky top-0 z-30 bg-slate-900 text-white flex items-center justify-between px-4 sm:px-6 py-3.5 shadow-md">
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors text-white"
+          >
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+          </button>
+          <div>
+            <h1 className="text-sm sm:text-base font-bold text-white">Select Date &amp; Time Slot</h1>
+            <p className="text-[11px] text-slate-400">Step 2 of 3: Preferred Arrival Time</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={() => navigate("/customer/services")}
+          className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors"
+        >
+          <span className="material-symbols-outlined text-[18px]">close</span>
+        </button>
+      </div>
+
+      <div className="max-w-2xl mx-auto w-full p-4 sm:p-6 space-y-5">
+        {/* Address summary pill */}
+        <div className="bg-white border border-outline-variant/80 rounded-2xl p-4 shadow-sm flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-brand-purple-light text-brand-purple flex items-center justify-center shrink-0">
+            <span className="material-symbols-outlined text-[20px]">location_on</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-brand-purple bg-brand-purple-light px-2 py-0.5 rounded">
+                {address?.label || "Home"}
+              </span>
+              <span className="text-xs text-on-surface-variant">Service Address</span>
+            </div>
+            <p className="text-sm font-bold text-on-surface truncate mt-0.5">
+              {address?.line1 || "Kesnand Rd, Wagholi, Pune"}
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/customer/checkout/address")}
+            className="text-xs font-bold text-brand-purple hover:underline px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 shrink-0"
+          >
+            Edit
+          </button>
+        </div>
+
+        {/* ── Available Workers in Your Area ── */}
+        <WorkerPreviewSection
+          city={address?.city || ""}
+          category={activeCategory}
+        />
+
+        {/* Date Selector */}
+        <div className="bg-white border border-outline-variant/80 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-black text-on-surface uppercase tracking-wide flex items-center gap-2">
+              <span className="material-symbols-outlined text-[18px] text-brand-purple">calendar_month</span>
+              1. Select Date of Service
+            </h2>
+            <span className="text-xs text-emerald-600 font-semibold bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
+              Same Day Available
+            </span>
+          </div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-5 gap-2.5 pt-1">
+            {DATES.map((d) => {
+              const isSelected = selectedDate.day === d.day;
+              return (
+                <button
+                  type="button"
+                  key={d.day}
+                  onClick={() => setSelectedDate(d)}
+                  className={`flex flex-col items-center py-3 px-2 rounded-2xl border transition-all text-center ${
+                    isSelected
+                      ? "border-brand-purple bg-brand-purple text-white shadow-md shadow-brand-purple/25 scale-[1.02]"
+                      : "border-outline-variant bg-white text-on-surface hover:border-brand-purple/40 hover:bg-slate-50"
+                  }`}
+                >
+                  <span className={`text-[11px] font-bold ${isSelected ? "text-amber-300" : "text-on-surface-variant"}`}>
+                    {d.label}
+                  </span>
+                  <span className="text-lg font-black mt-0.5 leading-tight">{d.day}</span>
+                  <span className={`text-[10px] font-medium ${isSelected ? "text-white/80" : "text-on-surface-variant/70"}`}>
+                    {d.subLabel.split(" ")[1]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Free Cancellation Note */}
+        <div className="bg-amber-500/10 border border-amber-300/40 rounded-2xl p-3.5 flex items-center gap-3">
+          <span className="material-symbols-outlined text-amber-600 text-[20px] shrink-0">verified_user</span>
+          <p className="text-xs text-amber-900 font-medium">
+            <strong>Free Cancellation:</strong> You can reschedule or cancel for free up to 2 hours before the booked slot.
+          </p>
+        </div>
+
+        {/* Time Slots Selector */}
+        <div className="bg-white border border-outline-variant/80 rounded-2xl p-5 shadow-sm space-y-3">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-black text-on-surface uppercase tracking-wide flex items-center gap-2">
+              <span className="material-symbols-outlined text-[18px] text-brand-purple">schedule</span>
+              2. Select Arrival Time Slot
+            </h2>
+            <span className="text-xs text-on-surface-variant font-medium">45-min arrival window</span>
+          </div>
+
+          <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5 pt-1">
+            {TIME_SLOTS.map((slot) => {
+              const isSelected = selectedTime === slot.time;
+              return (
+                <button
+                  type="button"
+                  key={slot.time}
+                  onClick={() => setSelectedTime(slot.time)}
+                  className={`relative py-3 px-2 rounded-xl border text-center font-bold text-xs sm:text-sm transition-all ${
+                    isSelected
+                      ? "border-brand-purple bg-brand-purple text-white shadow-md shadow-brand-purple/20 scale-[1.02]"
+                      : "border-outline-variant bg-white text-on-surface hover:border-brand-purple/40 hover:bg-slate-50"
+                  }`}
+                >
+                  {slot.time}
+                  {slot.popular && (
+                    <span
+                      className={`absolute -top-2 right-1 text-[8px] px-1.5 py-0.2 rounded-full font-black uppercase ${
+                        isSelected ? "bg-amber-400 text-slate-900" : "bg-brand-orange text-white"
+                      }`}
+                    >
+                      Popular
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Fixed Bottom Sticky Action Bar (Always Visible!) ── */}
+      <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-outline-variant p-4 shadow-2xl">
+        <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
+          <div>
+            <span className="text-[11px] text-on-surface-variant block font-medium">Selected Slot</span>
+            <span className="text-sm sm:text-base font-black text-on-surface">
+              {selectedDate.label}, {selectedDate.day} · {selectedTime}
+            </span>
+          </div>
+
+          <Button
+            onClick={handleProceed}
+            variant="purple"
+            className="px-6 sm:px-8 py-3.5 text-sm sm:text-base font-bold shadow-lg shadow-brand-purple/25 flex items-center gap-2 shrink-0"
+          >
+            <span>Proceed to Payment</span>
+            <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
