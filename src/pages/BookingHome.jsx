@@ -12,13 +12,10 @@ import {
 } from "../constants/bookingCatalog";
 
 import LandingHero from "../components/landing/LandingHero";
-import TrustBar from "../components/landing/TrustBar";
 import WhyChooseUs from "../components/landing/WhyChooseUs";
 import HowItWorks from "../components/landing/HowItWorks";
 import Testimonials from "../components/landing/Testimonials";
-import StatsImpact from "../components/landing/StatsImpact";
 import JoinAsWorker from "../components/landing/JoinAsWorker";
-import DownloadApp from "../components/landing/DownloadApp";
 
 /** Wrapper that applies scroll-reveal to each service section. */
 function ServiceSection({ title, items, onSelect, exploreLink, bgClass = "bg-white" }) {
@@ -51,11 +48,6 @@ export default function BookingHome() {
           SECTION 1: Hero
        ═══════════════════════════════════════════════════════ */}
       <LandingHero />
-
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 2: Trust Bar (animated counters)
-       ═══════════════════════════════════════════════════════ */}
-      <TrustBar />
 
       {/* ═══════════════════════════════════════════════════════
           SECTION 3: Mobile Location Bar + Plus Banner
@@ -147,24 +139,14 @@ export default function BookingHome() {
       <HowItWorks />
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION 12: Customer Testimonials
+          SECTION: Customer Testimonials
        ═══════════════════════════════════════════════════════ */}
       <Testimonials />
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION 13: Stats & Social Impact
-       ═══════════════════════════════════════════════════════ */}
-      <StatsImpact />
-
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 14: Join as Worker CTA
+          SECTION: Join as Worker CTA
        ═══════════════════════════════════════════════════════ */}
       <JoinAsWorker />
-
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 15: Download App CTA
-       ═══════════════════════════════════════════════════════ */}
-      <DownloadApp />
     </div>
   );
 }
