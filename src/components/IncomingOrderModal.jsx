@@ -225,6 +225,12 @@ export default function IncomingOrderModal() {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
+    try {
+      const ctx = getAudioContext();
+      if (ctx && ctx.state === "running") {
+        ctx.suspend().catch(() => {});
+      }
+    } catch (e) {}
   }, []);
 
   const startRinging = useCallback(() => {
@@ -408,8 +414,8 @@ export default function IncomingOrderModal() {
   }, [stopRinging, clearCountdown]);
 
   // Actions
-  const handleAccept = useCallback(async () => {
-    if (!incomingOrder) return;
+  const handleAccept = useCallback(async (e) => {
+    if (e && e.stopPropagation) e.stopPropagation();
     stopRinging();
     clearCountdown();
     setPhase("accepted");
@@ -434,7 +440,8 @@ export default function IncomingOrderModal() {
   }, [incomingOrder, socket, currentUser, stopRinging, clearCountdown]);
 
   const handleReject = useCallback(
-    ({ reason = "manual" } = {}) => {
+    ({ reason = "manual", e } = {}) => {
+      if (e && e.stopPropagation) e.stopPropagation();
       if (!incomingOrder) return;
       if (incomingOrder.orderId) {
         rejectedOrdersRef.current.add(incomingOrder.orderId.toString());
@@ -472,8 +479,9 @@ export default function IncomingOrderModal() {
   return (
     <div
       className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
-      onClick={() => {
-        if (audioRef.current && audioRef.current.paused && phase === "ringing") {
+      onClick={(e) => {
+        if (phase !== "ringing") return;
+        if (audioRef.current && audioRef.current.paused) {
           audioRef.current.play().catch(() => {});
         }
         const ctx = getAudioContext();
@@ -623,7 +631,7 @@ export default function IncomingOrderModal() {
             <div className="flex gap-3 pt-2">
               <button
                 type="button"
-                onClick={() => handleReject({ reason: "manual" })}
+                onClick={(e) => handleReject({ reason: "manual", e })}
                 className="flex-1 py-3.5 rounded-2xl border-2 border-slate-200 hover:border-red-400 bg-white hover:bg-red-50 text-red-600 text-xs font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1"
               >
                 <span className="material-symbols-outlined text-[16px]">close</span>
@@ -632,7 +640,7 @@ export default function IncomingOrderModal() {
 
               <button
                 type="button"
-                onClick={handleAccept}
+                onClick={(e) => handleAccept(e)}
                 className="flex-[2] py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:opacity-95 text-white text-sm font-black shadow-xl shadow-emerald-600/30 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 animate-pulse"
               >
                 <span className="material-symbols-outlined text-[20px] text-amber-300 fill">bolt</span>

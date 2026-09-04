@@ -344,14 +344,13 @@ export default function BookingTracking() {
               {/* Quick Contact Buttons */}
               <div className="flex items-center gap-2 sm:self-center">
                 {workerInfo.phone && (
-                  <button
-                    type="button"
-                    onClick={() => setCallAlert(true)}
-                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
+                  <a
+                    href={`tel:${workerInfo.phone}`}
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all cursor-pointer no-underline"
                   >
                     <span className="material-symbols-outlined text-[16px]">call</span>
                     Call Worker
-                  </button>
+                  </a>
                 )}
                 <button
                   type="button"
@@ -363,17 +362,6 @@ export default function BookingTracking() {
                 </button>
               </div>
             </div>
-
-            {callAlert && (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-xs text-emerald-800 flex items-center justify-between">
-                <span>
-                  Calling {workerInfo.name} at <strong>{workerInfo.phone}</strong>...
-                </span>
-                <button type="button" onClick={() => setCallAlert(false)} className="font-bold underline cursor-pointer">
-                  Dismiss
-                </button>
-              </div>
-            )}
           </div>
         ) : (
           /* Case B: Searching for Worker — No Worker Assigned Yet */
