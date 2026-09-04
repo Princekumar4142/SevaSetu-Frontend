@@ -12,9 +12,7 @@ import {
 } from "../constants/bookingCatalog";
 
 import LandingHero from "../components/landing/LandingHero";
-import WhyChooseUs from "../components/landing/WhyChooseUs";
 import HowItWorks from "../components/landing/HowItWorks";
-import Testimonials from "../components/landing/Testimonials";
 import JoinAsWorker from "../components/landing/JoinAsWorker";
 
 /** Wrapper that applies scroll-reveal to each service section. */
@@ -129,19 +127,9 @@ export default function BookingHome() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION 10: Why Choose SevaSetu
-       ═══════════════════════════════════════════════════════ */}
-      <WhyChooseUs />
-
-      {/* ═══════════════════════════════════════════════════════
-          SECTION 11: How It Works
+          SECTION: How It Works
        ═══════════════════════════════════════════════════════ */}
       <HowItWorks />
-
-      {/* ═══════════════════════════════════════════════════════
-          SECTION: Customer Testimonials
-       ═══════════════════════════════════════════════════════ */}
-      <Testimonials />
 
       {/* ═══════════════════════════════════════════════════════
           SECTION: Join as Worker CTA
