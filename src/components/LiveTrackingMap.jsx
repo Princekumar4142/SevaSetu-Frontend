@@ -3,7 +3,7 @@ import L from "leaflet";
 
 export default function LiveTrackingMap({
   userLocation = { lat: 18.5793, lng: 73.9787, address: "Service Destination" },
-  workerInfo = { name: "Ramesh Pawar", phone: "+91 98201 44321", vehicle: "Hero Electric MH 12 EQ 4410", rating: 4.9 },
+  workerInfo = { name: "Searching Partner", phone: "", vehicle: "Service Vehicle", rating: 4.9 },
   height = "380px",
   status = "ON_THE_WAY",
 }) {
