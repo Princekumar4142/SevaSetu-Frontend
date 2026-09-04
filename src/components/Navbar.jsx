@@ -7,7 +7,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center px-margin-mobile md:px-margin-desktop py-md">
         <Link to="/" className="flex items-center gap-2 group">
           <Logo size={32} className="transition-transform group-hover:scale-105" />
-          <span className="text-headline-md font-headline-md font-bold text-primary tracking-tight">SevaSetu AI</span>
+          <span className="text-headline-md font-headline-md font-bold text-primary tracking-tight">SevaSetu</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-lg">

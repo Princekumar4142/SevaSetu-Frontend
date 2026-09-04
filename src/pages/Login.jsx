@@ -41,7 +41,7 @@ export default function Login() {
 
             <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Welcome back</h1>
             <p className="text-xs sm:text-sm text-slate-500 mt-1 mb-6">
-              Log in to your SevaSetu AI customer, worker, or cooperative account.
+              Log in to your SevaSetu customer, worker, or cooperative account.
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -111,7 +111,7 @@ export default function Login() {
                   verified
                 </span>
                 <span>
-                  <strong>Aadhaar Verified Badge:</strong> Instant credibility &amp; customer trust.
+                  <strong>Verified Worker Badge:</strong> Instant credibility &amp; customer trust.
                 </span>
               </div>
               <div className="flex items-start gap-2.5 text-xs text-slate-200">

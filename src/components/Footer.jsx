@@ -22,7 +22,7 @@ export default function Footer() {
           <div className="flex flex-col items-center md:items-start text-center md:text-left gap-2 max-w-md">
             <Link to="/" className="flex items-center gap-2.5 group">
               <Logo size={28} className="transition-transform group-hover:scale-105" />
-              <span className="text-lg font-black text-white tracking-tight">SevaSetu AI</span>
+              <span className="text-lg font-black text-white tracking-tight">SevaSetu</span>
             </Link>
             <p className="text-xs text-slate-400 leading-relaxed">
               India&apos;s cooperative home &amp; personal service network. 0% worker commission, upfront fixed prices.
@@ -47,10 +47,10 @@ export default function Footer() {
             <span className="material-symbols-outlined text-[16px] text-indigo-400">mail</span>
             <span>Support:</span>
             <a
-              href="mailto:support@sevasetu.ai"
+              href="mailto:princebth1988@gmail.com"
               className="text-indigo-300 hover:text-white font-medium transition-colors"
             >
-              support@sevasetu.ai
+              princebth1988@gmail.com
             </a>
           </div>
 
@@ -58,7 +58,7 @@ export default function Footer() {
 
         {/* Bottom copyright & attribution */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2.5 pt-6 mt-6 border-t border-slate-900 text-xs text-slate-500 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} SevaSetu AI. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} SevaSetu. All rights reserved.</p>
           <div className="flex items-center gap-2 text-[11px] text-slate-400">
             <span>हर हुनर को काम, हर काम को विश्वास</span>
             <span>•</span>

@@ -306,10 +306,6 @@ export default function BookingCategory() {
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-1.5 flex-wrap">
                             <h4 className="text-sm font-bold text-slate-900 truncate">{workerName}</h4>
-                            <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
-                              <span className="material-symbols-outlined text-[12px] fill">verified</span>
-                              Aadhaar Verified
-                            </span>
                           </div>
 
                           {worker.hasShop && worker.shopName && (

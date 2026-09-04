@@ -48,7 +48,7 @@ export default function FederationAnalytics() {
             Festival Surge Approaching: Deep Cleaning Demand Up +64%
           </h2>
           <p className="font-body-md text-body-md text-white/80 mb-4">
-            SevaSetu AI recommends mobilizing 38 additional cross-cooperative cleaning partners in Mumbai Central and Western zones to maintain zero-wait dispatch times.
+            SevaSetu recommends mobilizing 38 additional cross-cooperative cleaning partners in Mumbai Central and Western zones to maintain zero-wait dispatch times.
           </p>
           <Button variant="outline" className="bg-white text-brand-purple font-bold hover:bg-white/90">
             Automate Cross-Cooperative Dispatch

@@ -20,7 +20,7 @@ export default function WorkerLayout() {
 
   return (
     <DashboardLayout
-      title="SevaSetu AI"
+      title="SevaSetu"
       subtitle="Worker Portal"
       navItems={NAV_ITEMS}
       user={currentUser ? { name: currentUser.name, profilePhoto: currentUser.profilePhoto, badge } : null}

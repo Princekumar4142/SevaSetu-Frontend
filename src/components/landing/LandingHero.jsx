@@ -272,8 +272,8 @@ const POPULAR_BOOKINGS = [
     title: "Split AC Deep Foam Cleaning",
     rating: "4.91",
     reviews: "32k",
-    price: "₹449",
-    originalPrice: "₹599",
+    price: "₹249",
+    originalPrice: "₹349",
     time: "45 mins",
     icon: "ac_unit",
   },
@@ -282,8 +282,8 @@ const POPULAR_BOOKINGS = [
     title: "Bathroom Deep Scrubbing",
     rating: "4.88",
     reviews: "19k",
-    price: "₹499",
-    originalPrice: "₹650",
+    price: "₹249",
+    originalPrice: "₹299",
     time: "60 mins",
     icon: "cleaning_services",
   },
@@ -366,18 +366,18 @@ export default function LandingHero() {
 
             {/* Elevated Light Search Bar */}
             <form onSubmit={handleSearch} className="relative max-w-xl">
-              <div className="flex items-center bg-white rounded-2xl p-1.5 sm:p-2 shadow-lg shadow-indigo-100/60 border border-slate-200/90 focus-within:border-indigo-400 focus-within:ring-4 focus-within:ring-indigo-100 transition-all overflow-hidden">
+              <div className="flex items-center bg-white rounded-2xl p-1.5 sm:p-2 shadow-lg shadow-indigo-100/60 border border-slate-200/90 focus-within:border-indigo-400 focus-within:ring-4 focus-within:ring-indigo-100 transition-all overflow-hidden w-full">
                 <span className="material-symbols-outlined text-indigo-500 ml-2 sm:ml-3 text-[20px] sm:text-[22px] shrink-0">search</span>
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search for AC repair, electrician, salon..."
-                  className="min-w-0 flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 text-sm sm:text-base placeholder:text-slate-400 bg-transparent font-medium"
+                  placeholder="Search for services..."
+                  className="min-w-0 w-full flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 text-sm sm:text-base placeholder:text-slate-400 bg-transparent font-medium"
                 />
                 <button
                   type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1 shrink-0"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1 shrink-0"
                 >
                   <span>Search</span>
                   <span className="material-symbols-outlined text-[16px] hidden sm:inline">arrow_forward</span>
@@ -405,7 +405,7 @@ export default function LandingHero() {
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
                 Explore Services with 1-Tap Booking
               </p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-3.5">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-3.5">
                 {CATEGORY_TILES.map((cat) => (
                   <button
                     key={cat.label}
@@ -433,35 +433,6 @@ export default function LandingHero() {
 
           {/* ── Right Column: Live Showcase & Plus Banner (Light Theme) ── */}
           <div className="lg:col-span-5 space-y-4">
-
-            {/* SevaSetu Plus Member Banner */}
-            <div
-              onClick={() => navigate("/customer/plus")}
-              className="bg-gradient-to-br from-amber-500 via-amber-500 to-amber-600 rounded-2xl p-4 sm:p-5 shadow-lg shadow-amber-500/20 text-white cursor-pointer hover:shadow-xl hover:scale-[1.01] transition-all group relative overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
-              <div className="relative z-10 flex items-center justify-between mb-2">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white text-amber-600 flex items-center justify-center font-black shadow-sm">
-                    <span className="material-symbols-outlined text-[24px] fill">bolt</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold tracking-widest uppercase text-amber-100">
-                      SEVASETU PLUS
-                    </span>
-                    <h3 className="text-base sm:text-lg font-black text-white">
-                      Save 15% On Every Booking
-                    </h3>
-                  </div>
-                </div>
-                <span className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:translate-x-1 transition-transform">
-                  <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-                </span>
-              </div>
-              <p className="text-xs text-amber-50 pl-1 leading-relaxed">
-                Zero cancellation fees, priority dispatch &amp; instant member discounts on AC, Cleaning &amp; Salon.
-              </p>
-            </div>
 
             {/* Frequently Booked Services Card */}
             <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xl shadow-slate-200/60">

@@ -91,7 +91,7 @@ export default function BookingPayment() {
             key: keyId,
             amount,
             currency: currency || "INR",
-            name: "SevaSetu AI",
+            name: "SevaSetu",
             description: "Cooperative Skilled Services Booking",
             image: "https://cdn-icons-png.flaticon.com/512/3135/3135715.png",
             order_id: orderId,
@@ -412,7 +412,7 @@ export default function BookingPayment() {
                 </div>
                 <div>
                   <h3 className="font-black text-sm tracking-wide">Razorpay Gateway</h3>
-                  <p className="text-[11px] text-blue-200">SevaSetu AI Services · ₹{payable}</p>
+                  <p className="text-[11px] text-blue-200">SevaSetu Services · ₹{payable}</p>
                 </div>
               </div>
               <button

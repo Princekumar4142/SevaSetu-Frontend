@@ -22,7 +22,7 @@ export default function PublicLayout() {
 
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Logo size={28} />
-          <span className="text-lg font-bold text-primary tracking-tight">SevaSetu AI</span>
+          <span className="text-lg font-bold text-primary tracking-tight">SevaSetu</span>
         </Link>
       </div>
 
@@ -32,7 +32,7 @@ export default function PublicLayout() {
 
       {/* Simple minimal footer */}
       <div className="text-center py-4 text-xs text-on-surface-variant/60">
-        © {new Date().getFullYear()} SevaSetu AI · Made with ❤️ in India 🇮🇳
+        © {new Date().getFullYear()} SevaSetu · Made with ❤️ in India 🇮🇳
       </div>
     </div>
   );

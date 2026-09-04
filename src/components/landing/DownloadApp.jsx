@@ -62,7 +62,7 @@ export default function DownloadApp() {
                     <div className="w-20 h-5 bg-black/30 rounded-full mb-8" />
                     {/* App content mockup */}
                     <span className="material-symbols-outlined text-white text-[48px] fill mb-4">handshake</span>
-                    <span className="text-white font-bold text-lg">SevaSetu AI</span>
+                    <span className="text-white font-bold text-lg">SevaSetu</span>
                     <span className="text-white/50 text-xs mt-1">Launching Soon</span>
                     {/* Fake UI lines */}
                     <div className="mt-6 space-y-2 w-3/4">
