@@ -5,6 +5,7 @@ import { fetchCurrentUser } from "./store/slices/authSlice";
 import AppRoutes from "./routes/AppRoutes";
 import ScrollToTop from "./components/ScrollToTop";
 import { SocketProvider } from "./context/SocketContext";
+import IncomingOrderModal from "./components/IncomingOrderModal";
 
 export default function App() {
   const { dispatch, token, currentUser } = useAuth();
@@ -22,7 +23,9 @@ export default function App() {
       <SocketProvider>
         <ScrollToTop />
         <AppRoutes />
+        <IncomingOrderModal />
       </SocketProvider>
     </BrowserRouter>
   );
 }
+

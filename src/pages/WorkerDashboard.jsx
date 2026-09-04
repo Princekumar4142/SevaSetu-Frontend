@@ -4,7 +4,6 @@ import workerService from "../services/workerService";
 import { LoadingState, ErrorBanner } from "../components/Feedback";
 import Badge from "../components/Badge";
 import Avatar from "../components/Avatar";
-import IncomingOrderModal from "../components/IncomingOrderModal";
 
 const STEPS = [
   { key: "registered", label: "Registered", icon: "how_to_reg", desc: "Account created successfully" },
@@ -43,8 +42,7 @@ export default function WorkerDashboard() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Real-time incoming order notification popup */}
-      <IncomingOrderModal />
+
 
       {/* ── Top Worker Profile Card ── */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">

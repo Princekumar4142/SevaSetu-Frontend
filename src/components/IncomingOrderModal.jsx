@@ -6,48 +6,118 @@ import api from "../services/api";
 
 const ACCEPT_TIMEOUT_SECS = 30;
 
-// Web Audio API phone ringtone synthesizer (No external audio file dependencies required!)
+// Shared global AudioContext instance unlocked on first user interaction
+let globalAudioCtx = null;
+
+function getAudioContext() {
+  if (typeof window === "undefined") return null;
+  if (!globalAudioCtx) {
+    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+    if (AudioContextClass) {
+      globalAudioCtx = new AudioContextClass();
+    }
+  }
+  if (globalAudioCtx && globalAudioCtx.state === "suspended") {
+    globalAudioCtx.resume().catch(() => {});
+  }
+  return globalAudioCtx;
+}
+
+// Unlock audio on initial user interaction (click, touch, keydown)
+if (typeof window !== "undefined") {
+  const unlockAudio = () => {
+    const ctx = getAudioContext();
+    if (ctx && ctx.state === "suspended") {
+      ctx.resume().catch(() => {});
+    }
+    window.removeEventListener("click", unlockAudio);
+    window.removeEventListener("touchstart", unlockAudio);
+    window.removeEventListener("keydown", unlockAudio);
+  };
+  window.addEventListener("click", unlockAudio);
+  window.addEventListener("touchstart", unlockAudio);
+  window.addEventListener("keydown", unlockAudio);
+}
+
+// Realistic dual-tone telephone call ringtone synthesizer (440Hz + 480Hz)
 function playRingtone() {
-  try {
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let isPlaying = true;
+  const ctx = getAudioContext();
+  if (!ctx) return () => {};
 
-    const ring = () => {
-      if (!isPlaying) return;
-      try {
-        const osc1 = audioCtx.createOscillator();
-        const osc2 = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+  if (ctx.state === "suspended") {
+    ctx.resume().catch(() => {});
+  }
 
-        osc1.type = "sine";
-        osc2.type = "sine";
-        osc1.frequency.setValueAtTime(440, audioCtx.currentTime);
-        osc2.frequency.setValueAtTime(480, audioCtx.currentTime);
+  let isPlaying = true;
 
-        gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 1.2);
+  const ringPulse = () => {
+    if (!isPlaying) return;
+    try {
+      if (ctx.state === "suspended") {
+        ctx.resume().catch(() => {});
+      }
+      const now = ctx.currentTime;
+      const osc1 = ctx.createOscillator();
+      const osc2 = ctx.createOscillator();
+      const gain = ctx.createGain();
 
-        osc1.connect(gain);
-        osc2.connect(gain);
-        gain.connect(audioCtx.destination);
+      osc1.type = "sine";
+      osc2.type = "sine";
+      osc1.frequency.setValueAtTime(440, now);
+      osc2.frequency.setValueAtTime(480, now);
 
-        osc1.start();
-        osc2.start();
-        osc1.stop(audioCtx.currentTime + 1.2);
-        osc2.stop(audioCtx.currentTime + 1.2);
-      } catch (e) {}
-    };
+      // Telephone ring pulse envelope (1.3 seconds tone, 0.9s pause)
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.25, now + 0.05);
+      gain.gain.setValueAtTime(0.25, now + 1.25);
+      gain.gain.linearRampToValueAtTime(0, now + 1.3);
 
-    ring();
-    const interval = setInterval(ring, 2000);
+      osc1.connect(gain);
+      osc2.connect(gain);
+      gain.connect(ctx.destination);
 
-    return () => {
-      isPlaying = false;
-      clearInterval(interval);
-      audioCtx.close().catch(() => {});
-    };
-  } catch (e) {
-    return () => {};
+      osc1.start(now);
+      osc2.start(now);
+      osc1.stop(now + 1.3);
+      osc2.stop(now + 1.3);
+    } catch (e) {
+      console.warn("[Ringtone] Playback exception:", e);
+    }
+  };
+
+  ringPulse();
+  const interval = setInterval(() => {
+    if (isPlaying) ringPulse();
+  }, 2200);
+
+  return () => {
+    isPlaying = false;
+    clearInterval(interval);
+  };
+}
+
+// Trigger browser system native notification (phone alert)
+function triggerSystemNotification(data) {
+  if (typeof window === "undefined" || !("Notification" in window)) return;
+  if (Notification.permission === "granted") {
+    try {
+      const customerName = data.customer?.name || "Customer";
+      const notif = new Notification("📞 INCOMING BOOKING CALL!", {
+        body: `${customerName} is calling for booking! Payout: ₹${data.totalAmount || 599}. Tap to accept booking.`,
+        icon: data.customer?.profilePhoto || "/favicon.ico",
+        tag: `order-call-${data.orderId}`,
+        requireInteraction: true,
+        vibrate: [400, 150, 400, 150, 400],
+      });
+      notif.onclick = () => {
+        window.focus();
+        notif.close();
+      };
+    } catch (err) {
+      console.warn("[Notification] System alert error:", err);
+    }
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission();
   }
 }
 
@@ -59,8 +129,16 @@ export default function IncomingOrderModal() {
   const [phase, setPhase] = useState("idle"); // idle | ringing | accepted | rejected
   const timerRef = useRef(null);
   const stopAudioRef = useRef(null);
+  const rejectedOrdersRef = useRef(new Set());
 
-  // ── Ringtone ──────────────────────────────────────────────────────────
+  // Ask for notification permission on mount
+  useEffect(() => {
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  // Ringtone controls
   const stopRinging = useCallback(() => {
     if (stopAudioRef.current) {
       stopAudioRef.current();
@@ -73,7 +151,7 @@ export default function IncomingOrderModal() {
     stopAudioRef.current = playRingtone();
   }, [stopRinging]);
 
-  // ── Countdown timer ──────────────────────────────────────────────────
+  // Countdown timer controls
   const clearCountdown = useCallback(() => {
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -95,30 +173,32 @@ export default function IncomingOrderModal() {
     }, 1000);
   }, [clearCountdown]);
 
-  // Auto-reject when timer hits 0
+  const triggerIncomingOrder = useCallback(
+    (data) => {
+      if (!data || !data.orderId) return;
+      if (rejectedOrdersRef.current.has(data.orderId.toString())) return;
+
+      setIncomingOrder(data);
+      setPhase("ringing");
+      startCountdown();
+      startRinging();
+      triggerSystemNotification(data);
+    },
+    [startCountdown, startRinging]
+  );
+
+  // Auto-reject on timeout
   useEffect(() => {
     if (phase === "ringing" && timeLeft === 0) {
       handleReject({ reason: "timeout" });
     }
   }, [timeLeft, phase]);
 
-  // ── Event Handlers ────────────────────────────────────────────────────
-  const triggerIncomingOrder = useCallback(
-    (data) => {
-      setIncomingOrder(data);
-      setPhase("ringing");
-      startCountdown();
-      startRinging();
-    },
-    [startCountdown, startRinging]
-  );
-
-  // Socket & Simulation listeners
+  // Handle Socket events
   useEffect(() => {
-    // 1. Listen for real Socket.io order
     if (socket) {
       const handleIncomingOrder = (data) => {
-        console.log("[Worker UI] Incoming Order Received:", data);
+        console.log("[Worker UI] Socket incoming_order:", data);
         triggerIncomingOrder(data);
       };
 
@@ -144,7 +224,58 @@ export default function IncomingOrderModal() {
     }
   }, [socket, triggerIncomingOrder, stopRinging, clearCountdown]);
 
-  // 2. Listen for custom window event (for manual UI testing)
+  // Check pending booking from backend (so call appears whether worker was online or offline when customer ordered)
+  const checkPendingAlert = useCallback(async () => {
+    if (phase === "ringing" || phase === "accepted") return;
+    try {
+      const res = await api.get("/bookings/pending-alert");
+      const booking = res.data?.data?.booking;
+
+      if (booking && booking._id) {
+        if (rejectedOrdersRef.current.has(booking._id.toString())) return;
+
+        const payload = {
+          orderId: booking._id,
+          bookingNumber: booking.bookingNumber,
+          items: booking.items,
+          address: booking.address,
+          slot: booking.slot,
+          totalAmount: booking.pricing?.totalAmount || booking.totalAmount || 599,
+          customer: {
+            name: booking.customer?.name || "Customer",
+            phone: booking.customer?.phone || "+91 98000 00000",
+            profilePhoto: booking.customer?.profilePhoto || "",
+          },
+        };
+        triggerIncomingOrder(payload);
+      }
+    } catch (err) {
+      // ignore unauthenticated or background poll errors
+    }
+  }, [phase, triggerIncomingOrder]);
+
+  // Poll for pending alerts periodically & on tab focus/mount
+  useEffect(() => {
+    checkPendingAlert();
+
+    const interval = setInterval(checkPendingAlert, 4000);
+    const handleVisibility = () => {
+      if (document.visibilityState === "visible") {
+        checkPendingAlert();
+      }
+    };
+
+    window.addEventListener("focus", checkPendingAlert);
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("focus", checkPendingAlert);
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, [checkPendingAlert]);
+
+  // Listen for custom window event (for UI testing)
   useEffect(() => {
     const handleSimulate = (e) => {
       const demoPayload = e.detail || {
@@ -182,7 +313,7 @@ export default function IncomingOrderModal() {
     };
   }, [stopRinging, clearCountdown]);
 
-  // ── Actions ──────────────────────────────────────────────────────────
+  // Actions
   const handleAccept = useCallback(async () => {
     if (!incomingOrder) return;
     stopRinging();
@@ -211,6 +342,9 @@ export default function IncomingOrderModal() {
   const handleReject = useCallback(
     ({ reason = "manual" } = {}) => {
       if (!incomingOrder) return;
+      if (incomingOrder.orderId) {
+        rejectedOrdersRef.current.add(incomingOrder.orderId.toString());
+      }
       stopRinging();
       clearCountdown();
       setPhase("rejected");
@@ -252,11 +386,11 @@ export default function IncomingOrderModal() {
       {phase === "ringing" && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
           <div className="w-[360px] h-[360px] rounded-full border-4 border-emerald-500/30 animate-ping" />
-          <div className="w-[480px] h-[480px] rounded-full border-2 border-brand-purple/20 animate-pulse" />
+          <div className="w-[480px] h-[480px] rounded-full border-2 border-purple-500/20 animate-pulse" />
         </div>
       )}
 
-      {/* Rapido Call Card Modal */}
+      {/* Incoming Call Alert Modal */}
       <div className="relative z-10 w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl bg-white border border-slate-200 animate-scale-in">
         {/* ── Top Call Header ── */}
         <div
@@ -267,7 +401,7 @@ export default function IncomingOrderModal() {
               ? "bg-gradient-to-r from-slate-800 to-slate-700"
               : urgent
               ? "bg-gradient-to-r from-rose-600 via-red-600 to-amber-600 animate-pulse"
-              : "bg-gradient-to-r from-slate-900 via-brand-purple to-indigo-900"
+              : "bg-gradient-to-r from-slate-900 via-purple-900 to-indigo-900"
           }`}
         >
           <div className="flex items-center justify-between mb-3">
@@ -319,12 +453,12 @@ export default function IncomingOrderModal() {
             <Avatar src={incomingOrder.customer?.profilePhoto} name={customerName} size="lg" className="shadow-md" />
             <div className="min-w-0 flex-1">
               <h3 className="text-sm font-extrabold text-slate-900 truncate">{customerName}</h3>
-              <p className="text-xs font-semibold text-brand-purple flex items-center gap-1 mt-0.5">
+              <p className="text-xs font-semibold text-purple-700 flex items-center gap-1 mt-0.5">
                 <span className="material-symbols-outlined text-[14px]">call</span>
                 {customerPhone}
               </p>
             </div>
-            <span className="bg-purple-100 text-brand-purple text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
+            <span className="bg-purple-100 text-purple-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
               Customer
             </span>
           </div>
@@ -337,7 +471,7 @@ export default function IncomingOrderModal() {
             {(incomingOrder.items || []).map((item, idx) => (
               <div key={idx} className="flex items-center justify-between gap-2 text-xs">
                 <div className="flex items-center gap-2 min-w-0 font-bold text-slate-800">
-                  <span className="material-symbols-outlined text-brand-purple text-[16px] shrink-0">
+                  <span className="material-symbols-outlined text-purple-700 text-[16px] shrink-0">
                     {item.icon || "handyman"}
                   </span>
                   <span className="truncate">{item.name}</span>
@@ -377,7 +511,7 @@ export default function IncomingOrderModal() {
             </div>
           </div>
 
-          {/* ── Rapido / Uber Style Accept / Reject Buttons ── */}
+          {/* ── Accept / Reject Buttons ── */}
           {phase === "ringing" && (
             <div className="flex gap-3 pt-2">
               <button
@@ -419,3 +553,4 @@ export default function IncomingOrderModal() {
     </div>
   );
 }
+
