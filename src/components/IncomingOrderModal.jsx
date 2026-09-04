@@ -165,14 +165,19 @@ function triggerSystemNotification(data) {
     try {
       const customerName = data.customer?.name || "Customer";
       const notif = new Notification("📞 INCOMING BOOKING CALL!", {
-        body: `${customerName} is calling for booking! Payout: ₹${data.totalAmount || 599}. Tap to accept booking.`,
+        body: `${customerName} is calling for booking! Payout: ₹${data.totalAmount || 599}. Tap to open call screen & accept.`,
         icon: data.customer?.profilePhoto || "/favicon.ico",
         tag: `order-call-${data.orderId}`,
         requireInteraction: true,
-        vibrate: [400, 150, 400, 150, 400],
+        vibrate: [400, 150, 400, 150, 400, 150, 400],
       });
       notif.onclick = () => {
-        window.focus();
+        try {
+          window.focus();
+          if (!window.location.pathname.startsWith("/worker")) {
+            window.location.href = "/worker";
+          }
+        } catch (e) {}
         notif.close();
       };
     } catch (err) {
@@ -194,12 +199,21 @@ export default function IncomingOrderModal() {
   const audioRef = useRef(null);
   const rejectedOrdersRef = useRef(new Set());
 
+  const isWorker = Boolean(currentUser && (currentUser.role === "WORKER" || currentUser.isWorker));
+
   // Ask for notification permission on mount
   useEffect(() => {
     if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
   }, []);
+
+  // Ensure worker socket registration is always active
+  useEffect(() => {
+    if (socket && isWorker && currentUser?._id) {
+      socket.emit("register_worker", { workerId: currentUser._id });
+    }
+  }, [socket, isWorker, currentUser]);
 
   // Ringtone controls
   const stopRinging = useCallback(() => {
@@ -250,8 +264,8 @@ export default function IncomingOrderModal() {
   const triggerIncomingOrder = useCallback(
     (data) => {
       if (!data || !data.orderId) return;
-      if (!currentUser || currentUser.role !== "WORKER") return;
-      if (currentUser._id && data.customer?._id && String(currentUser._id) === String(data.customer._id)) return;
+      if (!isWorker) return;
+      if (currentUser?._id && data.customer?._id && String(currentUser._id) === String(data.customer._id)) return;
       if (rejectedOrdersRef.current.has(data.orderId.toString())) return;
 
       setIncomingOrder(data);
@@ -260,7 +274,7 @@ export default function IncomingOrderModal() {
       startRinging();
       triggerSystemNotification(data);
     },
-    [currentUser, startCountdown, startRinging]
+    [isWorker, currentUser, startCountdown, startRinging]
   );
 
   // Auto-reject on timeout
@@ -272,7 +286,7 @@ export default function IncomingOrderModal() {
 
   // Handle Socket events
   useEffect(() => {
-    if (socket && currentUser?.role === "WORKER") {
+    if (socket && isWorker) {
       const handleIncomingOrder = (data) => {
         console.log("[Worker UI] Socket incoming_order:", data);
         triggerIncomingOrder(data);
@@ -298,11 +312,11 @@ export default function IncomingOrderModal() {
         socket.off("order_accepted_by_other", handleOrderAcceptedByOther);
       };
     }
-  }, [socket, currentUser, triggerIncomingOrder, stopRinging, clearCountdown]);
+  }, [socket, isWorker, triggerIncomingOrder, stopRinging, clearCountdown]);
 
   // Check pending booking from backend (so call appears whether worker was online or offline when customer ordered)
   const checkPendingAlert = useCallback(async () => {
-    if (!currentUser || currentUser.role !== "WORKER") return;
+    if (!isWorker) return;
     if (phase === "ringing" || phase === "accepted") return;
     try {
       const res = await api.get("/bookings/pending-alert");
@@ -330,28 +344,30 @@ export default function IncomingOrderModal() {
     } catch (err) {
       // ignore unauthenticated or background poll errors
     }
-  }, [currentUser, phase, triggerIncomingOrder]);
+  }, [isWorker, phase, triggerIncomingOrder]);
 
-  // Poll for pending alerts periodically & on tab focus/mount
+  // Poll for pending alerts periodically (every 2s) & on tab focus/mount/user load
   useEffect(() => {
-    checkPendingAlert();
+    if (isWorker) {
+      checkPendingAlert();
 
-    const interval = setInterval(checkPendingAlert, 4000);
-    const handleVisibility = () => {
-      if (document.visibilityState === "visible") {
-        checkPendingAlert();
-      }
-    };
+      const interval = setInterval(checkPendingAlert, 2000);
+      const handleVisibility = () => {
+        if (document.visibilityState === "visible") {
+          checkPendingAlert();
+        }
+      };
 
-    window.addEventListener("focus", checkPendingAlert);
-    document.addEventListener("visibilitychange", handleVisibility);
+      window.addEventListener("focus", checkPendingAlert);
+      document.addEventListener("visibilitychange", handleVisibility);
 
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener("focus", checkPendingAlert);
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
-  }, [checkPendingAlert]);
+      return () => {
+        clearInterval(interval);
+        window.removeEventListener("focus", checkPendingAlert);
+        document.removeEventListener("visibilitychange", handleVisibility);
+      };
+    }
+  }, [isWorker, checkPendingAlert]);
 
   // Listen for custom window event (for UI testing)
   useEffect(() => {
