@@ -43,8 +43,8 @@ export default function WorkerDashboard() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Real-time incoming order notification – only for verified workers */}
-      {isVerified && <IncomingOrderModal />}
+      {/* Real-time incoming order notification popup */}
+      <IncomingOrderModal />
 
       {/* ── Top Worker Profile Card ── */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
@@ -66,13 +66,24 @@ export default function WorkerDashboard() {
           </div>
         </div>
 
-        <button
-          onClick={() => navigate("/worker/profile")}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all border border-slate-200 shrink-0 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[16px] text-brand-purple">edit</span>
-          Edit Profile & Photo
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            type="button"
+            onClick={() => window.dispatchEvent(new CustomEvent("simulate_incoming_order"))}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-extrabold text-xs shadow-md hover:opacity-95 transition-all cursor-pointer animate-pulse"
+            title="Click to preview Rapido-style incoming booking call alert with ringtone"
+          >
+            <span className="material-symbols-outlined text-[16px] text-amber-300">ring_volume</span>
+            Test Rapido Call Alert (30s)
+          </button>
+          <button
+            onClick={() => navigate("/worker/profile")}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all border border-slate-200 shrink-0 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px] text-brand-purple">edit</span>
+            Edit Profile &amp; Photo
+          </button>
+        </div>
       </div>
 
       {/* ── Status Banner (Clean Light Theme) ── */}
