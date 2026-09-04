@@ -250,6 +250,8 @@ export default function IncomingOrderModal() {
   const triggerIncomingOrder = useCallback(
     (data) => {
       if (!data || !data.orderId) return;
+      if (!currentUser || currentUser.role !== "WORKER") return;
+      if (currentUser._id && data.customer?._id && String(currentUser._id) === String(data.customer._id)) return;
       if (rejectedOrdersRef.current.has(data.orderId.toString())) return;
 
       setIncomingOrder(data);
@@ -258,7 +260,7 @@ export default function IncomingOrderModal() {
       startRinging();
       triggerSystemNotification(data);
     },
-    [startCountdown, startRinging]
+    [currentUser, startCountdown, startRinging]
   );
 
   // Auto-reject on timeout
@@ -270,7 +272,7 @@ export default function IncomingOrderModal() {
 
   // Handle Socket events
   useEffect(() => {
-    if (socket) {
+    if (socket && currentUser?.role === "WORKER") {
       const handleIncomingOrder = (data) => {
         console.log("[Worker UI] Socket incoming_order:", data);
         triggerIncomingOrder(data);
@@ -296,10 +298,11 @@ export default function IncomingOrderModal() {
         socket.off("order_accepted_by_other", handleOrderAcceptedByOther);
       };
     }
-  }, [socket, triggerIncomingOrder, stopRinging, clearCountdown]);
+  }, [socket, currentUser, triggerIncomingOrder, stopRinging, clearCountdown]);
 
   // Check pending booking from backend (so call appears whether worker was online or offline when customer ordered)
   const checkPendingAlert = useCallback(async () => {
+    if (!currentUser || currentUser.role !== "WORKER") return;
     if (phase === "ringing" || phase === "accepted") return;
     try {
       const res = await api.get("/bookings/pending-alert");
@@ -316,6 +319,7 @@ export default function IncomingOrderModal() {
           slot: booking.slot,
           totalAmount: booking.pricing?.totalAmount || booking.totalAmount || 599,
           customer: {
+            _id: booking.customer?._id,
             name: booking.customer?.name || "Customer",
             phone: booking.customer?.phone || "+91 98000 00000",
             profilePhoto: booking.customer?.profilePhoto || "",
@@ -326,7 +330,7 @@ export default function IncomingOrderModal() {
     } catch (err) {
       // ignore unauthenticated or background poll errors
     }
-  }, [phase, triggerIncomingOrder]);
+  }, [currentUser, phase, triggerIncomingOrder]);
 
   // Poll for pending alerts periodically & on tab focus/mount
   useEffect(() => {
@@ -440,6 +444,7 @@ export default function IncomingOrderModal() {
     [incomingOrder, socket, currentUser, stopRinging, clearCountdown]
   );
 
+  if (!currentUser || currentUser.role !== "WORKER") return null;
   if (!incomingOrder || phase === "idle") return null;
 
   const amount = incomingOrder.totalAmount || 599;
