@@ -41,8 +41,22 @@ export default function WorkerDashboard() {
   const isPending = worker?.verificationStatus === "PENDING";
 
   return (
-    <div className="flex flex-col gap-6">
-
+    <div className="flex flex-col gap-5">
+      {/* ── Top Back Navigation Row ── */}
+      <div className="flex items-center gap-2.5">
+        <button
+          type="button"
+          onClick={() => {
+            if (window.history.length > 1) navigate(-1);
+            else navigate("/");
+          }}
+          className="w-9 h-9 rounded-xl bg-white border border-slate-200/90 shadow-2xs hover:bg-slate-50 active:bg-slate-100 flex items-center justify-center text-slate-700 transition-colors shrink-0"
+          aria-label="Back"
+        >
+          <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Worker Portal</span>
+      </div>
 
       {/* ── Top Worker Profile Card ── */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">

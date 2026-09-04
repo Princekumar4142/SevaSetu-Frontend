@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
 
@@ -54,6 +55,7 @@ const COURSES = [
 ];
 
 export default function WorkerTraining() {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState(COURSES);
   const [activeCourseModal, setActiveCourseModal] = useState(null);
   const [quizScore, setQuizScore] = useState(null);
@@ -78,11 +80,24 @@ export default function WorkerTraining() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Skills Training &amp; Upskilling</h1>
-          <p className="font-body-md text-body-md text-on-surface-variant">
-            Level up your trade certifications to unlock high-ticket jobs and boost your cooperative payout rate
-          </p>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              if (window.history.length > 1) navigate(-1);
+              else navigate("/worker");
+            }}
+            className="w-9 h-9 rounded-xl bg-surface-container-low hover:bg-surface-container-high active:bg-surface-variant flex items-center justify-center text-primary transition-colors shrink-0"
+            aria-label="Back"
+          >
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+          </button>
+          <div>
+            <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Skills Training &amp; Upskilling</h1>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Level up your trade certifications to unlock high-ticket jobs and boost your cooperative payout rate
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2 bg-brand-purple-light text-brand-purple px-4 py-2 rounded-xl font-label-md font-bold self-start sm:self-auto">
           <span className="material-symbols-outlined text-[20px] fill">workspace_premium</span>

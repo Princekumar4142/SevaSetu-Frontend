@@ -1,11 +1,25 @@
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import Logo from "../components/Logo";
 
 export default function PublicLayout() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen flex flex-col bg-surface">
-      {/* Minimal top bar — just logo + home link, no heavy navbar */}
-      <div className="flex items-center gap-2 px-6 py-4">
+      {/* Minimal top bar — back arrow + logo + home link */}
+      <div className="flex items-center gap-2.5 px-4 sm:px-6 py-3.5 border-b border-slate-100 bg-white/80 backdrop-blur-sm">
+        <button
+          type="button"
+          onClick={() => {
+            if (window.history.length > 1) navigate(-1);
+            else navigate("/");
+          }}
+          className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 flex items-center justify-center text-slate-700 transition-colors shrink-0"
+          aria-label="Back"
+        >
+          <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Logo size={28} />
           <span className="text-lg font-bold text-primary tracking-tight">SevaSetu AI</span>

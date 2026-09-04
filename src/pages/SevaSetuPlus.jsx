@@ -73,9 +73,22 @@ export default function SevaSetuPlus() {
       <div className="bg-gradient-to-br from-brand-purple via-[#582b82] to-[#2e1065] text-white py-12 px-margin-mobile md:px-margin-desktop relative overflow-hidden">
         <div className="absolute -right-16 -top-16 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
         <div className="max-w-4xl mx-auto relative z-10">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-white/15 backdrop-blur-md rounded-full text-status-badge font-bold uppercase tracking-wider mb-4 border border-white/20">
-            <span className="material-symbols-outlined text-[16px] text-amber-300 fill">diamond</span>
-            SevaSetu Plus VIP
+          <div className="flex items-center gap-3 mb-4">
+            <button
+              type="button"
+              onClick={() => {
+                if (window.history.length > 1) navigate(-1);
+                else navigate("/customer");
+              }}
+              className="w-9 h-9 rounded-xl bg-white/20 hover:bg-white/30 active:bg-white/40 flex items-center justify-center text-white transition-colors shrink-0"
+              aria-label="Back"
+            >
+              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            </button>
+            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-white/15 backdrop-blur-md rounded-full text-status-badge font-bold uppercase tracking-wider border border-white/20">
+              <span className="material-symbols-outlined text-[16px] text-amber-300 fill">diamond</span>
+              SevaSetu Plus VIP
+            </div>
           </div>
 
           <h1 className="font-headline-lg text-headline-lg font-bold mb-3">

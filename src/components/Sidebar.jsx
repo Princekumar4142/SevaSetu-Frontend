@@ -28,9 +28,22 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
   const sidebarContent = (
     <>
       <div className="mb-lg px-sm flex items-center justify-between">
-        <div>
-          <h1 className="font-headline-md text-headline-md font-extrabold text-primary">{title}</h1>
-          {subtitle && <p className="font-status-badge text-status-badge text-on-surface-variant mt-xs font-semibold">{subtitle}</p>}
+        <div className="flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={() => {
+              if (window.history.length > 1) navigate(-1);
+              else navigate("/");
+            }}
+            className="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-primary transition-colors shrink-0"
+            aria-label="Back"
+          >
+            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+          </button>
+          <div>
+            <h1 className="font-headline-md text-headline-md font-extrabold text-primary">{title}</h1>
+            {subtitle && <p className="font-status-badge text-status-badge text-on-surface-variant mt-xs font-semibold">{subtitle}</p>}
+          </div>
         </div>
         {/* Close button visible only on mobile */}
         <button

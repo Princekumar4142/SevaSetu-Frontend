@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { label: "Cooperatives", icon: "add_business", href: "/federation/cooperatives" },
   { label: "Workforce", icon: "group", href: "/federation/workforce" },
   { label: "Analytics", icon: "monitoring", href: "/federation/analytics" },
+  { label: "My Profile", icon: "person", href: "/federation/profile" },
 ];
 
 export default function FederationLayout() {

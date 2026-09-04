@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { label: "Workers", icon: "group", href: "/cooperative/workers" },
   { label: "Verification Queue", icon: "verified_user", href: "/cooperative/verification" },
   { label: "Jobs", icon: "work", href: "/cooperative/jobs" },
+  { label: "My Profile", icon: "person", href: "/cooperative/profile" },
 ];
 
 export default function CooperativeLayout() {

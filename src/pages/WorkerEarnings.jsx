@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Button from "../components/Button";
 
 const STATEMENTS = [
@@ -10,6 +11,7 @@ const STATEMENTS = [
 ];
 
 export default function WorkerEarnings() {
+  const navigate = useNavigate();
   const [balance, setBalance] = useState(8450);
   const [withdrawing, setWithdrawing] = useState(false);
   const [payoutSuccess, setPayoutSuccess] = useState(false);
@@ -27,11 +29,24 @@ export default function WorkerEarnings() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Earnings &amp; Payouts</h1>
-          <p className="font-body-md text-body-md text-on-surface-variant">
-            Track gross income, cooperative dividends, welfare reserves, and transfer funds to your bank
-          </p>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              if (window.history.length > 1) navigate(-1);
+              else navigate("/worker");
+            }}
+            className="w-9 h-9 rounded-xl bg-surface-container-low hover:bg-surface-container-high active:bg-surface-variant flex items-center justify-center text-primary transition-colors shrink-0"
+            aria-label="Back"
+          >
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+          </button>
+          <div>
+            <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Earnings &amp; Payouts</h1>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Track gross income, cooperative dividends, welfare reserves, and transfer funds to your bank
+            </p>
+          </div>
         </div>
         <Button
           variant="purple"

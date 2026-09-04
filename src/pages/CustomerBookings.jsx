@@ -93,11 +93,24 @@ export default function CustomerBookings() {
       <div className="max-w-4xl mx-auto px-margin-mobile md:px-margin-desktop py-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="font-headline-sm text-headline-sm text-on-surface font-bold">My Bookings</h1>
-            <p className="font-body-md text-body-md text-on-surface-variant">
-              Track live service orders and view booking receipts
-            </p>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => {
+                if (window.history.length > 1) navigate(-1);
+                else navigate("/customer");
+              }}
+              className="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 active:bg-slate-300 flex items-center justify-center text-slate-800 transition-colors shrink-0"
+              aria-label="Back"
+            >
+              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            </button>
+            <div>
+              <h1 className="font-headline-sm text-headline-sm text-on-surface font-bold">My Bookings</h1>
+              <p className="font-body-md text-body-md text-on-surface-variant">
+                Track live service orders and view booking receipts
+              </p>
+            </div>
           </div>
           <Button variant="purple" onClick={() => navigate("/customer/services")} className="hidden sm:inline-flex">
             <span className="material-symbols-outlined text-[18px]">add</span>

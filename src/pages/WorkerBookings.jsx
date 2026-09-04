@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import bookingService from "../services/bookingService";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
@@ -48,6 +49,7 @@ const MOCK_WORKER_JOBS = [
 ];
 
 export default function WorkerBookings() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("NEW");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -96,11 +98,24 @@ export default function WorkerBookings() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Job Management</h1>
-          <p className="font-body-md text-body-md text-on-surface-variant">
-            Accept incoming cooperative job requests and update progress in real-time
-          </p>
+        <div className="flex items-center gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              if (window.history.length > 1) navigate(-1);
+              else navigate("/worker");
+            }}
+            className="w-9 h-9 rounded-xl bg-surface-container-low hover:bg-surface-container-high active:bg-surface-variant flex items-center justify-center text-primary transition-colors shrink-0"
+            aria-label="Back"
+          >
+            <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+          </button>
+          <div>
+            <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Job Management</h1>
+            <p className="font-body-md text-body-md text-on-surface-variant">
+              Accept incoming cooperative job requests and update progress in real-time
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3.5 py-1.5 rounded-full font-label-md font-bold self-start sm:self-auto">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />

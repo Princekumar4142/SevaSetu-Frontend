@@ -6,6 +6,7 @@ const NAV_ITEMS = [
   { label: "Users", icon: "group", href: "/admin/users" },
   { label: "Workers", icon: "engineering", href: "/admin/workers" },
   { label: "Cooperatives", icon: "add_business", href: "/admin/cooperatives" },
+  { label: "My Profile", icon: "person", href: "/admin/profile" },
 ];
 
 export default function PlatformAdminLayout() {

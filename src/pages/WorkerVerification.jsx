@@ -53,7 +53,24 @@ export default function WorkerVerification() {
 
   return <div className="flex flex-col gap-lg">
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-md">
-      <div><p className="font-status-badge text-status-badge text-primary font-bold">ADMIN CONTROL</p><h1 className="font-headline-lg text-headline-lg text-on-surface">Worker Verification</h1><p className="font-body-md text-body-md text-on-surface-variant mt-xs">Review worker profiles before they become visible to customers.</p></div>
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => {
+            if (window.history.length > 1) navigate(-1);
+            else navigate("/");
+          }}
+          className="w-9 h-9 rounded-xl bg-surface-container-low hover:bg-surface-container-high active:bg-surface-variant flex items-center justify-center text-primary transition-colors shrink-0"
+          aria-label="Back"
+        >
+          <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+        </button>
+        <div>
+          <p className="font-status-badge text-status-badge text-primary font-bold">ADMIN CONTROL</p>
+          <h1 className="font-headline-lg text-headline-lg text-on-surface">Worker Verification</h1>
+          <p className="font-body-md text-body-md text-on-surface-variant mt-xs">Review worker profiles before they become visible to customers.</p>
+        </div>
+      </div>
       <div className="flex gap-xs bg-surface-container-low p-1 rounded-lg border border-outline-variant">
         {["PENDING","VERIFIED","REJECTED"].map((s) => <button key={s} onClick={() => { setStatus(s); setSelected(null); }} className={`px-md py-xs rounded-md font-label-md text-label-md ${status === s ? "bg-primary text-on-primary" : "text-on-surface-variant"}`}>{s}</button>)}
       </div>

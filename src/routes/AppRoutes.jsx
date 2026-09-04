@@ -111,6 +111,7 @@ export default function AppRoutes() {
           <Route path="/cooperative/workers" element={<CooperativeWorkers />} />
           <Route path="/cooperative/verification" element={<WorkerVerification />} />
           <Route path="/cooperative/jobs" element={<CooperativeJobs />} />
+          <Route path="/cooperative/profile" element={<Profile />} />
         </Route>
       </Route>
 
@@ -121,6 +122,7 @@ export default function AppRoutes() {
           <Route path="/federation/cooperatives" element={<FederationCooperatives />} />
           <Route path="/federation/workforce" element={<CooperativeWorkers />} />
           <Route path="/federation/analytics" element={<FederationAnalytics />} />
+          <Route path="/federation/profile" element={<Profile />} />
         </Route>
       </Route>
 
@@ -131,6 +133,7 @@ export default function AppRoutes() {
           <Route path="/admin/users" element={<AdminUsers />} />
           <Route path="/admin/workers" element={<WorkerVerification />} />
           <Route path="/admin/cooperatives" element={<AdminCooperatives />} />
+          <Route path="/admin/profile" element={<Profile />} />
         </Route>
       </Route>
 

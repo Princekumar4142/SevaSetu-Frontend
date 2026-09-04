@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "../hooks/useAuth";
 import { getCategoryDetails } from "../constants/bookingCatalog";
 import { addItem, incrementItem, decrementItem, selectCartItems } from "../store/slices/cartSlice";
 import CartBar from "../components/booking/CartBar";
@@ -12,6 +13,7 @@ export default function BookingCategory() {
   const { categoryId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { currentUser } = useAuth();
   const cartItems = useSelector(selectCartItems);
 
   const category = useMemo(() => getCategoryDetails(categoryId), [categoryId]);
@@ -38,18 +40,36 @@ export default function BookingCategory() {
     setCustomImages([]);
     setCustomFeedback(null);
 
-    // Fetch verified workers & local shops registered in this category from MongoDB
+    // Fetch all verified workers & local shops in system from MongoDB
     async function loadCategoryWorkers() {
       setLoadingWorkers(true);
       try {
-        const res = await api.get(`/workers/verified?category=${categoryId}`);
-        if (res.data?.data?.workers && res.data.data.workers.length > 0) {
-          setCategoryWorkers(res.data.data.workers);
-        } else {
-          // If no worker is registered for this specific category, load all verified workers in system
-          const allRes = await api.get(`/workers/verified`);
-          setCategoryWorkers(allRes.data?.data?.workers || []);
-        }
+        const allRes = await api.get(`/workers/verified`);
+        const rawWorkers = allRes.data?.data?.workers || [];
+
+        // STRICT FILTER: Only verified professionals with role === 'WORKER'.
+        // Regular customers/users must NEVER be displayed as service workers!
+        const allWorkers = rawWorkers.filter(
+          (w) => w.user && w.user.role === "WORKER" && w.verificationStatus === "VERIFIED"
+        );
+
+        // Sort so that category-matched workers appear first, but verified workers are displayed
+        const cleanCat = (categoryId || "").toLowerCase().replace(/-/g, " ");
+        const sortedWorkers = [...allWorkers].sort((a, b) => {
+          const matchA = (
+            a.serviceCategory?.toLowerCase() === categoryId?.toLowerCase() ||
+            a.serviceCategory?.toLowerCase().includes(cleanCat) ||
+            a.skills?.some((s) => s.toLowerCase().includes(cleanCat))
+          ) ? 1 : 0;
+          const matchB = (
+            b.serviceCategory?.toLowerCase() === categoryId?.toLowerCase() ||
+            b.serviceCategory?.toLowerCase().includes(cleanCat) ||
+            b.skills?.some((s) => s.toLowerCase().includes(cleanCat))
+          ) ? 1 : 0;
+          return matchB - matchA;
+        });
+
+        setCategoryWorkers(sortedWorkers);
       } catch (err) {
         console.warn("Could not load category workers:", err.message);
         setCategoryWorkers([]);
@@ -230,6 +250,132 @@ export default function BookingCategory() {
           </div>
         </div>
 
+        {/* ── TOP SECTION: Nearby Verified Workers & Local Shops Network ── */}
+        {categoryWorkers.length > 0 && (
+          <div className="bg-white border border-outline-variant/80 rounded-3xl p-5 md:p-6 shadow-sm space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-brand-purple bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">
+                  Verified Local Network
+                </span>
+                <h3 className="text-base sm:text-lg font-black text-slate-900 mt-1 flex items-center gap-2">
+                  <span className="material-symbols-outlined text-brand-purple text-[20px]">storefront</span>
+                  Available Verified Workers ({categoryWorkers.length})
+                </h3>
+              </div>
+              <span className="text-xs text-emerald-600 font-bold flex items-center gap-1.5 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+                {categoryWorkers.length} Active in Your Area
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {categoryWorkers.map((worker) => {
+                const workerName = worker.user?.name || "Verified Professional";
+                const initials = workerName
+                  .split(" ")
+                  .map((n) => n[0])
+                  .join("")
+                  .slice(0, 2);
+
+                return (
+                  <div
+                    key={worker._id}
+                    className="border border-slate-200/80 hover:border-brand-purple/50 rounded-2xl p-4 bg-gradient-to-b from-slate-50/50 to-white shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                  >
+                    <div>
+                      {/* Shop Photo if available */}
+                      {worker.hasShop && worker.shopImage && (
+                        <div className="relative w-full h-28 rounded-xl overflow-hidden mb-3 border border-slate-200">
+                          <img
+                            src={worker.shopImage}
+                            alt={worker.shopName || "Shop Front"}
+                            className="w-full h-full object-cover"
+                          />
+                          <div className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
+                            <span className="material-symbols-outlined text-[13px] text-amber-400">store</span>
+                            Local Shop
+                          </div>
+                        </div>
+                      )}
+
+                      <div className="flex items-start gap-3">
+                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-purple to-indigo-700 text-white flex items-center justify-center font-black text-base shrink-0 shadow-md">
+                          {initials}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <h4 className="text-sm font-bold text-slate-900 truncate">{workerName}</h4>
+                            <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-1.5 py-0.5 rounded-full flex items-center gap-0.5">
+                              <span className="material-symbols-outlined text-[12px] fill">verified</span>
+                              Aadhaar Verified
+                            </span>
+                          </div>
+
+                          {worker.hasShop && worker.shopName && (
+                            <p className="text-xs font-bold text-brand-purple truncate mt-0.5 flex items-center gap-1">
+                              <span className="material-symbols-outlined text-[14px]">storefront</span>
+                              {worker.shopName}
+                            </p>
+                          )}
+
+                          <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
+                            <span className="text-amber-500 font-bold flex items-center gap-0.5">
+                              <span className="material-symbols-outlined text-[13px] fill">star</span>
+                              {worker.rating || "4.9"}
+                            </span>
+                            <span>•</span>
+                            <span>{worker.experienceYears || 4}+ yrs exp</span>
+                            <span>•</span>
+                            <span className="text-slate-600 truncate">{worker.location?.address || worker.city || "Bettiah"}</span>
+                          </p>
+
+                          {/* Skill Tags */}
+                          {worker.skills && worker.skills.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {worker.skills.slice(0, 3).map((skill, sIdx) => (
+                                <span
+                                  key={sIdx}
+                                  className="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded-md font-medium"
+                                >
+                                  {skill}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between gap-2 pt-3 mt-3 border-t border-slate-100">
+                      <div>
+                        <span className="text-[10px] font-semibold text-slate-400 uppercase block">Starting Rate</span>
+                        <span className="text-sm font-black text-slate-900">₹{worker.hourlyRate || 299}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const firstService = category.sections[0]?.services[0];
+                          if (firstService) {
+                            dispatch(addItem(firstService));
+                            navigate("/customer/checkout/address");
+                          } else {
+                            navigate(`/customer/checkout/address`);
+                          }
+                        }}
+                        className="px-4 py-2 bg-brand-purple hover:bg-brand-purple-dark text-white rounded-xl text-xs font-bold shadow-md shadow-brand-purple/20 transition-all flex items-center gap-1"
+                      >
+                        <span>Book Partner</span>
+                        <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {/* Search & Subcategory Filters */}
         <div className="space-y-3">
           {/* In-page Search */}
@@ -290,118 +436,6 @@ export default function BookingCategory() {
             </div>
           )}
         </div>
-
-        {/* Nearby Verified Workers & Local Shops Section */}
-        {categoryWorkers.length > 0 && (
-          <div className="bg-white border border-outline-variant/80 rounded-3xl p-5 md:p-6 shadow-sm space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div>
-                <span className="text-[10px] font-black uppercase tracking-wider text-brand-purple bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">
-                  Live Area Network
-                </span>
-                <h3 className="text-base sm:text-lg font-black text-slate-900 mt-1 flex items-center gap-2">
-                  <span className="material-symbols-outlined text-brand-purple text-[20px]">storefront</span>
-                  Nearby Verified Workers &amp; Local Shops
-                </h3>
-              </div>
-              <span className="text-xs text-emerald-600 font-bold flex items-center gap-1">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                {categoryWorkers.length} Active in Your Area
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {categoryWorkers.map((worker) => {
-                const workerName = worker.user?.name || "Verified Professional";
-                const initials = workerName
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2);
-
-                return (
-                  <div
-                    key={worker._id}
-                    className="border border-slate-200/80 hover:border-brand-purple/50 rounded-2xl p-4 bg-gradient-to-b from-slate-50/50 to-white shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-                  >
-                    <div>
-                      {/* Shop Photo if available */}
-                      {worker.hasShop && worker.shopImage && (
-                        <div className="relative w-full h-28 rounded-xl overflow-hidden mb-3 border border-slate-200">
-                          <img
-                            src={worker.shopImage}
-                            alt={worker.shopName || "Shop Front"}
-                            className="w-full h-full object-cover"
-                          />
-                          <div className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[13px] text-amber-400">store</span>
-                            Local Shop
-                          </div>
-                        </div>
-                      )}
-
-                      <div className="flex items-start gap-3">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-purple to-indigo-700 text-white flex items-center justify-center font-black text-base shrink-0 shadow-md">
-                          {initials}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-1.5 flex-wrap">
-                            <h4 className="text-sm font-bold text-slate-900 truncate">{workerName}</h4>
-                            <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-1.5 py-0.2 rounded-full flex items-center gap-0.5">
-                              <span className="material-symbols-outlined text-[12px] fill">verified</span>
-                              Aadhaar Verified
-                            </span>
-                          </div>
-
-                          {worker.hasShop && worker.shopName && (
-                            <p className="text-xs font-bold text-brand-purple truncate mt-0.5 flex items-center gap-1">
-                              <span className="material-symbols-outlined text-[14px]">storefront</span>
-                              {worker.shopName}
-                            </p>
-                          )}
-
-                          <p className="text-[11px] text-slate-500 mt-1 flex items-center gap-2 flex-wrap">
-                            <span className="text-amber-500 font-bold flex items-center gap-0.5">
-                              <span className="material-symbols-outlined text-[13px] fill">star</span>
-                              {worker.rating || "4.9"}
-                            </span>
-                            <span>•</span>
-                            <span>{worker.experienceYears || 4}+ yrs exp</span>
-                            <span>•</span>
-                            <span className="text-slate-600 truncate">{worker.location?.address || "Nearby"}</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between gap-2 pt-3 mt-3 border-t border-slate-100">
-                      <div>
-                        <span className="text-[10px] font-semibold text-slate-400 uppercase block">Starting Rate</span>
-                        <span className="text-sm font-black text-slate-900">₹{worker.hourlyRate || 299}</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          const firstService = category.sections[0]?.services[0];
-                          if (firstService) {
-                            dispatch(addItem(firstService));
-                            navigate("/customer/checkout/address");
-                          } else {
-                            navigate(`/customer/checkout/address`);
-                          }
-                        }}
-                        className="px-4 py-2 bg-brand-purple hover:bg-brand-purple-dark text-white rounded-xl text-xs font-bold shadow-md shadow-brand-purple/20 transition-all flex items-center gap-1"
-                      >
-                        <span>Book Partner</span>
-                        <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
 
         {/* Services List */}
         {filteredSections.length === 0 ? (

@@ -31,7 +31,20 @@ export default function VerifiedWorkers() {
       {/* Hero header */}
       <div className="bg-gradient-to-r from-primary to-brand-purple px-margin-mobile md:px-margin-desktop py-xl">
         <div className="max-w-screen-xl mx-auto">
-          <p className="font-status-badge text-status-badge text-secondary-fixed mb-xs uppercase tracking-widest">Trusted Network</p>
+          <div className="flex items-center gap-3 mb-2">
+            <button
+              type="button"
+              onClick={() => {
+                if (window.history.length > 1) navigate(-1);
+                else navigate("/customer");
+              }}
+              className="w-9 h-9 rounded-xl bg-white/20 hover:bg-white/30 active:bg-white/40 flex items-center justify-center text-white transition-colors shrink-0"
+              aria-label="Back"
+            >
+              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+            </button>
+            <p className="font-status-badge text-status-badge text-secondary-fixed uppercase tracking-widest">Trusted Network</p>
+          </div>
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-md">Verified Workers</h1>
           <p className="font-body-md text-body-md text-white/80 max-w-lg mb-lg">
             Only professionals approved by our admin team are shown here. Every worker is background-verified.
