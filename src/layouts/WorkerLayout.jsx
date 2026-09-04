@@ -21,9 +21,9 @@ export default function WorkerLayout() {
   return (
     <DashboardLayout
       title="SevaSetu AI"
-      subtitle="Worker"
+      subtitle="Worker Portal"
       navItems={NAV_ITEMS}
-      user={currentUser ? { name: currentUser.name, badge } : null}
+      user={currentUser ? { name: currentUser.name, profilePhoto: currentUser.profilePhoto, badge } : null}
       showEmergencySOS={false}
     />
   );

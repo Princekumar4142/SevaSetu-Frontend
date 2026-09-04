@@ -8,6 +8,8 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import EmailOtpVerifier from "../components/EmailOtpVerifier";
 import MapLocationPicker from "../components/MapLocationPicker";
+import ProfilePhotoUploader from "../components/ProfilePhotoUploader";
+import { fileToBase64 } from "../utils/imageUtils";
 import { ErrorBanner } from "../components/Feedback";
 
 const TRADE_CATEGORIES = [
@@ -27,6 +29,7 @@ const EMPTY = {
   email: "",
   password: "",
   confirmPassword: "",
+  profilePhoto: "",
   address: "Kesnand Rd, Wagholi, Pune",
   city: "Pune",
   state: "Maharashtra",
@@ -66,7 +69,6 @@ export default function RegisterWorker() {
   const set = (field) => (e) => {
     let val = e.target.value;
     if (field === "aadharNumber") {
-      // Auto-format Aadhaar as 1234 5678 9012
       const digits = val.replace(/\D/g, "").slice(0, 12);
       val = digits.replace(/(\d{4})(?=\d)/g, "$1 ");
     }
@@ -122,21 +124,29 @@ export default function RegisterWorker() {
     }));
   };
 
-  const handleAadharUpload = (e) => {
+  const handleAadharUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setAadharPreview(url);
-    setForm((prev) => ({ ...prev, aadharImage: url }));
-    if (fieldErrors.aadharImage) setFieldErrors((prev) => ({ ...prev, aadharImage: null }));
+    try {
+      const base64 = await fileToBase64(file, 600, 0.85);
+      setAadharPreview(base64);
+      setForm((prev) => ({ ...prev, aadharImage: base64 }));
+      if (fieldErrors.aadharImage) setFieldErrors((prev) => ({ ...prev, aadharImage: null }));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
-  const handleShopImageUpload = (e) => {
+  const handleShopImageUpload = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const url = URL.createObjectURL(file);
-    setShopImagePreview(url);
-    setForm((prev) => ({ ...prev, shopImage: url }));
+    try {
+      const base64 = await fileToBase64(file, 600, 0.85);
+      setShopImagePreview(base64);
+      setForm((prev) => ({ ...prev, shopImage: base64 }));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -219,6 +229,13 @@ export default function RegisterWorker() {
                 required
               />
             </div>
+
+            {/* Profile Photo Uploader */}
+            <ProfilePhotoUploader
+              value={form.profilePhoto}
+              onChange={(photo) => setForm((prev) => ({ ...prev, profilePhoto: photo }))}
+              name={form.name}
+            />
 
             <EmailOtpVerifier
               email={form.email}
@@ -483,7 +500,7 @@ export default function RegisterWorker() {
                         setAadharPreview(null);
                         setForm((prev) => ({ ...prev, aadharImage: "" }));
                       }}
-                      className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center text-xs shadow-md"
+                      className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center text-xs shadow-md cursor-pointer"
                     >
                       ✕
                     </button>
@@ -560,7 +577,7 @@ export default function RegisterWorker() {
                             setShopImagePreview(null);
                             setForm((prev) => ({ ...prev, shopImage: "" }));
                           }}
-                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center text-xs shadow-md"
+                          className="absolute -top-2 -right-2 w-6 h-6 bg-red-600 text-white rounded-full flex items-center justify-center text-xs shadow-md cursor-pointer"
                         >
                           ✕
                         </button>
@@ -625,7 +642,7 @@ export default function RegisterWorker() {
               loading={loading}
               disabled={!emailVerified}
               variant="purple"
-              className="w-full py-4 text-base font-black shadow-xl shadow-brand-purple/25 rounded-2xl"
+              className="w-full py-4 text-base font-black shadow-xl shadow-brand-purple/25 rounded-2xl cursor-pointer"
             >
               {emailVerified ? (
                 <>

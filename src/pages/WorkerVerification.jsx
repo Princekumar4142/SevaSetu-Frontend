@@ -5,6 +5,8 @@ import Badge from "../components/Badge";
 import Button from "../components/Button";
 import { LoadingState, ErrorBanner } from "../components/Feedback";
 
+import Avatar from "../components/Avatar";
+
 export default function WorkerVerification() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -62,14 +64,14 @@ export default function WorkerVerification() {
         <div className="p-md border-b border-outline-variant flex justify-between"><span className="font-label-md text-label-md text-on-surface">{status} WORKERS</span><span className="font-label-md text-label-md text-primary">{workers.length}</span></div>
         <div className="max-h-[650px] overflow-auto divide-y divide-outline-variant">
           {workers.length === 0 ? <div className="p-xl text-center text-on-surface-variant"><span className="material-symbols-outlined text-4xl">group_off</span><p className="mt-sm">No {status.toLowerCase()} workers.</p></div> : workers.map((w) => <button key={w._id} onClick={() => selectWorker(w)} className={`w-full text-left p-md hover:bg-surface-container-low transition ${selected?._id === w._id ? "bg-primary-container" : ""}`}>
-            <div className="flex items-center gap-sm"><div className="w-11 h-11 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">{w.user?.profilePhoto ? <img src={w.user.profilePhoto} className="w-full h-full object-cover" /> : <span className="material-symbols-outlined text-primary">person</span>}</div><div className="min-w-0 flex-1"><p className="font-label-md text-label-md text-on-surface font-bold truncate">{w.user?.name || "Unnamed worker"}</p><p className="font-status-badge text-status-badge text-on-surface-variant truncate">{w.skills?.slice(0,2).join(" • ") || "Skills not added"}</p></div><Badge tone={w.verificationStatus === "VERIFIED" ? "verified" : w.verificationStatus === "REJECTED" ? "rejected" : "pending"}>{w.verificationStatus}</Badge></div>
+            <div className="flex items-center gap-sm"><Avatar src={w.user?.profilePhoto} name={w.user?.name} size="md" /><div className="min-w-0 flex-1"><p className="font-label-md text-label-md text-on-surface font-bold truncate">{w.user?.name || "Unnamed worker"}</p><p className="font-status-badge text-status-badge text-on-surface-variant truncate">{w.skills?.slice(0,2).join(" • ") || "Skills not added"}</p></div><Badge tone={w.verificationStatus === "VERIFIED" ? "verified" : w.verificationStatus === "REJECTED" ? "rejected" : "pending"}>{w.verificationStatus}</Badge></div>
           </button>)}
         </div>
       </div>
 
       <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
         {!selected ? <div className="h-full min-h-[420px] flex flex-col items-center justify-center text-center text-on-surface-variant"><span className="material-symbols-outlined text-5xl">fact_check</span><h3 className="font-headline-md text-headline-md text-on-surface mt-md">Select a worker</h3><p className="font-body-md text-body-md max-w-md mt-xs">Review their profile, skills and location here before taking an action.</p></div> : <div className="flex flex-col gap-lg">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-md"><div className="flex items-center gap-md"><div className="w-16 h-16 rounded-full bg-primary-container flex items-center justify-center overflow-hidden">{selected.user?.profilePhoto ? <img src={selected.user.profilePhoto} className="w-full h-full object-cover" /> : <span className="material-symbols-outlined text-primary text-3xl">person</span>}</div><div><h2 className="font-headline-md text-headline-md text-on-surface">{selected.user?.name}</h2><p className="text-on-surface-variant">{selected.user?.email} · {selected.user?.phone}</p><div className="mt-xs"><Badge tone={selected.verificationStatus === "VERIFIED" ? "verified" : selected.verificationStatus === "REJECTED" ? "rejected" : "pending"}>{selected.verificationStatus}</Badge></div></div></div></div>
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-md"><div className="flex items-center gap-md"><Avatar src={selected.user?.profilePhoto} name={selected.user?.name} size="xl" /><div><h2 className="font-headline-md text-headline-md text-on-surface">{selected.user?.name}</h2><p className="text-on-surface-variant">{selected.user?.email} · {selected.user?.phone}</p><div className="mt-xs"><Badge tone={selected.verificationStatus === "VERIFIED" ? "verified" : selected.verificationStatus === "REJECTED" ? "rejected" : "pending"}>{selected.verificationStatus}</Badge></div></div></div></div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
             <Info title="Experience" value={`${selected.experienceYears || 0} years`} icon="work_history" />
             <Info title="Skill Level" value={selected.skillLevel || "Level 1"} icon="workspace_premium" />

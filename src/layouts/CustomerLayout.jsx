@@ -7,6 +7,7 @@ import BottomTabBar from "../components/booking/BottomTabBar";
 import Logo from "../components/Logo";
 import AddressModal from "../components/AddressModal";
 import Footer from "../components/Footer";
+import Avatar from "../components/Avatar";
 
 const NAV_LINKS = [
   { label: "Services", href: "/customer/services" },
@@ -89,12 +90,10 @@ export default function CustomerLayout() {
               <div className="flex items-center gap-sm">
                 <Link
                   to="/customer/profile"
-                  className="flex items-center gap-sm px-sm py-1 rounded-full hover:bg-surface-container-low transition-colors"
+                  className="flex items-center gap-sm px-2 py-1 rounded-full hover:bg-slate-100 transition-colors"
                 >
-                  <div className="w-8 h-8 rounded-full bg-brand-purple flex items-center justify-center text-white text-sm font-bold shadow-sm">
-                    {currentUser?.name?.charAt(0)?.toUpperCase() || "U"}
-                  </div>
-                  <span className="font-label-md text-label-md text-on-surface hidden lg:block font-medium">
+                  <Avatar src={currentUser?.profilePhoto} name={currentUser?.name} size="sm" />
+                  <span className="font-label-md text-label-md text-slate-800 hidden lg:block font-bold">
                     {currentUser?.name?.split(" ")[0]}
                   </span>
                 </Link>

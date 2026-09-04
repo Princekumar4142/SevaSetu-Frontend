@@ -7,6 +7,7 @@ import { validateCustomerForm } from "../utils/validators";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import EmailOtpVerifier from "../components/EmailOtpVerifier";
+import ProfilePhotoUploader from "../components/ProfilePhotoUploader";
 import { ErrorBanner } from "../components/Feedback";
 import api from "../services/api";
 
@@ -20,6 +21,7 @@ const EMPTY = {
   city: "",
   state: "",
   pincode: "",
+  profilePhoto: "",
 };
 
 export default function RegisterCustomer() {
@@ -39,7 +41,7 @@ export default function RegisterCustomer() {
 
   const set = (field) => (e) => {
     setForm({ ...form, [field]: e.target.value });
-    if (fieldErrors[field]) setFieldErrors((prev) => ({ ...prev, [field]: null })); // clear as they retype
+    if (fieldErrors[field]) setFieldErrors((prev) => ({ ...prev, [field]: null }));
   };
 
   const handleAutoDetectLocation = () => {
@@ -98,12 +100,6 @@ export default function RegisterCustomer() {
     try {
       await dispatch(registerCustomer(form)).unwrap();
     } catch (message) {
-      // If the backend rejected because the verified-email record expired
-      // or was already used (e.g. a previous failed attempt further back,
-      // or just waiting too long between verifying and submitting), the
-      // OTP UI needs to reset so the person can see they must re-verify —
-      // otherwise the form just silently keeps failing with no visible
-      // reason, since "Email verified ✓" would still be showing.
       if (typeof message === "string" && /verify your email/i.test(message)) {
         setEmailVerified(false);
       }
@@ -120,7 +116,15 @@ export default function RegisterCustomer() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
           <ErrorBanner message={error} />
-          <Input label="Full Name" placeholder="e.g. Rahul Sharma" value={form.name} onChange={set("name")} error={fieldErrors.name} required />
+          
+          <Input
+            label="Full Name"
+            placeholder="e.g. Rahul Sharma"
+            value={form.name}
+            onChange={set("name")}
+            error={fieldErrors.name}
+            required
+          />
           
           <Input
             label="Phone Number"
@@ -131,6 +135,13 @@ export default function RegisterCustomer() {
             inputMode="numeric"
             maxLength={10}
             required
+          />
+
+          {/* Profile Photo Uploader */}
+          <ProfilePhotoUploader
+            value={form.profilePhoto}
+            onChange={(photo) => setForm((prev) => ({ ...prev, profilePhoto: photo }))}
+            name={form.name}
           />
 
           <EmailOtpVerifier
@@ -157,7 +168,7 @@ export default function RegisterCustomer() {
                 type="button"
                 onClick={handleAutoDetectLocation}
                 disabled={locating}
-                className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-brand-purple/10 text-brand-purple hover:bg-brand-purple/20 transition-colors flex items-center gap-1 shrink-0"
+                className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-brand-purple/10 text-brand-purple hover:bg-brand-purple/20 transition-colors flex items-center gap-1 shrink-0 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[16px]">
                   {locating ? "sync" : "my_location"}
