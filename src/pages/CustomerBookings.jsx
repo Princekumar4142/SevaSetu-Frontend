@@ -70,14 +70,10 @@ export default function CustomerBookings() {
     async function loadBookings() {
       try {
         const res = await bookingService.getMyBookings();
-        if (res.data?.bookings && res.data.bookings.length > 0) {
-          setBookings(res.data.bookings);
-        } else {
-          setBookings(MOCK_CUSTOMER_BOOKINGS);
-        }
+        setBookings(res.data?.bookings || []);
       } catch (err) {
-        console.warn("Using fallback demo bookings:", err.message);
-        setBookings(MOCK_CUSTOMER_BOOKINGS);
+        console.warn("Could not load bookings:", err.message);
+        setBookings([]);
       } finally {
         setLoading(false);
       }

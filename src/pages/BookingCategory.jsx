@@ -38,7 +38,7 @@ export default function BookingCategory() {
     setCustomImages([]);
     setCustomFeedback(null);
 
-    // Fetch verified workers & local shops registered in this category
+    // Fetch verified workers & local shops registered in this category from MongoDB
     async function loadCategoryWorkers() {
       setLoadingWorkers(true);
       try {
@@ -46,42 +46,13 @@ export default function BookingCategory() {
         if (res.data?.data?.workers && res.data.data.workers.length > 0) {
           setCategoryWorkers(res.data.data.workers);
         } else {
-          // Dynamic fallback based on category
-          setCategoryWorkers([
-            {
-              _id: `worker-${categoryId}-1`,
-              user: { name: "Ramesh Pawar", phone: "+91 98201 44321" },
-              serviceCategory: categoryId,
-              skills: ["Expert Diagnostic", "Quick Repair", "Genuine Spares"],
-              rating: 4.9,
-              totalJobs: 142,
-              experienceYears: 6,
-              hourlyRate: 299,
-              hasShop: true,
-              shopName: "Pawar Trade Hub & Workshop",
-              shopAddress: "Wagholi Road, Pune",
-              shopImage: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=500&auto=format&fit=crop&q=60",
-              location: { address: "Kesnand Rd, Wagholi, Pune" },
-              cooperative: { name: "Pune Skilled Urban Co-op" },
-            },
-            {
-              _id: `worker-${categoryId}-2`,
-              user: { name: "Sunita Deshmukh", phone: "+91 98332 11094" },
-              serviceCategory: categoryId,
-              skills: ["Certified Master", "Standard Safety", "5-Star Rated"],
-              rating: 4.95,
-              totalJobs: 98,
-              experienceYears: 4,
-              hourlyRate: 349,
-              hasShop: false,
-              shopName: "",
-              location: { address: "Viman Nagar, Pune" },
-              cooperative: { name: "Shakti Women Artisans Co-op" },
-            },
-          ]);
+          // If no worker is registered for this specific category, load all verified workers in system
+          const allRes = await api.get(`/workers/verified`);
+          setCategoryWorkers(allRes.data?.data?.workers || []);
         }
       } catch (err) {
-        console.warn("Using sample verified workers for category:", err.message);
+        console.warn("Could not load category workers:", err.message);
+        setCategoryWorkers([]);
       } finally {
         setLoadingWorkers(false);
       }
