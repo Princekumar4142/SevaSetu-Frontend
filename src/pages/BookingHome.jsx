@@ -48,33 +48,6 @@ export default function BookingHome() {
       <LandingHero />
 
       {/* ═══════════════════════════════════════════════════════
-          SECTION 3: Mobile Location Bar + Plus Banner
-       ═══════════════════════════════════════════════════════ */}
-      <div className="md:hidden px-[16px] py-3 flex flex-col gap-2 border-b border-outline-variant bg-white">
-        <div className="flex items-center gap-1">
-          <span className="material-symbols-outlined text-indigo-600 text-[18px]">location_on</span>
-          <span className="text-sm font-medium text-on-surface truncate flex-1">
-            {currentUser?.address
-              ? `${currentUser.address}${currentUser.city ? `, ${currentUser.city}` : ""}`
-              : (isAuthenticated ? "Tap to add your delivery address" : "Explore verified services near you")}
-          </span>
-          <span className="material-symbols-outlined text-on-surface-variant text-[18px]">expand_more</span>
-        </div>
-        <button
-          type="button"
-          onClick={() => navigate("/customer/plus")}
-          className="flex items-center gap-2 py-1 text-left"
-        >
-          <span className="w-6 h-6 rounded-full bg-brand-purple flex items-center justify-center text-white text-[14px]">
-            <span className="material-symbols-outlined text-[14px] fill">bolt</span>
-          </span>
-          <span className="text-xs font-bold text-brand-purple">plus</span>
-          <span className="text-sm text-on-surface flex-1">Save 15% on every service</span>
-          <span className="material-symbols-outlined text-on-surface-variant text-[18px]">chevron_right</span>
-        </button>
-      </div>
-
-      {/* ═══════════════════════════════════════════════════════
           SECTION 4-9: Service Category Grids
        ═══════════════════════════════════════════════════════ */}
       <div className="flex-1">

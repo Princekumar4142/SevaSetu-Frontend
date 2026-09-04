@@ -366,18 +366,18 @@ export default function LandingHero() {
 
             {/* Elevated Light Search Bar */}
             <form onSubmit={handleSearch} className="relative max-w-xl">
-              <div className="flex items-center bg-white rounded-2xl p-1.5 sm:p-2 shadow-lg shadow-indigo-100/60 border border-slate-200/90 focus-within:border-indigo-400 focus-within:ring-4 focus-within:ring-indigo-100 transition-all">
-                <span className="material-symbols-outlined text-indigo-500 ml-3 text-[22px]">search</span>
+              <div className="flex items-center bg-white rounded-2xl p-1.5 sm:p-2 shadow-lg shadow-indigo-100/60 border border-slate-200/90 focus-within:border-indigo-400 focus-within:ring-4 focus-within:ring-indigo-100 transition-all overflow-hidden">
+                <span className="material-symbols-outlined text-indigo-500 ml-2 sm:ml-3 text-[20px] sm:text-[22px] shrink-0">search</span>
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search for AC repair, electrician, salon, deep cleaning..."
-                  className="flex-1 py-2 sm:py-2.5 px-3 focus:outline-none text-slate-800 text-sm sm:text-base placeholder:text-slate-400 bg-transparent font-medium"
+                  placeholder="Search for AC repair, electrician, salon..."
+                  className="min-w-0 flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 text-sm sm:text-base placeholder:text-slate-400 bg-transparent font-medium"
                 />
                 <button
                   type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 sm:px-6 py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1 shrink-0"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1 shrink-0"
                 >
                   <span>Search</span>
                   <span className="material-symbols-outlined text-[16px] hidden sm:inline">arrow_forward</span>
@@ -405,49 +405,27 @@ export default function LandingHero() {
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
                 Explore Services with 1-Tap Booking
               </p>
-              <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 sm:gap-3.5">
                 {CATEGORY_TILES.map((cat) => (
                   <button
                     key={cat.label}
                     type="button"
                     onClick={() => navigate(`/customer/services/${cat.id}`)}
-                    className={`flex flex-col items-center justify-center p-3 rounded-2xl bg-gradient-to-b ${cat.bg} border border-slate-200/80 hover:shadow-md hover:-translate-y-1 transition-all text-center group cursor-pointer relative overflow-hidden`}
+                    className={`flex flex-col items-center justify-center p-3.5 sm:p-3 rounded-2xl bg-gradient-to-b ${cat.bg} border border-slate-200/80 hover:shadow-md hover:-translate-y-1 transition-all text-center group cursor-pointer relative overflow-hidden`}
                   >
                     {cat.badge && (
-                      <span className="absolute top-1.5 right-1.5 px-1.5 py-0.5 rounded-full bg-indigo-600 text-white text-[9px] font-bold tracking-tight">
+                      <span className="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] sm:text-[9px] font-bold tracking-tight">
                         {cat.badge}
                       </span>
                     )}
-                    <div className="w-12 h-12 flex items-center justify-center mb-1 group-hover:scale-110 transition-transform">
+                    <div className="w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center mb-1.5 sm:mb-1 group-hover:scale-110 transition-transform">
                       {cat.component}
                     </div>
-                    <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-600 leading-tight">
+                    <span className="text-xs sm:text-xs font-bold text-slate-800 group-hover:text-indigo-600 leading-tight">
                       {cat.label}
                     </span>
                   </button>
                 ))}
-              </div>
-            </div>
-
-            {/* Quality Guarantees */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-3 border-t border-slate-200/80">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[16px]">verified</span>
-                </span>
-                <span className="text-xs font-semibold text-slate-700">Aadhaar &amp; Skill Verified</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[16px]">price_check</span>
-                </span>
-                <span className="text-xs font-semibold text-slate-700">Upfront Fixed Pricing</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-[16px]">schedule</span>
-                </span>
-                <span className="text-xs font-semibold text-slate-700">45-Min Arrival</span>
               </div>
             </div>
 
