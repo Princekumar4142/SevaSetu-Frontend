@@ -106,7 +106,7 @@ export default function CustomerBookings() {
         </div>
 
         {/* Tab Filters */}
-        <div className="flex border-b border-outline-variant gap-2 mb-6">
+        <div className="flex border-b border-outline-variant gap-1 sm:gap-2 mb-6 overflow-x-auto scrollbar-none">
           {[
             { key: "ACTIVE", label: "Active & Upcoming", count: activeBookings.length },
             { key: "PAST", label: "Completed", count: pastBookings.length },
@@ -116,13 +116,13 @@ export default function CustomerBookings() {
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key)}
-              className={`pb-3 px-4 font-label-md text-label-md flex items-center gap-2 border-b-2 font-medium transition-all ${
+              className={`pb-3 px-3 sm:px-4 font-label-md text-xs sm:text-label-md flex items-center gap-1.5 sm:gap-2 border-b-2 font-medium transition-all shrink-0 whitespace-nowrap cursor-pointer ${
                 activeTab === tab.key
                   ? "border-brand-purple text-brand-purple font-bold"
                   : "border-transparent text-on-surface-variant hover:text-on-surface"
               }`}
             >
-              {tab.label}
+              <span>{tab.label}</span>
               {tab.count > 0 && (
                 <span
                   className={`text-xs px-2 py-0.5 rounded-full font-bold ${
@@ -257,12 +257,12 @@ export default function CustomerBookings() {
                   )}
 
                   {/* Actions */}
-                  <div className="flex items-center justify-between gap-3 pt-3 border-t border-outline-variant">
-                    <span className="font-status-badge text-status-badge text-on-surface-variant flex items-center gap-1 truncate max-w-xs">
-                      <span className="material-symbols-outlined text-[16px]">location_on</span>
-                      {booking.address?.line1}
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-outline-variant">
+                    <span className="font-status-badge text-status-badge text-on-surface-variant flex items-center gap-1 truncate max-w-full sm:max-w-xs">
+                      <span className="material-symbols-outlined text-[16px] shrink-0">location_on</span>
+                      <span className="truncate">{booking.address?.line1}</span>
                     </span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 self-stretch sm:self-auto justify-end">
                       {booking.status !== "CANCELLED" && booking.status !== "COMPLETED" && (
                         <Button
                           variant="purple"
@@ -284,7 +284,7 @@ export default function CustomerBookings() {
                               },
                             })
                           }
-                          className="flex items-center gap-1 shadow-sm"
+                          className="flex items-center gap-1 shadow-sm flex-1 sm:flex-initial justify-center"
                         >
                           <span className="material-symbols-outlined text-[16px]">near_me</span>
                           Track on Map
@@ -294,6 +294,7 @@ export default function CustomerBookings() {
                         variant="outline"
                         size="sm"
                         onClick={() => setSelectedBooking(booking)}
+                        className="flex-1 sm:flex-initial justify-center"
                       >
                         Details
                       </Button>

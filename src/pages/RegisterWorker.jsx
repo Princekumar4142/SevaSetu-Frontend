@@ -203,7 +203,7 @@ export default function RegisterWorker() {
           <ErrorBanner message={error} />
 
           {/* Section 1: Personal & Login Details */}
-          <div className="bg-white border border-outline-variant/80 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white border border-outline-variant/80 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
             <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wide flex items-center gap-2 border-b border-slate-100 pb-3">
               <span className="material-symbols-outlined text-brand-purple text-[20px]">person</span>
               1. Personal &amp; Account Information
@@ -292,7 +292,7 @@ export default function RegisterWorker() {
           </div>
 
           {/* Section 2: Trade & Skills Selection */}
-          <div className="bg-white border border-outline-variant/80 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white border border-outline-variant/80 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
             <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wide flex items-center gap-2 border-b border-slate-100 pb-3">
               <span className="material-symbols-outlined text-brand-purple text-[20px]">construction</span>
               2. Trade, Category &amp; Pricing
@@ -310,7 +310,7 @@ export default function RegisterWorker() {
                       type="button"
                       key={cat.id}
                       onClick={() => handleCategoryChange(cat.id)}
-                      className={`p-3.5 rounded-2xl border text-left flex items-start gap-3 transition-all ${
+                      className={`p-3.5 rounded-2xl border text-left flex items-start gap-3 transition-all cursor-pointer ${
                         selected
                           ? "border-brand-purple bg-purple-50/70 text-brand-purple shadow-md shadow-brand-purple/10 ring-2 ring-brand-purple/30"
                           : "border-slate-200 bg-white text-slate-700 hover:border-brand-purple/40"
@@ -341,7 +341,7 @@ export default function RegisterWorker() {
                       type="button"
                       key={skill}
                       onClick={() => toggleSkill(skill)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all ${
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
                         form.skills.includes(skill)
                           ? "bg-brand-purple text-white border-brand-purple shadow-sm"
                           : "bg-slate-50 text-slate-700 border-slate-200 hover:border-brand-purple/40"
@@ -406,14 +406,14 @@ export default function RegisterWorker() {
                 <p className="text-[11px] text-slate-500">
                   Offer a specialized skill or service not in the list above? Type it below and click <strong>Add Service</strong>.
                 </p>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                   <div className="relative flex-1">
                     <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">
                       handyman
                     </span>
                     <input
                       type="text"
-                      placeholder="e.g. RO Filter Repair, Submersible Wiring, Wall Drilling, Sofa Shampooing..."
+                      placeholder="e.g. RO Filter Repair, Submersible Wiring..."
                       value={customSkillInput}
                       onChange={(e) => setCustomSkillInput(e.target.value)}
                       onKeyDown={handleCustomSkillKeyDown}
@@ -424,7 +424,7 @@ export default function RegisterWorker() {
                     type="button"
                     onClick={handleAddCustomSkill}
                     disabled={!customSkillInput.trim()}
-                    className="px-4 py-2 bg-gradient-to-r from-primary to-brand-purple hover:opacity-95 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center gap-1 shrink-0 active:scale-95 cursor-pointer"
+                    className="px-4 py-2 bg-gradient-to-r from-primary to-brand-purple hover:opacity-95 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-sm transition-all flex items-center justify-center gap-1 shrink-0 active:scale-95 cursor-pointer"
                   >
                     <span className="material-symbols-outlined text-[16px]">add</span>
                     Add Service
@@ -456,7 +456,7 @@ export default function RegisterWorker() {
           </div>
 
           {/* Section 3: Mandatory Aadhaar Verification */}
-          <div className="bg-white border-2 border-brand-purple/40 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white border-2 border-brand-purple/40 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wide flex items-center gap-2">
                 <span className="material-symbols-outlined text-emerald-600 text-[22px] fill">shield</span>
@@ -525,7 +525,7 @@ export default function RegisterWorker() {
           </div>
 
           {/* Section 4: Optional Shop / Establishment Details */}
-          <div className="bg-white border border-outline-variant/80 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white border border-outline-variant/80 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wide flex items-center gap-2">
                 <span className="material-symbols-outlined text-amber-500 text-[22px]">storefront</span>
@@ -604,7 +604,7 @@ export default function RegisterWorker() {
           </div>
 
           {/* Section 5: Optional Shop / Working GPS Location */}
-          <div className="bg-white border border-outline-variant/80 rounded-3xl p-6 shadow-sm space-y-4">
+          <div className="bg-white border border-outline-variant/80 rounded-3xl p-4 sm:p-6 shadow-sm space-y-4">
             <h2 className="text-sm sm:text-base font-black text-slate-900 uppercase tracking-wide flex items-center gap-2 border-b border-slate-100 pb-3">
               <span className="material-symbols-outlined text-brand-purple text-[22px]">near_me</span>
               5. Pinpoint Shop / Base Service Location <span className="text-slate-400 text-xs font-normal">(OPTIONAL)</span>

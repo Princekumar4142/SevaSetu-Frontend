@@ -136,7 +136,7 @@ export default function WorkerDashboard() {
       </div>
 
       {/* ── Approval Flow Steps ── */}
-      <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-sm">
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-sm">
         <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-6">
           Your Approval Journey
         </h3>
@@ -223,22 +223,22 @@ export default function WorkerDashboard() {
         </div>
 
         {/* Earnings Card */}
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-sm">
+        <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-sm">
           <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-brand-purple text-[22px]">payments</span>
             Earnings
           </h3>
-          <div className="grid grid-cols-3 gap-2 text-center">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-center">
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
-              <p className="text-xl font-black text-slate-900">₹{worker?.earnings?.gross || 0}</p>
+              <p className="text-lg sm:text-xl font-black text-slate-900">₹{worker?.earnings?.gross || 0}</p>
               <p className="text-[11px] font-bold text-slate-500 uppercase mt-0.5">Gross</p>
             </div>
             <div className="bg-purple-50/70 p-3 rounded-xl border border-purple-100">
-              <p className="text-xl font-black text-brand-purple">₹{worker?.earnings?.net || 0}</p>
+              <p className="text-lg sm:text-xl font-black text-brand-purple">₹{worker?.earnings?.net || 0}</p>
               <p className="text-[11px] font-bold text-brand-purple uppercase mt-0.5">Net</p>
             </div>
             <div className="bg-amber-50/70 p-3 rounded-xl border border-amber-100">
-              <p className="text-xl font-black text-amber-700">₹{worker?.earnings?.welfareContribution || 0}</p>
+              <p className="text-lg sm:text-xl font-black text-amber-700">₹{worker?.earnings?.welfareContribution || 0}</p>
               <p className="text-[11px] font-bold text-amber-700 uppercase mt-0.5">Welfare</p>
             </div>
           </div>

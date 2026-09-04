@@ -116,7 +116,7 @@ export default function WorkerBookings() {
       )}
 
       {/* Tabs */}
-      <div className="flex border-b border-outline-variant gap-2">
+      <div className="flex border-b border-outline-variant gap-1 sm:gap-2 overflow-x-auto scrollbar-none">
         {[
           { key: "NEW", label: "New Requests", count: newRequests.length },
           { key: "ACTIVE", label: "In Progress", count: activeJobs.length },
@@ -126,13 +126,13 @@ export default function WorkerBookings() {
             key={tab.key}
             type="button"
             onClick={() => setActiveTab(tab.key)}
-            className={`pb-3 px-4 font-label-md text-label-md flex items-center gap-2 border-b-2 font-medium transition-all ${
+            className={`pb-3 px-3 sm:px-4 font-label-md text-xs sm:text-label-md flex items-center gap-1.5 sm:gap-2 border-b-2 font-medium transition-all shrink-0 whitespace-nowrap cursor-pointer ${
               activeTab === tab.key
                 ? "border-brand-purple text-brand-purple font-bold"
                 : "border-transparent text-on-surface-variant hover:text-on-surface"
             }`}
           >
-            {tab.label}
+            <span>{tab.label}</span>
             {tab.count > 0 && (
               <span
                 className={`text-xs px-2 py-0.5 rounded-full font-bold ${
@@ -164,7 +164,7 @@ export default function WorkerBookings() {
           {displayedJobs.map((job) => (
             <div
               key={job._id}
-              className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-6 shadow-sm hover:shadow-md transition-all"
+              className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-4 sm:p-6 shadow-sm hover:shadow-md transition-all"
             >
               {/* Header */}
               <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-outline-variant">
@@ -235,10 +235,10 @@ export default function WorkerBookings() {
                     {job.address?.line1}, {job.address?.city}
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 self-stretch sm:self-auto">
                   <a
                     href={`tel:${job.customer?.phone || "+919800000000"}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-label-md font-bold hover:bg-emerald-100 transition-colors"
+                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-800 font-label-md font-bold hover:bg-emerald-100 transition-colors text-xs sm:text-sm"
                   >
                     <span className="material-symbols-outlined text-[16px]">call</span>
                     Call Customer
@@ -247,7 +247,7 @@ export default function WorkerBookings() {
                     href={`https://maps.google.com/?q=${encodeURIComponent(job.address?.line1 || "Mumbai")}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-purple-light text-brand-purple font-label-md font-bold hover:bg-brand-purple-light/80 transition-colors"
+                    className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-purple-light text-brand-purple font-label-md font-bold hover:bg-brand-purple-light/80 transition-colors text-xs sm:text-sm"
                   >
                     <span className="material-symbols-outlined text-[16px]">navigation</span>
                     Navigate
@@ -256,7 +256,7 @@ export default function WorkerBookings() {
               </div>
 
               {/* Action Buttons */}
-              <div className="pt-2 flex flex-wrap items-center justify-end gap-2">
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-2">
                 {job.status === "PENDING" && (
                   <>
                     <Button

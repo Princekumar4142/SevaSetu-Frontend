@@ -236,4 +236,39 @@ html {
 body {
   margin: 0;
   font-family: "Inter", sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── Mobile Sidebar Drawer Animation ── */
+@keyframes slideInFromLeft {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+
+/* ── Safe area inset for notched devices (iPhones, etc.) ── */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* ── Prevent horizontal overflow on mobile ── */
+#root {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* ── Better text truncation ── */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+}
+
+/* ── Mobile-specific scrollbar hide for horizontal scrollers ── */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

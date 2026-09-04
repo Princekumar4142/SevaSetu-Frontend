@@ -229,36 +229,8 @@ export default function BookingTracking() {
 
   return (
     <div className="min-h-screen bg-surface-container-lowest md:bg-surface pb-24">
-      {/* Searching for Worker Top Alert Bar (Only shown when status is PENDING) */}
-      {!workerAssigned && bookingStatus === "PENDING" && !dismissedBanner && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-purple-800 via-brand-purple to-indigo-800 text-white text-center py-2.5 px-4 text-xs sm:text-sm font-semibold shadow-xl flex items-center justify-between gap-3">
-          <div className="flex items-center justify-center gap-2.5 flex-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping" />
-            <span>Broadcasting booking to nearby workers{searchingDots} Please wait.</span>
-          </div>
-          <button
-            type="button"
-            onClick={() => setDismissedBanner(true)}
-            className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xs transition-colors shrink-0 cursor-pointer"
-          >
-            ✕
-          </button>
-        </div>
-      )}
-
-      {/* Real-time Worker Accepted Toast Notification */}
-      {assignedToast && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce">
-          <span className="material-symbols-outlined text-[24px]">verified</span>
-          <div>
-            <p className="text-sm font-bold">Worker Accepted Your Booking!</p>
-            <p className="text-xs text-emerald-100">{workerInfo?.name} accepted and is preparing for your job.</p>
-          </div>
-        </div>
-      )}
-
       {/* Top Navigation Header */}
-      <div className="sticky top-0 z-30 bg-slate-900 text-white flex items-center justify-between px-4 sm:px-6 py-3.5 shadow-md">
+      <div className="sticky top-0 z-40 bg-slate-900 text-white flex items-center justify-between px-4 sm:px-6 py-3.5 shadow-md">
         <div className="flex items-center gap-3">
           <button
             type="button"
@@ -283,6 +255,34 @@ export default function BookingTracking() {
           <span className="material-symbols-outlined text-[18px]">close</span>
         </button>
       </div>
+
+      {/* Searching for Worker Alert Bar (Only shown when status is PENDING) */}
+      {!workerAssigned && bookingStatus === "PENDING" && !dismissedBanner && (
+        <div className="bg-gradient-to-r from-purple-800 via-brand-purple to-indigo-800 text-white text-center py-2.5 px-4 text-xs sm:text-sm font-semibold shadow-md flex items-center justify-between gap-3">
+          <div className="flex items-center justify-center gap-2.5 flex-1 min-w-0">
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping shrink-0" />
+            <span className="truncate">Broadcasting booking to nearby workers{searchingDots} Please wait.</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setDismissedBanner(true)}
+            className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white text-xs transition-colors shrink-0 cursor-pointer"
+          >
+            ✕
+          </button>
+        </div>
+      )}
+
+      {/* Real-time Worker Accepted Toast Notification */}
+      {assignedToast && (
+        <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce max-w-[90vw]">
+          <span className="material-symbols-outlined text-[24px] shrink-0">verified</span>
+          <div>
+            <p className="text-sm font-bold">Worker Accepted Your Booking!</p>
+            <p className="text-xs text-emerald-100">{workerInfo?.name} accepted and is preparing for your job.</p>
+          </div>
+        </div>
+      )}
 
       <div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-5">
         {/* Live GPS Map Container */}

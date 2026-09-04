@@ -7,8 +7,11 @@ import Avatar from "./Avatar";
 /**
  * Shared sidebar shell used by every dashboard layout. Pass `navItems` and
  * `title`/`subtitle` to adapt it per role.
+ *
+ * Mobile: renders as a slide-in drawer with backdrop overlay.
+ * Desktop: fixed sidebar as before.
  */
-export default function Sidebar({ title, subtitle, navItems, user, showEmergencySOS = false }) {
+export default function Sidebar({ title, subtitle, navItems, user, showEmergencySOS = false, mobileOpen = false, onMobileClose }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -17,11 +20,27 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
     navigate("/login");
   };
 
-  return (
-    <nav className="hidden md:flex flex-col bg-surface-container-low border-r border-outline-variant fixed left-0 top-0 h-full w-64 z-40 py-lg px-md">
-      <div className="mb-lg px-sm">
-        <h1 className="font-headline-md text-headline-md font-extrabold text-primary">{title}</h1>
-        {subtitle && <p className="font-status-badge text-status-badge text-on-surface-variant mt-xs font-semibold">{subtitle}</p>}
+  const handleNavClick = () => {
+    // Close mobile drawer when a nav item is clicked
+    if (onMobileClose) onMobileClose();
+  };
+
+  const sidebarContent = (
+    <>
+      <div className="mb-lg px-sm flex items-center justify-between">
+        <div>
+          <h1 className="font-headline-md text-headline-md font-extrabold text-primary">{title}</h1>
+          {subtitle && <p className="font-status-badge text-status-badge text-on-surface-variant mt-xs font-semibold">{subtitle}</p>}
+        </div>
+        {/* Close button visible only on mobile */}
+        <button
+          type="button"
+          onClick={onMobileClose}
+          className="md:hidden w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface hover:bg-surface-variant transition-colors"
+          aria-label="Close menu"
+        >
+          <span className="material-symbols-outlined text-[20px]">close</span>
+        </button>
       </div>
 
       {user && (
@@ -38,6 +57,7 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
             <NavLink
               to={item.href}
               end={item.end}
+              onClick={handleNavClick}
               className={({ isActive }) =>
                 `flex items-center gap-md px-md py-3 rounded-xl font-label-md text-label-md transition-all ${
                   isActive
@@ -61,14 +81,43 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
           </button>
         )}
         <button
-          onClick={handleLogout}
+          onClick={() => {
+            handleLogout();
+            handleNavClick();
+          }}
           className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant rounded-lg font-label-md text-label-md transition-colors"
         >
           <span className="material-symbols-outlined">logout</span>
           Logout
         </button>
       </div>
-    </nav>
+    </>
+  );
+
+  return (
+    <>
+      {/* ── Desktop Sidebar (fixed, always visible) ── */}
+      <nav className="hidden md:flex flex-col bg-surface-container-low border-r border-outline-variant fixed left-0 top-0 h-full w-64 z-40 py-lg px-md">
+        {sidebarContent}
+      </nav>
+
+      {/* ── Mobile Sidebar Drawer (overlay) ── */}
+      {mobileOpen && (
+        <div className="md:hidden fixed inset-0 z-50">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            onClick={onMobileClose}
+          />
+          {/* Slide-in Panel */}
+          <nav
+            className="absolute left-0 top-0 h-full w-72 max-w-[85vw] bg-white shadow-2xl flex flex-col py-lg px-md overflow-y-auto"
+            style={{ animation: "slideInFromLeft 0.25s ease-out" }}
+          >
+            {sidebarContent}
+          </nav>
+        </div>
+      )}
+    </>
   );
 }
-

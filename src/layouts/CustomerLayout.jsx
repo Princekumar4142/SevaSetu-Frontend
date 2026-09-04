@@ -1,4 +1,4 @@
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useDispatch } from "react-redux";
@@ -18,8 +18,13 @@ const NAV_LINKS = [
 export default function CustomerLayout() {
   const { isAuthenticated, currentUser } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const [addressModalOpen, setAddressModalOpen] = useState(false);
+
+  const isCheckoutOrTracking =
+    location.pathname.includes("/checkout/") ||
+    location.pathname.includes("/bookings/track/");
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -174,17 +179,19 @@ export default function CustomerLayout() {
       />
 
       {/* ── Page Content ── */}
-      <main className="flex-1 pb-16 md:pb-0 w-full">
+      <main className={`flex-1 w-full ${isCheckoutOrTracking ? "pb-0" : "pb-16 md:pb-0"}`}>
         <Outlet />
       </main>
 
-      {/* ── Footer ── */}
-      <Footer />
+      {/* ── Footer (hidden in checkout & tracking for clean focused UX) ── */}
+      {!isCheckoutOrTracking && <Footer />}
 
-      {/* ── Mobile Bottom Tab Bar (hidden on desktop) ── */}
-      <div className="md:hidden">
-        <BottomTabBar />
-      </div>
+      {/* ── Mobile Bottom Tab Bar (hidden on desktop and checkout/tracking) ── */}
+      {!isCheckoutOrTracking && (
+        <div className="md:hidden">
+          <BottomTabBar />
+        </div>
+      )}
     </div>
   );
 }

@@ -430,21 +430,21 @@ export default function LandingHero() {
             </div>
 
             {/* Quality Guarantees */}
-            <div className="grid grid-cols-3 gap-3 pt-3 border-t border-slate-200/80">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 sm:gap-3 pt-3 border-t border-slate-200/80">
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <span className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-[16px]">verified</span>
                 </span>
                 <span className="text-xs font-semibold text-slate-700">Aadhaar &amp; Skill Verified</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center">
+                <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-[16px]">price_check</span>
                 </span>
                 <span className="text-xs font-semibold text-slate-700">Upfront Fixed Pricing</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-[16px]">schedule</span>
                 </span>
                 <span className="text-xs font-semibold text-slate-700">45-Min Arrival</span>

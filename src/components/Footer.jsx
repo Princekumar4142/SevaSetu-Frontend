@@ -59,7 +59,7 @@ export default function Footer() {
       {/* Top subtle accent */}
       <div className="h-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-amber-400" />
 
-      <div className="relative max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 py-14">
+      <div className="relative max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12 pt-14 pb-28 md:pb-14">
         {/* Newsletter section */}
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-12 mb-12 border-b border-slate-800">
           <div className="max-w-md">

@@ -161,7 +161,7 @@ export default function BookingCategory() {
   return (
     <div className="min-h-screen bg-surface-container-lowest md:bg-surface pb-32">
       {/* Top Navigation Bar */}
-      <div className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-outline-variant/60">
+      <div className="sticky top-[52px] md:top-16 z-30 bg-white/95 backdrop-blur-md border-b border-outline-variant/60">
         <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <button
