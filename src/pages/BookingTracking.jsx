@@ -26,7 +26,6 @@ export default function BookingTracking() {
   const [callAlert, setCallAlert] = useState(false);
   const [dismissedBanner, setDismissedBanner] = useState(false);
   const [assignedToast, setAssignedToast] = useState(false);
-  const [startOtp] = useState(Math.floor(1000 + Math.random() * 9000));
 
   const [bookingData, setBookingData] = useState({
     bookingNumber: navState.bookingNumber || bookingId || "BK-" + Math.floor(100000 + Math.random() * 900000),
@@ -52,7 +51,7 @@ export default function BookingTracking() {
       : null
   );
 
-  // Fetch real booking status from backend by bookingId or bookingNumber
+  // Fetch real booking status from backend by bookingId or bookingNumber with 3s polling until assigned
   useEffect(() => {
     let isMounted = true;
     async function loadBooking() {
@@ -61,9 +60,11 @@ export default function BookingTracking() {
         const res = await bookingService.getBookingById(bookingId);
         const b = res.data?.booking;
         if (b && isMounted) {
-          const isAssigned = b.status !== "PENDING" && Boolean(b.worker);
-          setWorkerAssigned(isAssigned);
-          setBookingStatus(b.status || "PENDING");
+          const isAssigned = b.status !== "PENDING" || Boolean(b.worker);
+          if (isAssigned) {
+            setWorkerAssigned(true);
+            setBookingStatus(b.status || "ASSIGNED");
+          }
 
           setBookingData((prev) => ({
             ...prev,
@@ -94,12 +95,17 @@ export default function BookingTracking() {
     }
 
     loadBooking();
+    const pollInterval = setInterval(() => {
+      loadBooking();
+    }, 3000);
+
     return () => {
       isMounted = false;
+      clearInterval(pollInterval);
     };
   }, [bookingId]);
 
-  // Listen for real-time worker_assigned socket event when worker accepts
+  // Listen for real-time worker_assigned, booking_updated, and status_updated socket events
   useEffect(() => {
     if (!socket) return;
 
@@ -123,12 +129,43 @@ export default function BookingTracking() {
       setTimeout(() => setAssignedToast(false), 5000);
     };
 
+    const handleBookingUpdated = (data) => {
+      console.log("[Customer UI] Live booking status updated via Socket:", data);
+      if (
+        data.orderId === bookingId ||
+        data.bookingNumber === bookingData.bookingNumber ||
+        data.orderId === bookingData._id
+      ) {
+        if (data.status) {
+          setBookingStatus(data.status);
+          if (data.status !== "PENDING") {
+            setWorkerAssigned(true);
+          }
+        }
+        if (data.booking?.worker) {
+          const w = data.booking.worker;
+          setWorkerInfo({
+            name: w.user?.name || "Verified Partner",
+            phone: w.user?.phone || "",
+            profilePhoto: w.user?.profilePhoto || "",
+            vehicle: "Service Vehicle",
+            rating: w.rating || 4.9,
+            cooperative: w.cooperative?.name || "Cooperative Network",
+          });
+        }
+      }
+    };
+
     socket.on("worker_assigned", handleWorkerAssigned);
+    socket.on("booking_updated", handleBookingUpdated);
+    socket.on("status_updated", handleBookingUpdated);
 
     return () => {
       socket.off("worker_assigned", handleWorkerAssigned);
+      socket.off("booking_updated", handleBookingUpdated);
+      socket.off("status_updated", handleBookingUpdated);
     };
-  }, [socket]);
+  }, [socket, bookingId, bookingData.bookingNumber, bookingData._id]);
 
   // Animated searching dots when waiting for worker assignment
   useEffect(() => {
@@ -165,7 +202,7 @@ export default function BookingTracking() {
       {
         id: 4,
         title: "Arrived at Doorstep",
-        desc: "Share start OTP with worker to begin service",
+        desc: "Worker has arrived at your service location",
         completed: ["IN_PROGRESS", "COMPLETED"].includes(bookingStatus),
         current: bookingStatus === "ARRIVED",
         time: "Est. 12 mins",
@@ -349,28 +386,6 @@ export default function BookingTracking() {
               <p className="text-xs text-slate-500 max-w-md mx-auto mt-1 leading-relaxed">
                 Your order request is live. When a nearby verified worker accepts your booking, their photo, name, and phone contact will update here in real-time.
               </p>
-            </div>
-          </div>
-        )}
-
-        {/* ── Start OTP Section (Shown ONLY after worker is assigned) ── */}
-        {workerAssigned && (
-          <div className="bg-gradient-to-r from-purple-50 via-indigo-50 to-purple-50 border border-purple-200 rounded-2xl p-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-purple text-white flex items-center justify-center font-bold">
-                <span className="material-symbols-outlined text-[20px]">pin</span>
-              </div>
-              <div>
-                <span className="text-[10px] font-black uppercase text-brand-purple tracking-wider">
-                  Service Start OTP
-                </span>
-                <p className="text-xs text-slate-600">
-                  Share this code with {workerInfo?.name?.split(" ")[0] || "partner"} upon arrival to start work
-                </p>
-              </div>
-            </div>
-            <div className="text-xl sm:text-2xl font-black text-brand-purple tracking-widest bg-white px-4 py-1.5 rounded-xl border border-purple-200 shadow-inner">
-              {startOtp}
             </div>
           </div>
         )}

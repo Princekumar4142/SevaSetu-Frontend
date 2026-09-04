@@ -6,6 +6,68 @@ import api from "../services/api";
 
 const ACCEPT_TIMEOUT_SECS = 30;
 
+// Synthesize 100% reliable loud WAV audio blob for HTML5 <audio> element
+let cachedRingtoneUrl = null;
+function getRingtoneAudioUrl() {
+  if (typeof window === "undefined") return "";
+  if (cachedRingtoneUrl) return cachedRingtoneUrl;
+
+  try {
+    const sampleRate = 22050;
+    const duration = 2.4;
+    const numSamples = Math.floor(sampleRate * duration);
+    const dataSize = numSamples * 2;
+    const buffer = new ArrayBuffer(44 + dataSize);
+    const view = new DataView(buffer);
+
+    const writeString = (offset, string) => {
+      for (let i = 0; i < string.length; i++) {
+        view.setUint8(offset + i, string.charCodeAt(i));
+      }
+    };
+
+    writeString(0, "RIFF");
+    view.setUint32(4, 36 + dataSize, true);
+    writeString(8, "WAVE");
+    writeString(12, "fmt ");
+    view.setUint32(16, 16, true);
+    view.setUint16(20, 1, true);
+    view.setUint16(22, 1, true);
+    view.setUint32(24, sampleRate, true);
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
+    writeString(36, "data");
+    view.setUint32(40, dataSize, true);
+
+    const f1 = 440;
+    const f2 = 480;
+    const toneLen = 1.3;
+
+    for (let i = 0; i < numSamples; i++) {
+      const t = i / sampleRate;
+      let sample = 0;
+      if (t < toneLen) {
+        const s1 = Math.sin(2 * Math.PI * f1 * t);
+        const s2 = Math.sin(2 * Math.PI * f2 * t);
+        let envelope = 1;
+        if (t < 0.05) envelope = t / 0.05;
+        else if (t > toneLen - 0.1) envelope = (toneLen - t) / 0.1;
+        sample = ((s1 + s2) / 2) * envelope * 0.6; // Loud ring sound
+      }
+      const pcm = Math.max(-1, Math.min(1, sample)) * 32767;
+      view.setInt16(44 + i * 2, pcm, true);
+    }
+
+    const blob = new Blob([buffer], { type: "audio/wav" });
+    cachedRingtoneUrl = URL.createObjectURL(blob);
+    return cachedRingtoneUrl;
+  } catch (e) {
+    console.warn("Could not generate audio blob:", e);
+    return "";
+  }
+}
+
 // Shared global AudioContext instance unlocked on first user interaction
 let globalAudioCtx = null;
 
@@ -68,8 +130,8 @@ function playRingtone() {
 
       // Telephone ring pulse envelope (1.3 seconds tone, 0.9s pause)
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.25, now + 0.05);
-      gain.gain.setValueAtTime(0.25, now + 1.25);
+      gain.gain.linearRampToValueAtTime(0.35, now + 0.05);
+      gain.gain.setValueAtTime(0.35, now + 1.25);
       gain.gain.linearRampToValueAtTime(0, now + 1.3);
 
       osc1.connect(gain);
@@ -129,6 +191,7 @@ export default function IncomingOrderModal() {
   const [phase, setPhase] = useState("idle"); // idle | ringing | accepted | rejected
   const timerRef = useRef(null);
   const stopAudioRef = useRef(null);
+  const audioRef = useRef(null);
   const rejectedOrdersRef = useRef(new Set());
 
   // Ask for notification permission on mount
@@ -144,11 +207,22 @@ export default function IncomingOrderModal() {
       stopAudioRef.current();
       stopAudioRef.current = null;
     }
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
   }, []);
 
   const startRinging = useCallback(() => {
     stopRinging();
     stopAudioRef.current = playRingtone();
+
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play().catch((err) => {
+        console.warn("[Ringtone] HTML5 Audio autoplay blocked:", err);
+      });
+    }
   }, [stopRinging]);
 
   // Countdown timer controls
@@ -375,7 +449,19 @@ export default function IncomingOrderModal() {
   const customerPhone = incomingOrder.customer?.phone || "+91 98000 00000";
 
   return (
-    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-[99999] flex items-center justify-center p-4"
+      onClick={() => {
+        if (audioRef.current && audioRef.current.paused && phase === "ringing") {
+          audioRef.current.play().catch(() => {});
+        }
+        const ctx = getAudioContext();
+        if (ctx && ctx.state === "suspended") {
+          ctx.resume().catch(() => {});
+        }
+      }}
+    >
+      <audio ref={audioRef} src={getRingtoneAudioUrl()} loop preload="auto" />
       {/* Dark backdrop with ambient glow */}
       <div
         className="absolute inset-0 bg-slate-950/80 backdrop-blur-md transition-opacity"
