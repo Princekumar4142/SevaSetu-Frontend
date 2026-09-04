@@ -504,33 +504,39 @@ export default function LandingHero() {
                   <div
                     key={item.title}
                     onClick={() => navigate(`/customer/services/${item.id}`)}
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50/70 hover:bg-indigo-50/50 border border-slate-200/70 hover:border-indigo-200 transition-all cursor-pointer group"
+                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50/80 hover:bg-indigo-50/50 border border-slate-200/80 hover:border-indigo-200 transition-all cursor-pointer group gap-2.5 sm:gap-3"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/80 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors shrink-0 shadow-2xs">
-                        <span className="material-symbols-outlined text-[18px]">{item.icon}</span>
+                    <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
+                      <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/80 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all shrink-0 shadow-2xs">
+                        <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
                       </div>
-                      <div className="min-w-0">
-                        <p className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-colors truncate">
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-colors truncate">
                           {item.title}
-                        </p>
+                        </h4>
                         <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
                           <span className="text-amber-500 font-bold flex items-center gap-0.5">
                             ★ {item.rating}
                           </span>
-                          <span>•</span>
+                          <span className="text-slate-300">•</span>
                           <span>{item.time}</span>
                         </div>
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0 pl-2">
-                      <div className="flex items-center gap-1.5 justify-end">
-                        <span className="text-xs text-slate-400 line-through">{item.originalPrice}</span>
-                        <span className="text-sm font-black text-slate-900">{item.price}</span>
+                    {/* Stacked Pricing & Modern Book CTA */}
+                    <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 pl-1">
+                      <div className="text-right">
+                        <div className="text-xs sm:text-sm font-black text-slate-900 leading-tight">
+                          {item.price}
+                        </div>
+                        <div className="text-[10px] text-slate-400 line-through font-medium leading-tight">
+                          {item.originalPrice}
+                        </div>
                       </div>
-                      <span className="text-[10px] font-bold text-indigo-600 group-hover:underline">
-                        Book Now →
+                      <span className="px-2.5 py-1 sm:py-1.5 rounded-lg bg-indigo-600 text-white text-[11px] font-bold shadow-xs shadow-indigo-600/20 group-hover:bg-indigo-700 transition-all flex items-center gap-0.5">
+                        <span>Book</span>
+                        <span className="material-symbols-outlined text-[13px] leading-none">arrow_forward</span>
                       </span>
                     </div>
                   </div>

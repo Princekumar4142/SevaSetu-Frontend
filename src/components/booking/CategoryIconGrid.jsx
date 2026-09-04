@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { SERVICE_IMAGES, getServiceImage } from "../../constants/serviceImages";
 
 export default function CategoryIconGrid({ title, items, onSelect, exploreLink }) {
+  const [imgErrors, setImgErrors] = useState({});
+
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
@@ -12,6 +15,7 @@ export default function CategoryIconGrid({ title, items, onSelect, exploreLink }
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
         {items.map((item) => {
           const serviceImg = SERVICE_IMAGES[item.id];
+          const hasImgError = imgErrors[item.id];
 
           return (
             <button
@@ -35,12 +39,13 @@ export default function CategoryIconGrid({ title, items, onSelect, exploreLink }
 
               {/* Image or Icon Container */}
               <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden mb-2.5 flex items-center justify-center bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-100 group-hover:scale-105 transition-transform duration-300">
-                {serviceImg ? (
+                {serviceImg && !hasImgError ? (
                   <img
                     src={serviceImg}
                     alt={item.label}
                     className="w-full h-full object-cover"
                     loading="lazy"
+                    onError={() => setImgErrors((prev) => ({ ...prev, [item.id]: true }))}
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-brand-purple">
