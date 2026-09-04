@@ -35,6 +35,9 @@ export function validateCustomerForm(form) {
   const passErr = validatePassword(form.password);
   if (passErr) errors.password = passErr;
   if (form.confirmPassword !== form.password) errors.confirmPassword = "Passwords do not match";
+  if (!form.address?.trim()) errors.address = "Address / House / Street is required";
+  if (!form.city?.trim()) errors.city = "City is required";
+  if (!/^\d{6}$/.test(form.pincode || "")) errors.pincode = "Enter a valid 6-digit pincode";
   return errors;
 }
 

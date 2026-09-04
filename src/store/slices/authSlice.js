@@ -93,6 +93,11 @@ const authSlice = createSlice({
     clearAuthError(state) {
       state.error = null;
     },
+    updateCurrentUser(state, action) {
+      if (state.currentUser) {
+        state.currentUser = { ...state.currentUser, ...action.payload };
+      }
+    },
   },
   extraReducers: (builder) => {
     const pending = (state) => {
@@ -152,5 +157,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { clearAuthError } = authSlice.actions;
+export const { clearAuthError, updateCurrentUser } = authSlice.actions;
 export default authSlice.reducer;

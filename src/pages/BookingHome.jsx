@@ -35,7 +35,7 @@ function ServiceSection({ title, items, onSelect, exploreLink, bgClass = "bg-whi
 
 export default function BookingHome() {
   const navigate = useNavigate();
-  const { currentUser } = useAuth();
+  const { currentUser, isAuthenticated } = useAuth();
 
   const handleSelectService = (item) => {
     if (item && item.id) {
@@ -62,9 +62,11 @@ export default function BookingHome() {
        ═══════════════════════════════════════════════════════ */}
       <div className="md:hidden px-[16px] py-3 flex flex-col gap-2 border-b border-outline-variant bg-white">
         <div className="flex items-center gap-1">
-          <span className="material-symbols-outlined text-on-surface text-[18px]">location_on</span>
-          <span className="text-sm text-on-surface truncate flex-1">
-            {currentUser?.address || "Kesnand Rd, opp. to Ayurvedic college..."}
+          <span className="material-symbols-outlined text-indigo-600 text-[18px]">location_on</span>
+          <span className="text-sm font-medium text-on-surface truncate flex-1">
+            {currentUser?.address
+              ? `${currentUser.address}${currentUser.city ? `, ${currentUser.city}` : ""}`
+              : (isAuthenticated ? "Tap to add your delivery address" : "Explore verified services near you")}
           </span>
           <span className="material-symbols-outlined text-on-surface-variant text-[18px]">expand_more</span>
         </div>

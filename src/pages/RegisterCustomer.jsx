@@ -8,8 +8,19 @@ import Input from "../components/Input";
 import Button from "../components/Button";
 import EmailOtpVerifier from "../components/EmailOtpVerifier";
 import { ErrorBanner } from "../components/Feedback";
+import api from "../services/api";
 
-const EMPTY = { name: "", phone: "", email: "", password: "", confirmPassword: "" };
+const EMPTY = {
+  name: "",
+  phone: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  address: "",
+  city: "",
+  state: "",
+  pincode: "",
+};
 
 export default function RegisterCustomer() {
   const { dispatch, loading, error, isAuthenticated, role } = useAuth();
@@ -17,6 +28,8 @@ export default function RegisterCustomer() {
   const [form, setForm] = useState(EMPTY);
   const [emailVerified, setEmailVerified] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
+  const [locating, setLocating] = useState(false);
+  const [locError, setLocError] = useState("");
 
   useEffect(() => {
     if (isAuthenticated && role) navigate(ROLE_HOME[role] || "/", { replace: true });
@@ -27,6 +40,50 @@ export default function RegisterCustomer() {
   const set = (field) => (e) => {
     setForm({ ...form, [field]: e.target.value });
     if (fieldErrors[field]) setFieldErrors((prev) => ({ ...prev, [field]: null })); // clear as they retype
+  };
+
+  const handleAutoDetectLocation = () => {
+    if (!navigator.geolocation) {
+      setLocError("Geolocation is not supported by your browser");
+      return;
+    }
+    setLocating(true);
+    setLocError("");
+    navigator.geolocation.getCurrentPosition(
+      async (pos) => {
+        try {
+          const { latitude, longitude } = pos.coords;
+          const res = await api.get("/geocode/reverse", {
+            params: { lat: latitude, lng: longitude },
+          });
+          if (res.data?.success && res.data?.data) {
+            const data = res.data.data;
+            setForm((prev) => ({
+              ...prev,
+              address: data.address || prev.address,
+              city: data.city || prev.city,
+              state: data.state || prev.state,
+              pincode: data.pincode || prev.pincode,
+            }));
+            setFieldErrors((prev) => ({
+              ...prev,
+              address: null,
+              city: null,
+              pincode: null,
+            }));
+          }
+        } catch (err) {
+          setLocError("Could not determine address automatically. Please enter manually.");
+        } finally {
+          setLocating(false);
+        }
+      },
+      (err) => {
+        setLocating(false);
+        setLocError("Location permission denied or unavailable. Please type your address.");
+      },
+      { timeout: 10000 }
+    );
   };
 
   const handleSubmit = async (e) => {
@@ -55,15 +112,16 @@ export default function RegisterCustomer() {
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center px-margin-mobile py-xl">
-      <div className="w-full max-w-md bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm p-xl">
-        <h1 className="font-headline-lg text-headline-lg text-primary mb-xs">Create your account</h1>
-        <p className="font-body-md text-body-md text-on-surface-variant mb-lg">
-          Book verified cooperative workers for home, construction &amp; everyday needs.
+      <div className="w-full max-w-lg bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm p-6 sm:p-8">
+        <h1 className="font-headline-lg text-headline-lg font-bold text-primary mb-xs">Create your account</h1>
+        <p className="font-body-md text-body-md text-on-surface-variant mb-6">
+          Book verified cooperative workers for home, personal care &amp; everyday services.
         </p>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-md" noValidate>
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
           <ErrorBanner message={error} />
-          <Input label="Full Name" value={form.name} onChange={set("name")} error={fieldErrors.name} required />
+          <Input label="Full Name" placeholder="e.g. Rahul Sharma" value={form.name} onChange={set("name")} error={fieldErrors.name} required />
+          
           <Input
             label="Phone Number"
             placeholder="9876543210"
@@ -85,24 +143,99 @@ export default function RegisterCustomer() {
             onVerified={() => setEmailVerified(true)}
           />
 
-          <Input
-            label="Password"
-            type="password"
-            value={form.password}
-            onChange={set("password")}
-            error={fieldErrors.password}
-            required
-          />
-          <Input
-            label="Confirm Password"
-            type="password"
-            value={form.confirmPassword}
-            onChange={set("confirmPassword")}
-            error={fieldErrors.confirmPassword}
-            required
-          />
-          <Button type="submit" loading={loading} disabled={!emailVerified} className="w-full mt-sm">
-            {emailVerified ? "Sign Up" : "Verify your email to continue"}
+          {/* ── Delivery / Service Address Section ── */}
+          <div className="mt-2 pt-4 border-t border-outline-variant/60">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <label className="font-label-md text-label-md font-bold text-on-surface flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-[18px] text-brand-purple">location_on</span>
+                  Delivery / Service Address
+                </label>
+                <p className="text-xs text-on-surface-variant">Where should workers arrive for your bookings?</p>
+              </div>
+              <button
+                type="button"
+                onClick={handleAutoDetectLocation}
+                disabled={locating}
+                className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-brand-purple/10 text-brand-purple hover:bg-brand-purple/20 transition-colors flex items-center gap-1 shrink-0"
+              >
+                <span className="material-symbols-outlined text-[16px]">
+                  {locating ? "sync" : "my_location"}
+                </span>
+                <span>{locating ? "Locating…" : "Auto-detect"}</span>
+              </button>
+            </div>
+
+            {locError && (
+              <p className="text-xs text-amber-700 bg-amber-50 rounded-lg p-2 mb-3 border border-amber-200">
+                {locError}
+              </p>
+            )}
+
+            <div className="space-y-3">
+              <Input
+                label="House / Flat / Street / Area"
+                placeholder="e.g. Flat 402, Sunshine Heights, MG Road"
+                value={form.address}
+                onChange={set("address")}
+                error={fieldErrors.address}
+                required
+              />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Input
+                  label="City"
+                  placeholder="e.g. Pune / Mumbai"
+                  value={form.city}
+                  onChange={set("city")}
+                  error={fieldErrors.city}
+                  required
+                />
+                <Input
+                  label="State (Optional)"
+                  placeholder="e.g. Maharashtra"
+                  value={form.state}
+                  onChange={set("state")}
+                  error={fieldErrors.state}
+                />
+              </div>
+
+              <Input
+                label="Pincode"
+                placeholder="e.g. 411014"
+                value={form.pincode}
+                onChange={set("pincode")}
+                error={fieldErrors.pincode}
+                inputMode="numeric"
+                maxLength={6}
+                required
+              />
+            </div>
+          </div>
+
+          <div className="mt-2 pt-4 border-t border-outline-variant/60 space-y-3">
+            <Input
+              label="Password"
+              type="password"
+              placeholder="At least 8 characters"
+              value={form.password}
+              onChange={set("password")}
+              error={fieldErrors.password}
+              required
+            />
+            <Input
+              label="Confirm Password"
+              type="password"
+              placeholder="Re-enter your password"
+              value={form.confirmPassword}
+              onChange={set("confirmPassword")}
+              error={fieldErrors.confirmPassword}
+              required
+            />
+          </div>
+
+          <Button type="submit" loading={loading} disabled={!emailVerified} className="w-full mt-4">
+            {emailVerified ? "Create Account" : "Verify your email to continue"}
           </Button>
         </form>
 
