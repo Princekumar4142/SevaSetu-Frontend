@@ -250,12 +250,12 @@ function Icon3DPainting() {
 }
 
 const CATEGORY_TILES = [
-  { id: "ac-repair", label: "AC Repair", badge: "Popular", component: <Icon3DAC />, bg: "from-sky-50 to-blue-50/50 hover:border-sky-300" },
-  { id: "electrical-plumbing", label: "Electrician", badge: "Fast", component: <Icon3DElectrician />, bg: "from-amber-50 to-yellow-50/50 hover:border-amber-300" },
-  { id: "electrical-plumbing", label: "Plumber", badge: null, component: <Icon3DPlumber />, bg: "from-cyan-50 to-teal-50/50 hover:border-cyan-300" },
-  { id: "cleaning-pest-1", label: "Deep Cleaning", badge: "Top Rated", component: <Icon3DCleaning />, bg: "from-emerald-50 to-green-50/50 hover:border-emerald-300" },
-  { id: "salon-women", label: "Salon at Home", badge: "For Women", component: <Icon3DSalon />, bg: "from-pink-50 to-rose-50/50 hover:border-pink-300" },
-  { id: "home-painting", label: "Painting", badge: null, component: <Icon3DPainting />, bg: "from-purple-50 to-violet-50/50 hover:border-purple-300" },
+  { id: "ac-repair", label: "AC Repair", component: <Icon3DAC />, bg: "from-sky-50 to-blue-50/50 hover:border-sky-300" },
+  { id: "electrical-plumbing", label: "Electrician", component: <Icon3DElectrician />, bg: "from-amber-50 to-yellow-50/50 hover:border-amber-300" },
+  { id: "electrical-plumbing", label: "Plumber", component: <Icon3DPlumber />, bg: "from-cyan-50 to-teal-50/50 hover:border-cyan-300" },
+  { id: "cleaning-pest-1", label: "Deep Cleaning", component: <Icon3DCleaning />, bg: "from-emerald-50 to-green-50/50 hover:border-emerald-300" },
+  { id: "salon-women", label: "Salon at Home", component: <Icon3DSalon />, bg: "from-pink-50 to-rose-50/50 hover:border-pink-300" },
+  { id: "home-painting", label: "Painting", component: <Icon3DPainting />, bg: "from-purple-50 to-violet-50/50 hover:border-purple-300" },
 ];
 
 const POPULAR_TAGS = [
@@ -385,20 +385,6 @@ export default function LandingHero() {
               </div>
             </form>
 
-            {/* Popular Search Suggestions */}
-            <div className="flex items-center gap-2 flex-wrap text-xs text-slate-500">
-              <span className="font-semibold text-slate-700">Popular:</span>
-              {POPULAR_TAGS.map((tag) => (
-                <button
-                  key={tag.label}
-                  type="button"
-                  onClick={() => navigate(`/customer/services/${tag.id}`)}
-                  className="px-2.5 py-1 rounded-lg bg-white hover:bg-indigo-50 text-slate-700 hover:text-indigo-600 border border-slate-200/80 hover:border-indigo-200 shadow-2xs transition-all font-medium"
-                >
-                  {tag.label}
-                </button>
-              ))}
-            </div>
 
             {/* ── 3D Quick Category Tiles ── */}
             <div className="pt-2">
@@ -413,11 +399,7 @@ export default function LandingHero() {
                     onClick={() => navigate(`/customer/services/${cat.id}`)}
                     className={`flex flex-col items-center justify-center p-3.5 sm:p-3 rounded-2xl bg-gradient-to-b ${cat.bg} border border-slate-200/80 hover:shadow-md hover:-translate-y-1 transition-all text-center group cursor-pointer relative overflow-hidden`}
                   >
-                    {cat.badge && (
-                      <span className="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] sm:text-[9px] font-bold tracking-tight">
-                        {cat.badge}
-                      </span>
-                    )}
+
                     <div className="w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center mb-1.5 sm:mb-1 group-hover:scale-110 transition-transform">
                       {cat.component}
                     </div>

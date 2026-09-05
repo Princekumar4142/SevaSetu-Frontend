@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { registerWorker, clearAuthError } from "../store/slices/authSlice";
@@ -9,6 +9,7 @@ import Button from "../components/Button";
 import EmailOtpVerifier from "../components/EmailOtpVerifier";
 import MapLocationPicker from "../components/MapLocationPicker";
 import ProfilePhotoUploader from "../components/ProfilePhotoUploader";
+import VoiceFormAgent from "../components/VoiceFormAgent";
 import { fileToBase64 } from "../utils/imageUtils";
 import { ErrorBanner } from "../components/Feedback";
 
@@ -47,6 +48,70 @@ const EMPTY = {
   location: { lat: 18.5793, lng: 73.9787, address: "Kesnand Rd, Wagholi, Pune" },
 };
 
+// ── AI Voice Agent Field Configuration (Worker) ──
+const WORKER_VOICE_FIELDS = [
+  {
+    key: "name", label: "Full Name", type: "text",
+    prompt: "Apna poora naam boliye jaise Aadhaar card pe hai.",
+    confirmMessage: (v) => `✅ Naam "${v}" fill ho gaya!`,
+    retryPrompt: "Naam samajh nahi aaya. Please Aadhaar ke mutabiq naam dobara boliye.",
+    minLength: 2,
+  },
+  {
+    key: "phone", label: "Mobile Number", type: "phone",
+    prompt: "Ab apna 10 digit mobile number boliye.",
+    confirmMessage: (v) => `✅ Phone number ${v} save ho gaya!`,
+    retryPrompt: "Phone number sahi nahi laga. 10 digit number dobara boliye.",
+    minLength: 10, maxLength: 10,
+  },
+  {
+    key: "experienceYears", label: "Experience (Years)", type: "number",
+    prompt: "Aapko apne kaam mein kitne saal ka anubhav hai? Sirf number boliye.",
+    confirmMessage: (v) => `✅ Experience: ${v} saal`,
+    retryPrompt: "Kitne saal ka anubhav hai? Sirf number boliye jaise 3, 5, 10.",
+    minLength: 1,
+  },
+  {
+    key: "hourlyRate", label: "Hourly Rate (₹)", type: "number",
+    prompt: "Aapka standard hourly rate kya hai rupees mein? Jaise 299, 499.",
+    confirmMessage: (v) => `✅ Rate: ₹${v}/hour set ho gaya!`,
+    retryPrompt: "Rate samajh nahi aaya. Sirf rupees mein number boliye.",
+    minLength: 1,
+  },
+  {
+    key: "aadharNumber", label: "Aadhaar Number", type: "aadhar",
+    prompt: "Apna 12 digit Aadhaar card number boliye.",
+    confirmMessage: (v) => `✅ Aadhaar number ${v} save ho gaya!`,
+    retryPrompt: "Aadhaar number sahi nahi laga. 12 digit number dobara boliye.",
+    minLength: 12, maxLength: 12,
+  },
+  {
+    key: "address", label: "Address", type: "text",
+    prompt: "Apna ghar ya kaam ka poora address boliye.",
+    confirmMessage: (v) => `✅ Address: "${v}"`,
+    minLength: 5,
+  },
+  {
+    key: "city", label: "City", type: "text",
+    prompt: "Sheher ka naam boliye. Jaise Pune, Mumbai, Delhi.",
+    confirmMessage: (v) => `✅ City: ${v}`,
+    minLength: 2,
+  },
+  {
+    key: "state", label: "State", type: "text",
+    prompt: "State ka naam boliye. Jaise Maharashtra, Karnataka.",
+    confirmMessage: (v) => `✅ State: ${v}`,
+    minLength: 2,
+  },
+  {
+    key: "pincode", label: "Pincode", type: "pincode",
+    prompt: "Ab 6 digit pincode boliye.",
+    confirmMessage: (v) => `✅ Pincode ${v} save ho gaya!`,
+    retryPrompt: "Pincode sahi nahi laga. 6 digit pincode dobara boliye.",
+    minLength: 6, maxLength: 6,
+  },
+];
+
 export default function RegisterWorker() {
   const { dispatch, loading, error, isAuthenticated, role } = useAuth();
   const navigate = useNavigate();
@@ -75,6 +140,12 @@ export default function RegisterWorker() {
     setForm((prev) => ({ ...prev, [field]: val }));
     if (fieldErrors[field]) setFieldErrors((prev) => ({ ...prev, [field]: null }));
   };
+
+  // ── AI Voice Agent field filler ──
+  const handleVoiceFieldFill = useCallback((fieldKey, value) => {
+    setForm((prev) => ({ ...prev, [fieldKey]: value }));
+    setFieldErrors((prev) => ({ ...prev, [fieldKey]: null }));
+  }, []);
 
   const handleCategoryChange = (catId) => {
     const matched = TRADE_CATEGORIES.find((c) => c.id === catId);
@@ -655,6 +726,13 @@ export default function RegisterWorker() {
             </Button>
           </div>
         </form>
+
+        {/* ── AI Voice Form Agent ── */}
+        <VoiceFormAgent
+          fields={WORKER_VOICE_FIELDS}
+          onFieldFill={handleVoiceFieldFill}
+          formType="worker"
+        />
 
         <p className="text-xs text-slate-500 text-center pb-8">
           Already registered as a partner?{" "}

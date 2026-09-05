@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { registerCustomer, clearAuthError } from "../store/slices/authSlice";
@@ -9,7 +9,51 @@ import Button from "../components/Button";
 import EmailOtpVerifier from "../components/EmailOtpVerifier";
 import ProfilePhotoUploader from "../components/ProfilePhotoUploader";
 import { ErrorBanner } from "../components/Feedback";
+import VoiceFormAgent from "../components/VoiceFormAgent";
 import api from "../services/api";
+
+// ── AI Voice Agent Field Configuration (Customer) ──
+const CUSTOMER_VOICE_FIELDS = [
+  {
+    key: "name", label: "Full Name", type: "text",
+    prompt: "Sabse pehle, apna poora naam boliye.",
+    confirmMessage: (v) => `✅ Naam "${v}" fill ho gaya!`,
+    retryPrompt: "Naam samajh nahi aaya. Please apna poora naam dobara boliye.",
+    minLength: 2,
+  },
+  {
+    key: "phone", label: "Phone Number", type: "phone",
+    prompt: "Ab apna 10 digit mobile number boliye.",
+    confirmMessage: (v) => `✅ Phone number ${v} save ho gaya!`,
+    retryPrompt: "Phone number sahi nahi laga. 10 digit number dobara boliye.",
+    minLength: 10, maxLength: 10,
+  },
+  {
+    key: "address", label: "Address", type: "text",
+    prompt: "Apna ghar ka address boliye — flat number, street, area.",
+    confirmMessage: (v) => `✅ Address: "${v}"`,
+    minLength: 5,
+  },
+  {
+    key: "city", label: "City", type: "text",
+    prompt: "Apna sheher ka naam boliye. Jaise Pune, Mumbai.",
+    confirmMessage: (v) => `✅ City: ${v}`,
+    minLength: 2,
+  },
+  {
+    key: "state", label: "State", type: "text",
+    prompt: "State ka naam boliye. Jaise Maharashtra, Gujarat.",
+    confirmMessage: (v) => `✅ State: ${v}`,
+    minLength: 2,
+  },
+  {
+    key: "pincode", label: "Pincode", type: "pincode",
+    prompt: "Ab 6 digit pincode boliye.",
+    confirmMessage: (v) => `✅ Pincode ${v} save ho gaya!`,
+    retryPrompt: "Pincode sahi nahi laga. 6 digit pincode dobara boliye.",
+    minLength: 6, maxLength: 6,
+  },
+];
 
 const EMPTY = {
   name: "",
@@ -43,6 +87,12 @@ export default function RegisterCustomer() {
     setForm({ ...form, [field]: e.target.value });
     if (fieldErrors[field]) setFieldErrors((prev) => ({ ...prev, [field]: null }));
   };
+
+  // ── AI Voice Agent field filler ──
+  const handleVoiceFieldFill = useCallback((fieldKey, value) => {
+    setForm((prev) => ({ ...prev, [fieldKey]: value }));
+    setFieldErrors((prev) => ({ ...prev, [fieldKey]: null }));
+  }, []);
 
   const handleAutoDetectLocation = () => {
     if (!navigator.geolocation) {
@@ -249,6 +299,13 @@ export default function RegisterCustomer() {
             {emailVerified ? "Create Account" : "Verify your email to continue"}
           </Button>
         </form>
+
+        {/* ── AI Voice Form Agent ── */}
+        <VoiceFormAgent
+          fields={CUSTOMER_VOICE_FIELDS}
+          onFieldFill={handleVoiceFieldFill}
+          formType="customer"
+        />
 
         <p className="font-body-md text-body-md text-on-surface-variant mt-lg text-center">
           Already have an account?{" "}
