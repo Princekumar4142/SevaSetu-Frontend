@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useDispatch } from "react-redux";
-import { updateCurrentUser } from "../store/slices/authSlice";
+import { updateCurrentUser, logout } from "../store/slices/authSlice";
 import userService from "../services/userService";
 import Badge from "../components/Badge";
 import Input from "../components/Input";
@@ -16,6 +16,16 @@ export default function Profile() {
   const dispatch = useDispatch();
 
   const [isEditing, setIsEditing] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try {
+      await dispatch(logout()).unwrap();
+    } catch (_) {}
+    navigate("/login", { replace: true });
+  };
   const [formData, setFormData] = useState({
     name: currentUser?.name || "",
     phone: currentUser?.phone || "",
@@ -365,6 +375,44 @@ export default function Profile() {
               <span className="material-symbols-outlined text-[16px]">edit</span>
               Edit Profile Details
             </Button>
+          </div>
+
+          {/* ── Logout Section ── */}
+          <div className="pt-4 border-t border-slate-100 mt-2">
+            {!confirmLogout ? (
+              <button
+                type="button"
+                onClick={() => setConfirmLogout(true)}
+                className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border border-red-200 bg-red-50 text-red-600 text-xs font-bold hover:bg-red-100 active:scale-[0.98] transition-all cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[18px]">logout</span>
+                Log Out
+              </button>
+            ) : (
+              <div className="rounded-2xl border border-red-200 bg-red-50 p-4 space-y-3">
+                <p className="text-xs font-bold text-red-800 text-center">
+                  🚪 Are you sure you want to log out?
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    disabled={loggingOut}
+                    className="flex-1 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black transition-colors disabled:opacity-60 cursor-pointer flex items-center justify-center gap-1.5"
+                  >
+                    <span className="material-symbols-outlined text-[16px]">logout</span>
+                    {loggingOut ? "Logging out..." : "Yes, Log Out"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setConfirmLogout(false)}
+                    className="flex-1 py-2 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}

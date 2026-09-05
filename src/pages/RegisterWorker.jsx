@@ -12,6 +12,7 @@ import ProfilePhotoUploader from "../components/ProfilePhotoUploader";
 import VoiceFormAgent from "../components/VoiceFormAgent";
 import { fileToBase64 } from "../utils/imageUtils";
 import { ErrorBanner } from "../components/Feedback";
+import { useLanguage } from "../context/LanguageContext";
 
 const TRADE_CATEGORIES = [
   { id: "electrician-plumber", name: "Electrician, Plumber & Appliances", icon: "bolt", defaultSkills: ["Electrician", "Plumber", "Switchboard Wiring", "Pipe Leakage Repair"] },
@@ -49,75 +50,28 @@ const EMPTY = {
 };
 
 // ── AI Voice Agent Field Configuration (Worker) ──
-const WORKER_VOICE_FIELDS = [
-  {
-    key: "name", label: "Full Name", type: "text",
-    prompt: "Apna poora naam boliye jaise Aadhaar card pe hai.",
-    confirmMessage: (v) => `✅ Naam "${v}" fill ho gaya!`,
-    retryPrompt: "Naam samajh nahi aaya. Please Aadhaar ke mutabiq naam dobara boliye.",
-    minLength: 2,
-  },
-  {
-    key: "phone", label: "Mobile Number", type: "phone",
-    prompt: "Ab apna 10 digit mobile number boliye.",
-    confirmMessage: (v) => `✅ Phone number ${v} save ho gaya!`,
-    retryPrompt: "Phone number sahi nahi laga. 10 digit number dobara boliye.",
-    minLength: 10, maxLength: 10,
-  },
-  {
-    key: "experienceYears", label: "Experience (Years)", type: "number",
-    prompt: "Aapko apne kaam mein kitne saal ka anubhav hai? Sirf number boliye.",
-    confirmMessage: (v) => `✅ Experience: ${v} saal`,
-    retryPrompt: "Kitne saal ka anubhav hai? Sirf number boliye jaise 3, 5, 10.",
-    minLength: 1,
-  },
-  {
-    key: "hourlyRate", label: "Hourly Rate (₹)", type: "number",
-    prompt: "Aapka standard hourly rate kya hai rupees mein? Jaise 299, 499.",
-    confirmMessage: (v) => `✅ Rate: ₹${v}/hour set ho gaya!`,
-    retryPrompt: "Rate samajh nahi aaya. Sirf rupees mein number boliye.",
-    minLength: 1,
-  },
-  {
-    key: "aadharNumber", label: "Aadhaar Number", type: "aadhar",
-    prompt: "Apna 12 digit Aadhaar card number boliye.",
-    confirmMessage: (v) => `✅ Aadhaar number ${v} save ho gaya!`,
-    retryPrompt: "Aadhaar number sahi nahi laga. 12 digit number dobara boliye.",
-    minLength: 12, maxLength: 12,
-  },
-  {
-    key: "address", label: "Address", type: "text",
-    prompt: "Apna ghar ya kaam ka poora address boliye.",
-    confirmMessage: (v) => `✅ Address: "${v}"`,
-    minLength: 5,
-  },
-  {
-    key: "city", label: "City", type: "text",
-    prompt: "Sheher ka naam boliye. Jaise Pune, Mumbai, Delhi.",
-    confirmMessage: (v) => `✅ City: ${v}`,
-    minLength: 2,
-  },
-  {
-    key: "state", label: "State", type: "text",
-    prompt: "State ka naam boliye. Jaise Maharashtra, Karnataka.",
-    confirmMessage: (v) => `✅ State: ${v}`,
-    minLength: 2,
-  },
-  {
-    key: "pincode", label: "Pincode", type: "pincode",
-    prompt: "Ab 6 digit pincode boliye.",
-    confirmMessage: (v) => `✅ Pincode ${v} save ho gaya!`,
-    retryPrompt: "Pincode sahi nahi laga. 6 digit pincode dobara boliye.",
-    minLength: 6, maxLength: 6,
-  },
-];
+// Built inside component to be language-reactive
 
 export default function RegisterWorker() {
   const { dispatch, loading, error, isAuthenticated, role } = useAuth();
+  const { tr } = useLanguage();
   const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
   const [emailVerified, setEmailVerified] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
+
+  // Language-reactive voice fields
+  const workerVoiceFields = [
+    { key: "name",            label: "Full Name",        type: "text",    prompt: tr("work_name"),       confirmMessage: (v) => `✅ "${v}"`, minLength: 2 },
+    { key: "phone",           label: "Mobile Number",    type: "phone",   prompt: tr("work_phone"),      confirmMessage: (v) => `✅ ${v}`, minLength: 10, maxLength: 10 },
+    { key: "experienceYears", label: "Experience (yrs)", type: "number",  prompt: tr("work_experience"), confirmMessage: (v) => `✅ ${v}`, minLength: 1 },
+    { key: "hourlyRate",      label: "Hourly Rate (₹)",  type: "number",  prompt: tr("work_rate"),       confirmMessage: (v) => `✅ ₹${v}/hr`, minLength: 1 },
+    { key: "aadharNumber",    label: "Aadhaar Number",   type: "aadhar",  prompt: tr("work_aadhar"),     confirmMessage: (v) => `✅ ${v}`, minLength: 12, maxLength: 12 },
+    { key: "address",         label: "Address",           type: "text",    prompt: tr("work_address"),    confirmMessage: (v) => `✅ "${v}"`, minLength: 5 },
+    { key: "city",            label: "City",              type: "text",    prompt: tr("work_city"),       confirmMessage: (v) => `✅ ${v}`, minLength: 2 },
+    { key: "state",           label: "State",             type: "text",    prompt: tr("work_state"),      confirmMessage: (v) => `✅ ${v}`, minLength: 2 },
+    { key: "pincode",         label: "Pincode",           type: "pincode", prompt: tr("work_pincode"),    confirmMessage: (v) => `✅ ${v}`, minLength: 6, maxLength: 6 },
+  ];
 
   // Image Previews
   const [aadharPreview, setAadharPreview] = useState(null);
@@ -741,6 +695,16 @@ export default function RegisterWorker() {
           </Link>
         </p>
       </div>
+
+      {/* ── AI Voice Form Agent ── */}
+      <VoiceFormAgent
+        fields={workerVoiceFields}
+        onFieldFill={(key, value) => {
+          setForm((prev) => ({ ...prev, [key]: value }));
+          setFieldErrors((prev) => ({ ...prev, [key]: null }));
+        }}
+        formType="worker"
+      />
     </div>
   );
 }

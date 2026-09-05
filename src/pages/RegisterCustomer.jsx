@@ -10,51 +10,11 @@ import EmailOtpVerifier from "../components/EmailOtpVerifier";
 import ProfilePhotoUploader from "../components/ProfilePhotoUploader";
 import { ErrorBanner } from "../components/Feedback";
 import VoiceFormAgent from "../components/VoiceFormAgent";
+import { useLanguage } from "../context/LanguageContext";
 import api from "../services/api";
 
 // ── AI Voice Agent Field Configuration (Customer) ──
-const CUSTOMER_VOICE_FIELDS = [
-  {
-    key: "name", label: "Full Name", type: "text",
-    prompt: "Sabse pehle, apna poora naam boliye.",
-    confirmMessage: (v) => `✅ Naam "${v}" fill ho gaya!`,
-    retryPrompt: "Naam samajh nahi aaya. Please apna poora naam dobara boliye.",
-    minLength: 2,
-  },
-  {
-    key: "phone", label: "Phone Number", type: "phone",
-    prompt: "Ab apna 10 digit mobile number boliye.",
-    confirmMessage: (v) => `✅ Phone number ${v} save ho gaya!`,
-    retryPrompt: "Phone number sahi nahi laga. 10 digit number dobara boliye.",
-    minLength: 10, maxLength: 10,
-  },
-  {
-    key: "address", label: "Address", type: "text",
-    prompt: "Apna ghar ka address boliye — flat number, street, area.",
-    confirmMessage: (v) => `✅ Address: "${v}"`,
-    minLength: 5,
-  },
-  {
-    key: "city", label: "City", type: "text",
-    prompt: "Apna sheher ka naam boliye. Jaise Pune, Mumbai.",
-    confirmMessage: (v) => `✅ City: ${v}`,
-    minLength: 2,
-  },
-  {
-    key: "state", label: "State", type: "text",
-    prompt: "State ka naam boliye. Jaise Maharashtra, Gujarat.",
-    confirmMessage: (v) => `✅ State: ${v}`,
-    minLength: 2,
-  },
-  {
-    key: "pincode", label: "Pincode", type: "pincode",
-    prompt: "Ab 6 digit pincode boliye.",
-    confirmMessage: (v) => `✅ Pincode ${v} save ho gaya!`,
-    retryPrompt: "Pincode sahi nahi laga. 6 digit pincode dobara boliye.",
-    minLength: 6, maxLength: 6,
-  },
-];
-
+// Now built inside component to be language-reactive
 const EMPTY = {
   name: "",
   phone: "",
@@ -70,12 +30,23 @@ const EMPTY = {
 
 export default function RegisterCustomer() {
   const { dispatch, loading, error, isAuthenticated, role } = useAuth();
+  const { tr } = useLanguage();
   const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
   const [emailVerified, setEmailVerified] = useState(false);
   const [fieldErrors, setFieldErrors] = useState({});
   const [locating, setLocating] = useState(false);
   const [locError, setLocError] = useState("");
+
+  // Build language-reactive field prompts
+  const customerVoiceFields = [
+    { key: "name",    label: "Full Name",    type: "text",    prompt: tr("cust_name"),    confirmMessage: (v) => `✅ "${v}"`, minLength: 2 },
+    { key: "phone",   label: "Phone Number", type: "phone",   prompt: tr("cust_phone"),   confirmMessage: (v) => `✅ ${v}`, minLength: 10, maxLength: 10 },
+    { key: "address", label: "Address",      type: "text",    prompt: tr("cust_address"), confirmMessage: (v) => `✅ "${v}"`, minLength: 5 },
+    { key: "city",    label: "City",          type: "text",    prompt: tr("cust_city"),    confirmMessage: (v) => `✅ ${v}`, minLength: 2 },
+    { key: "state",   label: "State",         type: "text",    prompt: tr("cust_state"),   confirmMessage: (v) => `✅ ${v}`, minLength: 2 },
+    { key: "pincode", label: "Pincode",       type: "pincode", prompt: tr("cust_pincode"), confirmMessage: (v) => `✅ ${v}`, minLength: 6, maxLength: 6 },
+  ];
 
   useEffect(() => {
     if (isAuthenticated && role) navigate(ROLE_HOME[role] || "/", { replace: true });
@@ -302,7 +273,7 @@ export default function RegisterCustomer() {
 
         {/* ── AI Voice Form Agent ── */}
         <VoiceFormAgent
-          fields={CUSTOMER_VOICE_FIELDS}
+          fields={customerVoiceFields}
           onFieldFill={handleVoiceFieldFill}
           formType="customer"
         />

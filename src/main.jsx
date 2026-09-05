@@ -4,11 +4,14 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import "./index.css";
 import App from "./App.jsx";
+import { LanguageProvider } from "./context/LanguageContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <Provider store={store}>
-      <App />
+      <LanguageProvider>
+        <App />
+      </LanguageProvider>
     </Provider>
   </StrictMode>
 );

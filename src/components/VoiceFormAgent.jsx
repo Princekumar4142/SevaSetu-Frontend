@@ -1,237 +1,393 @@
 /**
- * VoiceFormAgent — Floating AI Mic button + Slide-up conversation panel
- * Reusable on any form page. Pass field configs + form setter.
+ * VoiceFormAgent — Mobile-first Bottom Sheet AI Voice Form Assistant
+ * Step-by-step guided: AI bolega kya bharna hai → user bolta hai → field fill hota hai
+ * Multilingual: reads selected language from LanguageContext
  */
 import { useEffect, useRef } from "react";
 import { useVoiceFormAgent, AGENT_STATUS } from "../hooks/useVoiceFormAgent";
+import { useLanguage } from "../context/LanguageContext";
+import LanguageSelector from "./LanguageSelector";
 
-// ── Status Styling Map ───────────────────────────────────────────────────────
-const STATUS_META = {
-  [AGENT_STATUS.IDLE]: { color: "bg-gradient-to-br from-purple-600 to-indigo-600", icon: "mic", pulse: "animate-pulse-slow", label: "AI Assistant" },
-  [AGENT_STATUS.LISTENING]: { color: "bg-gradient-to-br from-red-500 to-pink-600", icon: "graphic_eq", pulse: "animate-pulse-fast", label: "Sun raha hun..." },
-  [AGENT_STATUS.PROCESSING]: { color: "bg-gradient-to-br from-blue-500 to-cyan-500", icon: "psychology", pulse: "animate-spin-slow", label: "Samajh raha hun..." },
-  [AGENT_STATUS.SPEAKING]: { color: "bg-gradient-to-br from-emerald-500 to-teal-500", icon: "record_voice_over", pulse: "", label: "Bol raha hun..." },
-  [AGENT_STATUS.DONE]: { color: "bg-gradient-to-br from-emerald-500 to-green-600", icon: "check_circle", pulse: "", label: "Ho gaya!" },
-  [AGENT_STATUS.ERROR]: { color: "bg-gradient-to-br from-red-700 to-red-500", icon: "error", pulse: "", label: "Error" },
-  [AGENT_STATUS.UNSUPPORTED]: { color: "bg-gray-400", icon: "mic_off", pulse: "", label: "Not Supported" },
-};
+// ── Injected CSS ─────────────────────────────────────────────────────────────
+const STYLES = `
+  @keyframes vfa-slide-up {
+    from { transform: translateY(100%); opacity: 0; }
+    to   { transform: translateY(0);    opacity: 1; }
+  }
+  @keyframes vfa-fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes vfa-wave {
+    0%, 100% { height: 6px;  } 
+    50%       { height: 24px; }
+  }
+  @keyframes vfa-ping-purple {
+    0%   { box-shadow: 0 0 0 0   rgba(139,92,246,0.55); }
+    70%  { box-shadow: 0 0 0 16px rgba(139,92,246,0);   }
+    100% { box-shadow: 0 0 0 0   rgba(139,92,246,0);    }
+  }
+  @keyframes vfa-ping-red {
+    0%   { box-shadow: 0 0 0 0   rgba(239,68,68,0.6); }
+    70%  { box-shadow: 0 0 0 18px rgba(239,68,68,0);  }
+    100% { box-shadow: 0 0 0 0   rgba(239,68,68,0);   }
+  }
+  @keyframes vfa-spin { to { transform: rotate(360deg); } }
+  @keyframes vfa-bounce-dot {
+    0%,80%,100% { transform: scale(0.6); opacity:0.4; }
+    40%         { transform: scale(1.1); opacity:1;   }
+  }
+
+  .vfa-panel-enter   { animation: vfa-slide-up 0.38s cubic-bezier(0.16,1,0.3,1) both; }
+  .vfa-msg-enter     { animation: vfa-fade-in  0.25s ease-out both; }
+  .vfa-wave-bar      { animation: vfa-wave 0.75s ease-in-out infinite; }
+  .vfa-btn-idle      { animation: vfa-ping-purple 2.2s ease-in-out infinite; }
+  .vfa-btn-listening { animation: vfa-ping-red    1s    ease-in-out infinite; }
+  .vfa-spin          { animation: vfa-spin 1.4s linear infinite; }
+  .vfa-dot           { animation: vfa-bounce-dot 1.2s ease-in-out infinite; }
+  .vfa-dot:nth-child(2) { animation-delay: 0.2s; }
+  .vfa-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  .vfa-scroll::-webkit-scrollbar { width: 3px; }
+  .vfa-scroll::-webkit-scrollbar-track { background: transparent; }
+  .vfa-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius:99px; }
+`;
+
+// ── Step dots (mini progress) ────────────────────────────────────────────────
+function StepDots({ total, current, filled }) {
+  return (
+    <div className="flex items-center gap-1 flex-wrap justify-center">
+      {Array.from({ length: total }).map((_, i) => {
+        const isFilled = i < Object.keys(filled).length;
+        const isCurrent = i === current;
+        return (
+          <div
+            key={i}
+            className={`rounded-full transition-all duration-300 ${
+              isFilled
+                ? "w-2 h-2 bg-emerald-400"
+                : isCurrent
+                ? "w-5 h-2 bg-white"
+                : "w-2 h-2 bg-white/25"
+            }`}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+// ── Wave bars (listening) ────────────────────────────────────────────────────
+function WaveBars({ color = "bg-red-400" }) {
+  return (
+    <div className="flex items-end gap-[3px] h-7">
+      {[0, 0.12, 0.24, 0.36, 0.48, 0.36, 0.24].map((delay, i) => (
+        <div
+          key={i}
+          className={`w-[3px] rounded-full vfa-wave-bar ${color}`}
+          style={{ animationDelay: `${delay}s` }}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ── Thinking dots ────────────────────────────────────────────────────────────
+function ThinkingDots() {
+  return (
+    <div className="flex items-center gap-1.5 px-3 py-2.5 rounded-2xl bg-white/10 w-fit">
+      {[0, 1, 2].map((i) => (
+        <div key={i} className="w-2 h-2 rounded-full bg-purple-300 vfa-dot" />
+      ))}
+    </div>
+  );
+}
 
 // ── Main Component ───────────────────────────────────────────────────────────
-export default function VoiceFormAgent({ fields, onFieldFill, onComplete, formType = "customer" }) {
-  const agent = useVoiceFormAgent({ fields, onFieldFill, onComplete });
+export default function VoiceFormAgent({ fields, onFieldFill, onComplete }) {
+  const { lang, tr } = useLanguage();
+  const agent = useVoiceFormAgent({
+    fields,
+    onFieldFill,
+    onComplete,
+    speechLang: lang.speechLang,
+    greeting: tr("ai_greeting"),
+    msgDone: tr("ai_done"),
+    msgSkipPrefix: tr("ai_skip"),
+  });
   const chatEndRef = useRef(null);
-  const meta = STATUS_META[agent.status] || STATUS_META[AGENT_STATUS.IDLE];
+  const isListening  = agent.status === AGENT_STATUS.LISTENING;
+  const isSpeaking   = agent.status === AGENT_STATUS.SPEAKING;
+  const isProcessing = agent.status === AGENT_STATUS.PROCESSING;
+  const isDone  = agent.status === AGENT_STATUS.DONE;
+  const isIdle  = agent.status === AGENT_STATUS.IDLE;
 
-  // Auto-scroll chat
+  const filledCount = Object.keys(agent.filledFields).length;
+  const progress = agent.totalFields > 0
+    ? Math.round((filledCount / agent.totalFields) * 100)
+    : 0;
+
+  // Auto-scroll chat to bottom
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [agent.messages, agent.transcript]);
 
   if (!agent.isSupported) return null;
 
-  const progress = agent.totalFields > 0
-    ? Math.round((Object.keys(agent.filledFields).length / agent.totalFields) * 100)
-    : 0;
-
-  return (
-    <>
-      {/* ── CSS Animations (injected once) ── */}
-      <style>{`
-        @keyframes pulse-slow { 0%, 100% { box-shadow: 0 0 0 0 rgba(139,92,246,0.5); } 50% { box-shadow: 0 0 0 16px rgba(139,92,246,0); } }
-        @keyframes pulse-fast { 0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.6); } 50% { box-shadow: 0 0 0 18px rgba(239,68,68,0); } }
-        @keyframes spin-slow { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes slide-up { from { transform: translateY(100%) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
-        @keyframes fade-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes wave { 0%, 100% { height: 8px; } 50% { height: 22px; } }
-        .animate-pulse-slow { animation: pulse-slow 2.5s ease-in-out infinite; }
-        .animate-pulse-fast { animation: pulse-fast 1s ease-in-out infinite; }
-        .animate-spin-slow { animation: spin-slow 2s linear infinite; }
-        .voice-panel-enter { animation: slide-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        .voice-msg-enter { animation: fade-in 0.3s ease-out forwards; }
-        .voice-wave-bar { animation: wave 0.8s ease-in-out infinite; }
-      `}</style>
-
-      {/* ── Floating AI Mic Button ── */}
-      {!agent.isOpen && (
+  // ── Floating Trigger Button (when panel is closed) ──────────────────────
+  if (!agent.isOpen) {
+    return (
+      <>
+        <style>{STYLES}</style>
         <button
           type="button"
           onClick={agent.startAgent}
-          className={`fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full ${meta.color} ${meta.pulse} text-white shadow-2xl flex items-center justify-center transition-all hover:scale-110 active:scale-95 cursor-pointer group`}
-          title="AI Voice Assistant — बोलकर form भरें"
+          className={`fixed bottom-5 right-5 z-50 w-[58px] h-[58px] rounded-full
+            bg-gradient-to-br from-purple-600 to-indigo-700
+            text-white shadow-2xl flex flex-col items-center justify-center gap-0.5
+            vfa-btn-idle hover:scale-110 active:scale-95 transition-transform cursor-pointer group`}
+          aria-label={tr("ai_tooltip")}
         >
-          <span className="material-symbols-outlined text-[28px] fill">mic</span>
-          {/* Tooltip */}
-          <span className="absolute -top-12 right-0 bg-slate-900 text-white text-[11px] font-bold px-3 py-1.5 rounded-xl whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg">
-            🎤 बोलकर Form भरें — AI Assistant
+          <span className="material-symbols-outlined text-[24px] fill">mic</span>
+          <span className="text-[8px] font-black tracking-tight leading-none">AI</span>
+          <span className="pointer-events-none absolute -top-11 right-0 bg-slate-900 text-white
+            text-[11px] font-bold px-3 py-1.5 rounded-xl whitespace-nowrap
+            opacity-0 group-hover:opacity-100 transition-opacity shadow-xl">
+            {tr("ai_tooltip")}
           </span>
         </button>
-      )}
+      </>
+    );
+  }
 
-      {/* ── Slide-up AI Panel ── */}
-      {agent.isOpen && (
-        <div className="fixed bottom-4 right-4 z-50 w-[360px] max-w-[calc(100vw-32px)] voice-panel-enter">
-          <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/20" style={{ background: "rgba(15,15,30,0.92)", backdropFilter: "blur(24px)" }}>
+  // ── Full Bottom Sheet Panel ──────────────────────────────────────────────
+  return (
+    <>
+      <style>{STYLES}</style>
 
-            {/* ── Panel Header ── */}
-            <div className={`px-5 py-4 ${meta.color} relative overflow-hidden`}>
-              {/* Animated Background Pattern */}
-              <div className="absolute inset-0 opacity-10">
-                <div className="absolute top-0 left-0 w-20 h-20 rounded-full bg-white/20 -translate-x-6 -translate-y-6" />
-                <div className="absolute bottom-0 right-0 w-32 h-32 rounded-full bg-white/10 translate-x-12 translate-y-12" />
-              </div>
+      {/* Backdrop (mobile) */}
+      <div
+        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-[2px] sm:hidden"
+        onClick={agent.closePanel}
+      />
 
-              <div className="relative flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-                    <span className="material-symbols-outlined text-white text-[22px] fill">{meta.icon}</span>
-                  </div>
-                  <div>
-                    <h3 className="text-white font-black text-sm">SevaSetu AI Agent</h3>
-                    <p className="text-white/70 text-[11px] font-medium">{meta.label}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  {/* Skip Button */}
-                  {(agent.status === AGENT_STATUS.LISTENING || agent.status === AGENT_STATUS.SPEAKING) && (
-                    <button
-                      type="button"
-                      onClick={agent.skipField}
-                      className="w-8 h-8 rounded-lg bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-colors cursor-pointer"
-                      title="Skip this field"
-                    >
-                      <span className="material-symbols-outlined text-[18px]">skip_next</span>
-                    </button>
-                  )}
-                  {/* Close Button */}
-                  <button
-                    type="button"
-                    onClick={agent.closePanel}
-                    className="w-8 h-8 rounded-lg bg-white/20 hover:bg-red-500/60 text-white flex items-center justify-center transition-colors cursor-pointer"
-                    title="Close"
-                  >
-                    <span className="material-symbols-outlined text-[18px]">close</span>
-                  </button>
-                </div>
-              </div>
+      {/* Panel */}
+      <div className={`
+        fixed z-50 vfa-panel-enter
+        /* Mobile: full-width bottom sheet */
+        bottom-0 left-0 right-0
+        /* Desktop: floating panel bottom-right */
+        sm:bottom-5 sm:right-5 sm:left-auto sm:w-[380px] sm:rounded-3xl
+        rounded-t-3xl overflow-hidden
+        shadow-2xl
+      `}
+        style={{ background: "rgba(12,12,26,0.97)", backdropFilter: "blur(24px)" }}
+      >
 
-              {/* Progress bar */}
-              <div className="mt-3 relative">
-                <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-white rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <p className="text-[10px] text-white/60 mt-1 font-semibold">
-                  {Object.keys(agent.filledFields).length}/{agent.totalFields} fields filled • {progress}%
-                </p>
-              </div>
-            </div>
+        {/* ── Drag Handle (mobile only) ── */}
+        <div className="flex justify-center pt-3 pb-1 sm:hidden">
+          <div className="w-10 h-1 rounded-full bg-white/20" />
+        </div>
 
-            {/* ── Chat Messages ── */}
-            <div className="h-[280px] overflow-y-auto px-4 py-3 space-y-3 scrollbar-thin scrollbar-thumb-white/10">
-              {agent.messages.map((msg) => (
-                <div
-                  key={msg.id}
-                  className={`voice-msg-enter flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-                >
-                  <div
-                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs leading-relaxed ${
-                      msg.role === "user"
-                        ? "bg-purple-600 text-white rounded-br-sm"
-                        : "bg-white/10 text-white/90 rounded-bl-sm border border-white/5"
-                    }`}
-                  >
-                    {msg.role === "ai" && (
-                      <span className="text-[10px] text-purple-400 font-bold block mb-1">🤖 AI Agent</span>
-                    )}
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
+        {/* ── Header ── */}
+        <div className="relative overflow-hidden px-4 pt-3 pb-4"
+          style={{ background: "linear-gradient(135deg,#5b21b6 0%,#4f46e5 100%)" }}>
+          {/* decorative blobs */}
+          <div className="absolute -top-4 -left-4 w-20 h-20 rounded-full bg-white/5" />
+          <div className="absolute -bottom-6 -right-6 w-28 h-28 rounded-full bg-white/5" />
 
-              {/* Live transcript */}
-              {agent.transcript && (
-                <div className="voice-msg-enter flex justify-end">
-                  <div className="max-w-[85%] rounded-2xl px-3.5 py-2.5 text-xs bg-purple-600/40 text-purple-200 rounded-br-sm border border-purple-500/30 italic">
-                    🎙️ {agent.transcript}...
-                  </div>
-                </div>
-              )}
-
-              {/* Listening animation */}
-              {agent.status === AGENT_STATUS.LISTENING && !agent.transcript && (
-                <div className="flex justify-center py-2">
-                  <div className="flex items-end gap-1 h-6">
-                    {[0, 1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="w-1 bg-red-400 rounded-full voice-wave-bar"
-                        style={{ animationDelay: `${i * 0.15}s` }}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-              <div ref={chatEndRef} />
-            </div>
-
-            {/* ── Bottom Controls ── */}
-            <div className="px-4 py-3 border-t border-white/10">
-              {agent.currentField && agent.status !== AGENT_STATUS.DONE && (
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="material-symbols-outlined text-[14px] text-purple-400">edit</span>
-                  <span className="text-[11px] text-white/50 font-medium">
-                    Current: <span className="text-purple-300 font-bold">{agent.currentField.label}</span>
+          <div className="relative">
+            {/* Top row */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2.5">
+                {/* Mic orb */}
+                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${
+                  isListening ? "bg-red-500" : isSpeaking ? "bg-emerald-500" : "bg-white/20"
+                } transition-colors`}>
+                  <span className={`material-symbols-outlined text-white text-[20px] fill ${
+                    isProcessing ? "vfa-spin" : ""
+                  }`}>
+                    {isListening ? "graphic_eq" : isSpeaking ? "record_voice_over"
+                      : isProcessing ? "refresh" : isDone ? "check_circle" : "smart_toy"}
                   </span>
                 </div>
-              )}
-
-              <div className="flex items-center gap-2">
-                {agent.status === AGENT_STATUS.DONE ? (
-                  <button
-                    type="button"
-                    onClick={agent.closePanel}
-                    className="flex-1 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition-colors cursor-pointer"
-                  >
-                    <span className="material-symbols-outlined text-[16px]">check</span>
-                    Done — Close Panel
-                  </button>
-                ) : (
-                  <>
-                    <button
-                      type="button"
-                      onClick={agent.status === AGENT_STATUS.IDLE ? agent.startAgent : agent.stopAgent}
-                      className={`flex-1 py-2.5 rounded-xl text-white text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                        agent.status === AGENT_STATUS.IDLE
-                          ? "bg-purple-600 hover:bg-purple-500"
-                          : "bg-red-600 hover:bg-red-500"
-                      }`}
-                    >
-                      <span className="material-symbols-outlined text-[16px]">
-                        {agent.status === AGENT_STATUS.IDLE ? "mic" : "stop"}
-                      </span>
-                      {agent.status === AGENT_STATUS.IDLE ? "Start Voice Fill" : "Stop"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={agent.skipField}
-                      className="px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white/70 text-xs font-bold transition-colors cursor-pointer"
-                      title="Skip Field"
-                    >
-                      <span className="material-symbols-outlined text-[16px]">skip_next</span>
-                    </button>
-                  </>
-                )}
+                <div>
+                  <p className="text-white font-black text-sm leading-none">SevaSetu AI</p>
+                  <p className="text-white/60 text-[11px] mt-0.5">
+                    {isListening ? `🔴 ${tr("ai_listening")}` : isSpeaking ? `🟢 ${tr("ai_speaking")}`
+                      : isProcessing ? "🔵..." : isDone ? "✅" : lang.nativeName}
+                  </p>
+                </div>
               </div>
+              {/* Language selector + Close */}
+              <div className="flex items-center gap-1.5">
+                <div className="scale-90 origin-right"><LanguageSelector /></div>
+                <button
+                  type="button"
+                  onClick={agent.closePanel}
+                  className="w-8 h-8 rounded-xl bg-white/15 hover:bg-white/30 text-white
+                    flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[18px]">close</span>
+                </button>
+              </div>
+            </div>
 
-              <p className="text-[10px] text-white/30 text-center mt-2">
-                🔒 Voice data is processed locally in your browser
-              </p>
+            {/* Current field prompt (BIG) */}
+            {agent.currentField && !isDone && (
+              <div className="bg-white/10 rounded-2xl px-3.5 py-3 mb-3 border border-white/10">
+                <p className="text-[10px] text-white/50 font-bold uppercase tracking-wider mb-1">
+                  {tr("ai_fillNow")} ({agent.currentFieldIndex + 1}/{agent.totalFields})
+                </p>
+                <p className="text-white font-bold text-sm leading-snug">
+                  {agent.currentField.prompt}
+                </p>
+              </div>
+            )}
+
+            {/* Progress bar + steps */}
+            <div className="space-y-2">
+              <div className="h-1.5 bg-white/20 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-400 to-emerald-300 rounded-full transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-between">
+                <StepDots
+                  total={agent.totalFields}
+                  current={agent.currentFieldIndex}
+                  filled={agent.filledFields}
+                />
+                <span className="text-[10px] text-white/50 font-semibold shrink-0 ml-2">
+                  {filledCount}/{agent.totalFields} {tr("ai_fieldsFilled")}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      )}
+
+        {/* ── Chat Messages ── */}
+        <div className="h-[200px] sm:h-[220px] overflow-y-auto px-4 py-3 space-y-2.5 vfa-scroll">
+          {agent.messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`vfa-msg-enter flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
+            >
+              {msg.role === "ai" && (
+                <div className="w-6 h-6 rounded-full bg-purple-600/60 flex items-center justify-center shrink-0 mr-1.5 mt-0.5">
+                  <span className="material-symbols-outlined text-white text-[13px] fill">smart_toy</span>
+                </div>
+              )}
+              <div className={`max-w-[80%] rounded-2xl px-3 py-2 text-xs leading-relaxed ${
+                msg.role === "user"
+                  ? "bg-purple-600 text-white rounded-br-sm"
+                  : "bg-white/10 text-white/90 rounded-bl-sm"
+              }`}>
+                {msg.text}
+              </div>
+            </div>
+          ))}
+
+          {/* Processing dots */}
+          {isProcessing && (
+            <div className="vfa-msg-enter flex justify-start">
+              <div className="w-6 h-6 rounded-full bg-purple-600/60 flex items-center justify-center shrink-0 mr-1.5 mt-0.5">
+                <span className="material-symbols-outlined text-white text-[13px] fill">smart_toy</span>
+              </div>
+              <ThinkingDots />
+            </div>
+          )}
+
+          {/* Live interim transcript */}
+          {agent.transcript && (
+            <div className="vfa-msg-enter flex justify-end">
+              <div className="max-w-[80%] rounded-2xl px-3 py-2 text-xs italic
+                bg-purple-600/30 text-purple-200 border border-purple-500/20 rounded-br-sm">
+                🎙️ {agent.transcript}
+              </div>
+            </div>
+          )}
+
+          <div ref={chatEndRef} />
+        </div>
+
+        {/* ── Listening Waveform Banner ── */}
+        {isListening && (
+          <div className="mx-4 mb-2 rounded-2xl bg-red-500/15 border border-red-500/20
+            flex items-center justify-center gap-4 py-2.5 px-4">
+            <WaveBars color="bg-red-400" />
+            <p className="text-red-300 text-xs font-bold">{tr("ai_listening")}</p>
+            <WaveBars color="bg-red-400" />
+          </div>
+        )}
+
+        {/* ── Speaking indicator ── */}
+        {isSpeaking && (
+          <div className="mx-4 mb-2 rounded-2xl bg-emerald-500/15 border border-emerald-500/20
+            flex items-center justify-center gap-3 py-2 px-4">
+            <WaveBars color="bg-emerald-400" />
+            <p className="text-emerald-300 text-xs font-bold">{tr("ai_speaking")}</p>
+          </div>
+        )}
+
+        {/* ── Bottom Action Bar ── */}
+        <div className="px-4 pb-5 pt-2 space-y-2">
+          {isDone ? (
+            <button
+              type="button"
+              onClick={agent.closePanel}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500
+                text-white font-black text-sm flex items-center justify-center gap-2
+                shadow-lg shadow-emerald-500/30 hover:opacity-90 active:scale-[0.98]
+                transition-all cursor-pointer"
+            >
+              <span className="material-symbols-outlined text-[20px]">check_circle</span>
+              {tr("ai_close_done")}
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              {/* Main mic / start button */}
+              <button
+                type="button"
+                onClick={isIdle ? agent.startAgent : agent.stopAgent}
+                className={`flex-1 py-3.5 rounded-2xl font-black text-sm text-white
+                  flex items-center justify-center gap-2 transition-all
+                  active:scale-[0.97] cursor-pointer shadow-lg ${
+                  isListening
+                    ? "bg-red-600 shadow-red-500/30 vfa-btn-listening"
+                    : isIdle
+                    ? "bg-gradient-to-r from-purple-600 to-indigo-600 shadow-purple-500/30 vfa-btn-idle"
+                    : "bg-purple-800 shadow-purple-500/20"
+                }`}
+              >
+                <span className={`material-symbols-outlined text-[22px] fill ${isProcessing ? "vfa-spin" : ""}`}>
+                  {isListening ? "stop_circle" : "mic"}
+                </span>
+                {isIdle ? tr("ai_start") : isListening ? tr("ai_stop") : isSpeaking ? tr("ai_speaking") : "..."}
+              </button>
+
+              {/* Skip Field */}
+              {!isIdle && !isDone && (
+                <button
+                  type="button"
+                  onClick={agent.skipField}
+                  className="h-[52px] px-4 rounded-2xl bg-white/10 hover:bg-white/20
+                    text-white/80 text-xs font-bold flex flex-col items-center justify-center
+                    gap-0.5 transition-colors cursor-pointer border border-white/10 shrink-0"
+                >
+                  <span className="material-symbols-outlined text-[18px]">skip_next</span>
+                  <span className="text-[9px] font-bold text-white/50">Skip</span>
+                </button>
+              )}
+            </div>
+          )}
+
+          <p className="text-center text-[10px] text-white/25 font-medium">
+            {tr("ai_privacy")}
+          </p>
+        </div>
+      </div>
     </>
   );
 }

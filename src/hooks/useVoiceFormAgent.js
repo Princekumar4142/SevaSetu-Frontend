@@ -1,6 +1,6 @@
 /**
  * useVoiceFormAgent — Web Speech API powered voice form assistant
- * Supports Hindi (hi-IN) + English, Text-to-Speech responses, field-guided flow
+ * Supports 8 Indian languages via LanguageContext
  */
 import { useState, useRef, useCallback, useEffect } from "react";
 
@@ -56,7 +56,9 @@ export const AGENT_STATUS = {
 };
 
 // ── HOOK ─────────────────────────────────────────────────────────────────────
-export function useVoiceFormAgent({ fields, onFieldFill, onComplete }) {
+// speechLang: e.g. "hi-IN", "en-IN", "bn-IN" — from LanguageContext
+// greeting, msgDone, msgSkipPrefix — translated strings passed in
+export function useVoiceFormAgent({ fields, onFieldFill, onComplete, speechLang = "hi-IN", greeting, msgDone, msgSkipPrefix }) {
   const [status, setStatus] = useState(
     isSpeechSupported() ? AGENT_STATUS.IDLE : AGENT_STATUS.UNSUPPORTED
   );
@@ -78,27 +80,23 @@ export function useVoiceFormAgent({ fields, onFieldFill, onComplete }) {
 
   // ── TTS: AI speaks ──────────────────────────────────────────────────────
   const speak = useCallback((text, onEnd) => {
-    if (!isTtsSupported()) {
-      onEnd?.();
-      return;
-    }
+    if (!isTtsSupported()) { onEnd?.(); return; }
     window.speechSynthesis.cancel();
     const utt = new SpeechSynthesisUtterance(text);
-    utt.lang = "hi-IN";
+    utt.lang = speechLang;
     utt.rate = 0.92;
     utt.pitch = 1.05;
     utt.volume = 1;
-
-    // prefer a Hindi voice if available
+    // prefer a voice matching selected lang
     const voices = window.speechSynthesis.getVoices();
-    const hindiVoice = voices.find((v) => v.lang.startsWith("hi"));
-    if (hindiVoice) utt.voice = hindiVoice;
-
+    const matched = voices.find((v) => v.lang.startsWith(speechLang.split("-")[0]))
+      || voices.find((v) => v.lang.startsWith("hi"));
+    if (matched) utt.voice = matched;
     utt.onend = () => onEnd?.();
     synthRef.current = utt;
     setStatus(AGENT_STATUS.SPEAKING);
     window.speechSynthesis.speak(utt);
-  }, []);
+  }, [speechLang]);
 
   // ── Add message to chat ─────────────────────────────────────────────────
   const addMessage = useCallback((role, text) => {
@@ -153,7 +151,7 @@ export function useVoiceFormAgent({ fields, onFieldFill, onComplete }) {
 
       const nextIndex = fieldIndex + 1;
       if (nextIndex >= fields.length) {
-        const doneMsg = "🎉 Bahut badhiya! Aapka form almost ready hai. Ab submit kar sakte ho!";
+        const doneMsg = msgDone || "🎉 बहुत बढ़िया! आपका form लगभग ready है। अब Submit करें!";
         speak(confirmMsg, () => {
           speak(doneMsg, () => setStatus(AGENT_STATUS.DONE));
         });
@@ -182,7 +180,7 @@ export function useVoiceFormAgent({ fields, onFieldFill, onComplete }) {
       const SpeechRecognition =
         window.SpeechRecognition || window.webkitSpeechRecognition;
       const recognition = new SpeechRecognition();
-      recognition.lang = "hi-IN";
+      recognition.lang = speechLang;
       recognition.interimResults = true;
       recognition.maxAlternatives = 3;
       recognition.continuous = false;
@@ -228,7 +226,7 @@ export function useVoiceFormAgent({ fields, onFieldFill, onComplete }) {
         recognition.start();
       } catch (_) {}
     },
-    [addMessage, speak, processInput, status]
+    [addMessage, speak, processInput, status, speechLang]
   );
 
   // ── Open & Start Agent ──────────────────────────────────────────────────
@@ -241,14 +239,13 @@ export function useVoiceFormAgent({ fields, onFieldFill, onComplete }) {
     setFilledFields({});
     setTranscript("");
 
-    const greeting =
-      "Namaste! Main aapka AI form assistant hun. Main aapko form fill karne mein help karunga. Chalo shuru karte hain!";
+    const greetMsg = greeting || "नमस्ते! मैं SevaSetu का AI Assistant हूँ। मैं आपको form भरने में help करूँगा। बस बोलिए, मैं सुनूँगा!";
     const firstPrompt = fields[0]?.prompt || "";
 
-    addMessage("ai", greeting);
+    addMessage("ai", greetMsg);
     addMessage("ai", firstPrompt);
 
-    speak(greeting, () => {
+    speak(greetMsg, () => {
       speak(firstPrompt, () => {
         if (activeRef.current) startListening(0);
       });
@@ -275,8 +272,9 @@ export function useVoiceFormAgent({ fields, onFieldFill, onComplete }) {
     window.speechSynthesis?.cancel();
     recognitionRef.current?.stop();
     const nextField = fields[next];
-    addMessage("ai", `⏭ Field skip kiya. ${nextField.prompt}`);
-    speak(nextField.prompt, () => {
+    const skipPrefix = msgSkipPrefix || "⏭ Skip किया! अब — ";
+    addMessage("ai", `${skipPrefix}${nextField.prompt}`);
+    speak(`${skipPrefix}${nextField.prompt}`, () => {
       if (activeRef.current) startListening(next);
     });
   }, [fields, addMessage, speak, startListening, stopAgent]);
