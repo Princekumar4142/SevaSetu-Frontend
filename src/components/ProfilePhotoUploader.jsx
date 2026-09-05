@@ -35,11 +35,43 @@ export default function ProfilePhotoUploader({ value, onChange, name = "" }) {
         Profile Picture / Photo <span className="text-slate-400 font-normal capitalize">(Optional)</span>
       </label>
 
-      <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
-        <Avatar src={value} name={name} size="xl" className="shadow-md" />
+      {value ? (
+        /* ── Compact view: photo selected ── */
+        <div className="flex items-center gap-3 p-3 rounded-2xl bg-slate-50 border border-slate-200">
+          <Avatar src={value} name={name} size="xl" className="shadow-md" />
+          <div className="flex flex-col gap-2">
+            <span className="text-xs font-semibold text-emerald-700 flex items-center gap-1">
+              <span className="material-symbols-outlined text-[14px]">check_circle</span>
+              Photo selected
+            </span>
+            <div className="flex items-center gap-2">
+              <label className="cursor-pointer inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-200 text-slate-700 text-[11px] font-bold hover:bg-slate-300 transition-all active:scale-95">
+                <span className="material-symbols-outlined text-[14px]">sync</span>
+                Change
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                  disabled={loading}
+                />
+              </label>
+              <button
+                type="button"
+                onClick={() => onChange("")}
+                className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 text-[11px] font-semibold hover:bg-red-100 transition-colors"
+              >
+                Remove
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* ── Full upload view: no photo yet ── */
+        <div className="flex flex-col sm:flex-row items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
+          <Avatar src={value} name={name} size="xl" className="shadow-md" />
 
-        <div className="flex-1 space-y-2 text-center sm:text-left">
-          <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+          <div className="flex-1 space-y-2 text-center sm:text-left">
             <label className="cursor-pointer inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-brand-purple text-white text-xs font-bold shadow-sm hover:bg-brand-purple-dark transition-all active:scale-95">
               <span className="material-symbols-outlined text-[18px]">photo_camera</span>
               {loading ? "Processing..." : "Upload Photo"}
@@ -51,41 +83,29 @@ export default function ProfilePhotoUploader({ value, onChange, name = "" }) {
                 disabled={loading}
               />
             </label>
+            <p className="text-[11px] text-slate-500">
+              Upload your photo or choose a preset below.
+            </p>
 
-            {value && (
-              <button
-                type="button"
-                onClick={() => onChange("")}
-                className="px-3 py-2 rounded-xl bg-red-50 text-red-600 text-xs font-semibold hover:bg-red-100 transition-colors"
-              >
-                Remove
-              </button>
-            )}
-          </div>
-          <p className="text-[11px] text-slate-500">
-            Upload your photo or choose a preset below. High quality photos build higher customer trust!
-          </p>
-
-          {/* Presets */}
-          <div className="pt-1">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Or Pick a Preset:</span>
-            <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
-              {PRESET_AVATARS.map((url, i) => (
-                <button
-                  type="button"
-                  key={i}
-                  onClick={() => onChange(url)}
-                  className={`w-8 h-8 rounded-full overflow-hidden border-2 transition-transform hover:scale-110 ${
-                    value === url ? "border-brand-purple ring-2 ring-brand-purple/40" : "border-slate-300"
-                  }`}
-                >
-                  <img src={url} alt={`Preset ${i}`} className="w-full h-full object-cover" />
-                </button>
-              ))}
+            {/* Presets */}
+            <div className="pt-1">
+              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Or Pick a Preset:</span>
+              <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
+                {PRESET_AVATARS.map((url, i) => (
+                  <button
+                    type="button"
+                    key={i}
+                    onClick={() => onChange(url)}
+                    className={`w-8 h-8 rounded-full overflow-hidden border-2 transition-transform hover:scale-110 border-slate-300`}
+                  >
+                    <img src={url} alt={`Preset ${i}`} className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
       {error && <p className="text-xs text-red-500">{error}</p>}
     </div>
   );
