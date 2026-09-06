@@ -89,13 +89,28 @@ export default function CategoryServicesPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* ── Hero Banner — clean gradient + emoji + name only ── */}
-      <div className={`bg-gradient-to-r ${cat.gradient} py-10 sm:py-14 flex items-center justify-center`}>
-        <div className="text-center">
-          <div className="text-5xl sm:text-6xl mb-3">{cat.emoji}</div>
-          <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight drop-shadow">
-            {cat.label}
-          </h1>
+      {/* ── Hero Banner — left-aligned with back button + emoji + name ── */}
+      <div className={`bg-gradient-to-r ${cat.gradient} py-5 sm:py-6 shadow-sm`}>
+        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex items-center gap-3.5">
+          <button
+            type="button"
+            onClick={() => {
+              if (window.history.length > 1) navigate(-1);
+              else navigate("/");
+            }}
+            className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 active:bg-white/40 text-white backdrop-blur-sm flex items-center justify-center transition-all shrink-0 shadow-sm"
+            aria-label="Go back"
+            title="Go back"
+          >
+            <span className="material-symbols-outlined text-[22px]">arrow_back</span>
+          </button>
+
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="text-2xl sm:text-3xl shrink-0">{cat.emoji}</span>
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight drop-shadow truncate">
+              {cat.label}
+            </h1>
+          </div>
         </div>
       </div>
 
