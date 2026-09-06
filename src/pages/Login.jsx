@@ -24,26 +24,35 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[85vh] flex items-center justify-center px-4 py-10 bg-surface-container-lowest md:bg-surface">
-      <div className="w-full max-w-md">
-        {/* Main Card: Clean Login Form */}
-        <div className="bg-white border border-outline-variant/80 rounded-3xl shadow-xl p-6 sm:p-8">
-          <div className="flex items-center justify-between gap-2 mb-2">
-            <span className="text-[11px] font-black uppercase tracking-wider text-brand-purple bg-purple-50 px-3 py-1 rounded-full border border-purple-100">
+    <div className="min-h-[85vh] flex items-center justify-center px-4 py-8 sm:py-14 relative overflow-hidden bg-gradient-to-b from-slate-50/70 via-white to-indigo-50/40">
+      {/* Background ambient glows for a premium desktop experience */}
+      <div className="hidden md:block absolute -top-24 -left-24 w-96 h-96 bg-purple-200/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="hidden md:block absolute -bottom-24 -right-24 w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl pointer-events-none" />
+
+      {/* Responsive Card Container: compact on mobile, spacious and prominent on laptop */}
+      <div className="w-full max-w-md sm:max-w-xl lg:max-w-2xl relative z-10">
+        <div className="bg-white border border-slate-200/90 rounded-3xl shadow-2xl shadow-slate-200/70 p-6 sm:p-10 md:p-12 transition-all">
+          {/* Header Badges */}
+          <div className="flex items-center justify-between gap-2 mb-3">
+            <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-brand-purple bg-purple-50 px-3.5 py-1 rounded-full border border-purple-100">
               Secure Account Access
             </span>
-            <span className="flex items-center gap-1 text-xs font-bold text-emerald-600">
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-600">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               Live Portal
             </span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Welcome back</h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 mb-6">
-            Log in to your SevaSetu account.
+          {/* Heading */}
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
+            Welcome back
+          </h1>
+          <p className="text-xs sm:text-sm md:text-base text-slate-500 mt-1.5 mb-6 sm:mb-8">
+            Log in to your SevaSetu customer, worker, or cooperative account.
           </p>
 
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
             <ErrorBanner message={error} />
 
             <Input
@@ -52,6 +61,7 @@ export default function Login() {
               value={form.identifier}
               onChange={(e) => setForm({ ...form, identifier: e.target.value })}
               required
+              className="py-2.5 sm:py-3 text-sm sm:text-base"
             />
 
             <Input
@@ -61,13 +71,14 @@ export default function Login() {
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               required
+              className="py-2.5 sm:py-3 text-sm sm:text-base"
             />
 
             <Button
               type="submit"
               loading={loading}
               variant="purple"
-              className="w-full py-3.5 text-base font-bold shadow-lg shadow-brand-purple/25 mt-2"
+              className="w-full py-3.5 sm:py-4 text-base font-bold shadow-lg shadow-brand-purple/25 mt-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
             >
               <span>Login to Dashboard</span>
               <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
@@ -75,11 +86,23 @@ export default function Login() {
           </form>
 
           {/* Signup Link */}
-          <div className="pt-6 mt-6 border-t border-slate-100 text-center text-xs text-slate-500">
+          <div className="pt-6 sm:pt-7 mt-6 sm:mt-8 border-t border-slate-100 text-center text-xs sm:text-sm text-slate-500">
             Don't have an account?{" "}
             <Link to="/register/choose" className="text-brand-purple font-bold hover:underline">
               Create an Account
             </Link>
+          </div>
+
+          {/* Security & Trust Footer */}
+          <div className="mt-4 pt-3 border-t border-slate-50 flex flex-wrap items-center justify-between gap-2 text-[10px] sm:text-xs text-slate-400">
+            <span className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-[15px] text-emerald-600">lock</span>
+              256-bit SSL Secure
+            </span>
+            <span className="flex items-center gap-1">
+              <span className="material-symbols-outlined text-[15px] text-indigo-600">verified_user</span>
+              Official SevaSetu Access
+            </span>
           </div>
         </div>
       </div>
