@@ -10,8 +10,7 @@ export default function Navbar() {
     <nav className="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-xl shadow-sm border-b border-outline-variant">
       <div className="max-w-7xl mx-auto flex justify-between items-center px-margin-mobile md:px-margin-desktop py-md">
         <Link to="/" className="flex items-center gap-2 group">
-          <Logo size={32} className="transition-transform group-hover:scale-105" />
-          <span className="text-headline-md font-headline-md font-bold text-primary tracking-tight">SevaSetu</span>
+          <Logo size={44} className="transition-transform group-hover:scale-105" />
         </Link>
 
         <div className="hidden md:flex items-center gap-lg">

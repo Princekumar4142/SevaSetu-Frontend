@@ -21,8 +21,9 @@ export default function Footer() {
           {/* Brand & Tagline */}
           <div className="flex flex-col items-center md:items-start text-center md:text-left gap-2 max-w-md">
             <Link to="/" className="flex items-center gap-2.5 group">
-              <Logo size={28} className="transition-transform group-hover:scale-105" />
-              <span className="text-lg font-black text-white tracking-tight">SevaSetu</span>
+              <div className="bg-white rounded-xl p-1 shadow-lg">
+                <Logo size={44} className="transition-transform group-hover:scale-105" />
+              </div>
             </Link>
             <p className="text-xs text-slate-400 leading-relaxed">
               India&apos;s cooperative home &amp; personal service network. 0% worker commission, upfront fixed prices.

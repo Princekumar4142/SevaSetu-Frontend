@@ -59,10 +59,7 @@ export default function CustomerLayout() {
                 </button>
               )}
               <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-2.5 shrink-0 group">
-                <Logo size={36} className="transition-transform group-hover:scale-105" />
-                <span className="font-headline-md text-headline-md font-extrabold text-primary tracking-tight">
-                  SevaSetu
-                </span>
+                <Logo size={48} className="transition-transform group-hover:scale-105" />
               </Link>
             </div>
 
@@ -163,8 +160,7 @@ export default function CustomerLayout() {
             </button>
           )}
           <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-1.5 shrink-0">
-            <Logo size={28} />
-            <span className="font-label-md text-label-md font-bold text-primary">SevaSetu</span>
+            <Logo size={40} />
           </Link>
         </div>
 

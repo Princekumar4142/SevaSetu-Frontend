@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import Avatar from "./Avatar";
+import Logo from "./Logo";
 
 /**
  * Shared sidebar shell used by every dashboard layout. Pass `navItems` and
@@ -41,7 +42,10 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
             <span className="material-symbols-outlined text-[18px]">arrow_back</span>
           </button>
           <div>
-            <h1 className="font-headline-md text-headline-md font-extrabold text-primary">{title}</h1>
+            <div className="flex items-center gap-2 mb-0.5">
+              <Logo size={36} />
+              <h1 className="font-headline-md text-headline-md font-extrabold text-primary">{title}</h1>
+            </div>
             {subtitle && <p className="font-status-badge text-status-badge text-on-surface-variant mt-xs font-semibold">{subtitle}</p>}
           </div>
         </div>

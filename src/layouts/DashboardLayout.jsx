@@ -38,7 +38,7 @@ export default function DashboardLayout({ title, subtitle, navItems, user, showE
           >
             <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
-          <Logo size={26} />
+          <Logo size={38} />
           <span className="font-headline-md text-base sm:text-headline-md font-bold text-primary truncate">
             {title}
           </span>

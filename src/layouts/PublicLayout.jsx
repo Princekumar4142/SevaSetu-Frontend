@@ -21,8 +21,7 @@ export default function PublicLayout() {
         </button>
 
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <Logo size={28} />
-          <span className="text-lg font-bold text-primary tracking-tight">SevaSetu</span>
+          <Logo size={40} />
         </Link>
       </div>
 
