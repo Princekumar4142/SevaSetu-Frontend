@@ -1,188 +1,279 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import workerService from "../services/workerService";
-import Badge from "../components/Badge";
-import { LoadingState, ErrorBanner } from "../components/Feedback";
+import { useAuth } from "../hooks/useAuth";
+import shoppingAssistantImg from "../assets/services/shopping-assistant.jpg";
+import cityGuideImg from "../assets/services/city-guide.jpg";
 
 export default function VerifiedWorkers() {
   const navigate = useNavigate();
-  const [workers, setWorkers] = useState([]);
-  const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  const load = async (value = "") => {
-    setLoading(true);
-    setError("");
-    try {
-      const res = await workerService.getVerifiedWorkers({ search: value });
-      setWorkers(res.data.workers || []);
-    } catch (e) {
-      setError(e.response?.data?.message || "Could not load verified workers");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { load(); }, []);
+  const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen bg-surface">
-      {/* Hero header */}
-      <div className="bg-gradient-to-r from-primary to-brand-purple px-margin-mobile md:px-margin-desktop py-xl">
+    <div className="min-h-screen bg-slate-50 pb-20">
+      {/* ── Top Hero Header ── */}
+      <div className="bg-gradient-to-r from-primary via-indigo-900 to-brand-purple text-white py-8 sm:py-12 px-4 sm:px-8 shadow-md">
         <div className="max-w-screen-xl mx-auto">
-          <div className="flex items-center gap-3 mb-2">
+          {/* Back button & Tag */}
+          <div className="flex items-center gap-3 mb-4">
             <button
               type="button"
               onClick={() => {
                 if (window.history.length > 1) navigate(-1);
                 else navigate("/customer");
               }}
-              className="w-9 h-9 rounded-xl bg-white/20 hover:bg-white/30 active:bg-white/40 flex items-center justify-center text-white transition-colors shrink-0"
+              className="w-10 h-10 rounded-xl bg-white/20 hover:bg-white/30 active:scale-95 flex items-center justify-center text-white transition-all shrink-0 backdrop-blur-sm border border-white/20"
               aria-label="Back"
             >
-              <span className="material-symbols-outlined text-[20px]">arrow_back</span>
+              <span className="material-symbols-outlined text-[22px]">arrow_back</span>
             </button>
-            <p className="font-status-badge text-status-badge text-secondary-fixed uppercase tracking-widest">Trusted Network</p>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md border border-white/20 text-white text-[11px] font-black uppercase tracking-wider">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Direct Assisted Companion Services
+            </div>
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-md">Verified Workers</h1>
-          <p className="font-body-md text-body-md text-white/80 max-w-lg mb-lg">
-            Only professionals approved by our admin team are shown here. Every worker is background-verified.
+
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-black tracking-tight leading-tight mb-3">
+            Personal Shopping &amp; Market Assistants
+          </h1>
+          <p className="text-sm sm:text-base text-white/85 max-w-2xl leading-relaxed">
+            Hire a respectful, background-verified local companion to carry heavy bags for your elderly family members, or guide you through the best wholesale markets if you are new to the city.
           </p>
 
-          {/* Search */}
-          <div className="flex gap-sm max-w-2xl bg-white/10 backdrop-blur-md rounded-xl p-sm border border-white/20">
-            <div className="relative flex-1">
-              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-white/60 text-[20px]">search</span>
-              <input
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={(e) => e.key === "Enter" && load(search)}
-                placeholder="Search name, skill or city…"
-                className="w-full pl-xl pr-md py-sm rounded-lg bg-white/10 text-white placeholder-white/50 font-body-md text-body-md focus:outline-none focus:ring-2 focus:ring-white/50"
-              />
-            </div>
-            <button
-              onClick={() => load(search)}
-              className="px-lg rounded-lg bg-white text-brand-purple font-label-md text-label-md font-bold hover:bg-surface-container-low transition-colors shrink-0"
-            >
-              Search
-            </button>
+          {/* Quick Stat Badges */}
+          <div className="flex flex-wrap items-center gap-3 sm:gap-6 mt-6 pt-5 border-t border-white/15 text-xs sm:text-sm font-semibold">
+            <span className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-emerald-400 text-[18px]">verified</span>
+              100% Aadhaar Verified
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-amber-400 text-[18px]">schedule</span>
+              Hourly &amp; Half-Day Booking
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="material-symbols-outlined text-purple-300 text-[18px]">home_pin</span>
+              Doorstep or Market Pickup
+            </span>
           </div>
         </div>
       </div>
 
-      {/* Content */}
-      <div className="max-w-screen-xl mx-auto px-margin-mobile md:px-margin-desktop py-lg">
-        <ErrorBanner message={error} />
+      {/* ── Main 2 Core Services Showcase ── */}
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 -mt-6 sm:-mt-8 relative z-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+          {/* ── SERVICE 1: Market & Heavy Bag Shopping Assistant (Elder Care) ── */}
+          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 overflow-hidden flex flex-col justify-between hover:border-indigo-300 transition-all group">
+            <div>
+              {/* Image Banner */}
+              <div className="relative h-60 sm:h-72 overflow-hidden bg-slate-100">
+                <img
+                  src={shoppingAssistantImg}
+                  alt="Market & Heavy Bag Shopping Assistant for Elders and Families"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-brand-purple border border-purple-100 shadow-sm flex items-center gap-1">
+                  <span>🛍️</span>
+                  <span>Elder &amp; Family Care</span>
+                </div>
+                <div className="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-amber-400 border border-slate-700 shadow-sm">
+                  Starting at ₹149/hr
+                </div>
+              </div>
 
-        {loading ? (
-          <LoadingState label="Finding verified workers…" />
-        ) : workers.length === 0 ? (
-          <div className="py-2xl text-center bg-surface-container-lowest border border-outline-variant rounded-2xl mt-lg">
-            <span className="material-symbols-outlined text-5xl text-on-surface-variant">person_search</span>
-            <h3 className="font-headline-md text-headline-md mt-md text-on-surface">No verified workers found</h3>
-            <p className="text-on-surface-variant mt-xs font-body-md text-body-md">Try another name, skill or city.</p>
-          </div>
-        ) : (
-          <>
-            <p className="font-label-md text-label-md text-on-surface-variant mb-lg">
-              {workers.length} verified worker{workers.length !== 1 ? "s" : ""} available
-            </p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-lg">
-              {workers.map((w) => (
-                <WorkerCard key={w._id} worker={w} onView={() => navigate(`/customer/workers/${w._id}`)} />
-              ))}
+              {/* Content */}
+              <div className="p-5 sm:p-7 space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-amber-500 font-bold text-xs sm:text-sm flex items-center gap-0.5">
+                      ★ 4.96 (18k+ happy families)
+                    </span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
+                    Market &amp; Heavy Bag Assistant <br className="hidden sm:inline" />
+                    <span className="text-brand-purple text-lg sm:text-xl font-bold">(Elder &amp; Bazaar Shopping Companion)</span>
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                    Designed for senior citizens, mothers, and busy families who want to shop at local bazaars or supermarkets without the pain of carrying heavy vegetable/grocery bags.
+                  </p>
+                </div>
+
+                {/* Benefits / Feature Bullets */}
+                <div className="space-y-2.5 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs sm:text-sm text-slate-700">
+                  <div className="flex items-start gap-2.5">
+                    <span className="material-symbols-outlined text-emerald-600 text-[18px] shrink-0 mt-0.5">fitness_center</span>
+                    <span><strong>Carries Heavy Bags:</strong> Lifts up to 25kg+ groceries, fruits, vegetables, and shopping parcels with care.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="material-symbols-outlined text-brand-purple text-[18px] shrink-0 mt-0.5">elderly</span>
+                    <span><strong>Gentle Elder Accompaniment:</strong> Walks with patience, assists through busy crowds, and ensures safety.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="material-symbols-outlined text-blue-600 text-[18px] shrink-0 mt-0.5">local_taxi</span>
+                    <span><strong>Doorstep Transport Helper:</strong> Hails auto/cab, loads luggage, and delivers bags right inside the home.</span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
 
-function WorkerCard({ worker, onView }) {
-  const statusColors = {
-    AVAILABLE: "bg-green-100 text-green-700",
-    BUSY: "bg-orange-100 text-orange-700",
-    OFFLINE: "bg-gray-100 text-gray-500",
-  };
-
-  return (
-    <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow group">
-      {/* Gradient top strip */}
-      <div className="h-2 bg-gradient-to-r from-brand-purple to-primary" />
-
-      <div className="p-lg">
-        {/* Header */}
-        <div className="flex items-start gap-md mb-md">
-          <div className="w-14 h-14 rounded-full bg-primary-container border-2 border-outline-variant flex items-center justify-center overflow-hidden shrink-0">
-            {worker.user?.profilePhoto ? (
-              <img src={worker.user.profilePhoto} className="w-full h-full object-cover" alt={worker.user.name} />
-            ) : (
-              <span className="material-symbols-outlined text-primary text-2xl">person</span>
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <h3 className="font-label-md text-label-md font-bold text-on-surface truncate">{worker.user?.name}</h3>
-            <p className="text-sm text-on-surface-variant">
-              {worker.city || "Location not listed"}
-            </p>
-            <div className="flex items-center gap-xs mt-xs">
-              {worker.status && (
-                <span className={`text-xs font-bold px-xs py-0.5 rounded-full ${statusColors[worker.status] || statusColors.OFFLINE}`}>
-                  {worker.status}
-                </span>
-              )}
+            {/* Action Bottom */}
+            <div className="p-5 sm:p-7 pt-0">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    navigate("/login");
+                  } else {
+                    navigate("/customer/services/shopping-bag-assistant");
+                  }
+                }}
+                className="w-full py-3.5 sm:py-4 px-6 rounded-2xl bg-gradient-to-r from-primary to-brand-purple hover:opacity-95 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-indigo-600/20 active:scale-95 transition-all"
+              >
+                <span>Book Market Assistant Now</span>
+                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </button>
             </div>
           </div>
-          <div className="shrink-0">
-            <Badge tone="verified" icon="verified">Verified</Badge>
+
+          {/* ── SERVICE 2: New City Shopping Guide & Market Navigator ── */}
+          <div className="bg-white rounded-3xl border border-slate-200/90 shadow-xl shadow-slate-200/50 overflow-hidden flex flex-col justify-between hover:border-indigo-300 transition-all group">
+            <div>
+              {/* Image Banner */}
+              <div className="relative h-60 sm:h-72 overflow-hidden bg-slate-100">
+                <img
+                  src={cityGuideImg}
+                  alt="New City Shopping Guide and Wholesale Market Navigator"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-[11px] font-black uppercase tracking-wider text-emerald-700 border border-emerald-100 shadow-sm flex items-center gap-1">
+                  <span>🗺️</span>
+                  <span>New In City &amp; Explorer</span>
+                </div>
+                <div className="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-amber-400 border border-slate-700 shadow-sm">
+                  Starting at ₹199/hr
+                </div>
+              </div>
+
+              {/* Content */}
+              <div className="p-5 sm:p-7 space-y-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-amber-500 font-bold text-xs sm:text-sm flex items-center gap-0.5">
+                      ★ 4.94 (14k+ city shoppers)
+                    </span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
+                    New City Shopping Guide <br className="hidden sm:inline" />
+                    <span className="text-emerald-600 text-lg sm:text-xl font-bold">(Local Market Navigator &amp; Bargaining Expert)</span>
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                    New to the city or looking for authentic wholesale deals? Hire a smart local insider who knows every market lane, authentic shops, and local language.
+                  </p>
+                </div>
+
+                {/* Benefits / Feature Bullets */}
+                <div className="space-y-2.5 bg-slate-50 p-4 rounded-2xl border border-slate-100 text-xs sm:text-sm text-slate-700">
+                  <div className="flex items-start gap-2.5">
+                    <span className="material-symbols-outlined text-emerald-600 text-[18px] shrink-0 mt-0.5">store</span>
+                    <span><strong>Direct Wholesale Market Access:</strong> Clothes, electronics, home decor, spices, and utensils at actual wholesale rates.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">handshake</span>
+                    <span><strong>Price Bargaining &amp; Local Language:</strong> Overcomes language gaps and negotiates the best fair rate for you.</span>
+                  </div>
+                  <div className="flex items-start gap-2.5">
+                    <span className="material-symbols-outlined text-indigo-600 text-[18px] shrink-0 mt-0.5">route</span>
+                    <span><strong>Custom Shopping Route:</strong> Saves 3-4 hours of wandering by taking you straight to tested, trusted merchants.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Action Bottom */}
+            <div className="p-5 sm:p-7 pt-0">
+              <button
+                type="button"
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    navigate("/login");
+                  } else {
+                    navigate("/customer/services/city-shopping-guide");
+                  }
+                }}
+                className="w-full py-3.5 sm:py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 active:scale-95 transition-all"
+              >
+                <span>Hire City Shopping Guide</span>
+                <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Rating + jobs */}
-        <div className="flex items-center gap-md mb-md">
-          <div className="flex items-center gap-xs">
-            <span className="material-symbols-outlined text-brand-orange text-[16px] fill">star</span>
-            <span className="font-label-md text-label-md text-on-surface">{Number(worker.rating || 5).toFixed(1)}</span>
+        {/* ── 3-Step Simple Process ── */}
+        <div className="mt-12 sm:mt-16 bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/90 shadow-sm">
+          <div className="text-center max-w-lg mx-auto mb-8">
+            <span className="text-xs font-black uppercase tracking-wider text-brand-purple bg-purple-50 px-3 py-1 rounded-full border border-purple-100">
+              How It Works
+            </span>
+            <h3 className="text-xl sm:text-2xl font-black text-slate-900 mt-2">
+              Book in 3 Simple Steps
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 mt-1">
+              Affordable, transparent hourly rates with zero hidden platform fees.
+            </p>
           </div>
-          <span className="text-outline-variant">·</span>
-          <span className="font-status-badge text-status-badge text-on-surface-variant">{worker.totalJobs || 0} jobs completed</span>
-          <span className="text-outline-variant">·</span>
-          <span className="font-status-badge text-status-badge text-on-surface-variant">{worker.experienceYears || 0} yrs exp</span>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-100 text-center space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center mx-auto text-xl font-black">
+                1
+              </div>
+              <h4 className="text-sm sm:text-base font-bold text-slate-900">Choose Companion Type</h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Pick between a <strong>Market Bag Assistant</strong> for heavy lifting, or a <strong>City Guide</strong> for wholesale market exploration.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-100 text-center space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mx-auto text-xl font-black">
+                2
+              </div>
+              <h4 className="text-sm sm:text-base font-bold text-slate-900">Set Meeting Location</h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Your assistant meets you at your home doorstep or directly at the market/mall entrance as per your convenience.
+              </p>
+            </div>
+
+            <div className="p-5 rounded-2xl bg-slate-50/80 border border-slate-100 text-center space-y-2">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-xl font-black">
+                3
+              </div>
+              <h4 className="text-sm sm:text-base font-bold text-slate-900">Stress-Free Shopping</h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Shop with ease, save time and money, and pay only for the exact hours used. Safe, dignified, and reliable.
+              </p>
+            </div>
+          </div>
         </div>
 
-        {/* Skills */}
-        <div className="flex flex-wrap gap-xs mb-lg">
-          {(worker.skills || []).slice(0, 3).map((s) => (
-            <span key={s} className="text-xs px-sm py-0.5 rounded-full bg-brand-purple-light text-brand-purple capitalize font-medium">
-              {s.replaceAll("_", " ")}
+        {/* ── Partner Registration Callout Banner ── */}
+        <div className="mt-8 bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6 border border-slate-800">
+          <div className="space-y-1 text-center sm:text-left">
+            <span className="text-amber-400 text-xs font-black uppercase tracking-wider">
+              Earn Daily with SevaSetu
             </span>
-          ))}
-          {(worker.skills || []).length > 3 && (
-            <span className="text-xs px-sm py-0.5 rounded-full bg-surface-container-high text-on-surface-variant">
-              +{worker.skills.length - 3} more
-            </span>
-          )}
+            <h4 className="text-lg sm:text-xl font-black">
+              Want to work as a Market Companion or City Guide?
+            </h4>
+            <p className="text-xs sm:text-sm text-slate-400 max-w-xl">
+              Are you polite, energetic, and familiar with local city markets? Earn ₹800 to ₹1,500 daily with direct, instant payouts.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => navigate("/register/worker")}
+            className="px-6 py-3 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shrink-0 shadow-lg shadow-amber-500/20 active:scale-95 transition-all"
+          >
+            Register as a Worker Partner →
+          </button>
         </div>
-
-        {/* Cooperative */}
-        {worker.cooperative?.name && (
-          <p className="flex items-center gap-xs text-xs text-on-surface-variant mb-md">
-            <span className="material-symbols-outlined text-[14px]">corporate_fare</span>
-            {worker.cooperative.name}
-          </p>
-        )}
-
-        {/* Action */}
-        <button
-          onClick={onView}
-          className="w-full flex items-center justify-center gap-xs py-sm rounded-xl border-2 border-brand-purple text-brand-purple font-label-md text-label-md font-bold hover:bg-brand-purple hover:text-white transition-colors"
-        >
-          <span className="material-symbols-outlined text-[18px]">person</span>
-          View Full Profile
-        </button>
       </div>
     </div>
   );

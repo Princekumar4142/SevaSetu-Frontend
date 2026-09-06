@@ -11,6 +11,8 @@ import spaWomenImg from "../assets/services/spa-women.jpg";
 import acRepairImg from "../assets/services/ac-repair.jpg";
 import homePaintingImg from "../assets/services/home-painting.jpg";
 import djMusicImg from "../assets/services/dj-music.jpg";
+import shoppingAssistantImg from "../assets/services/shopping-assistant.jpg";
+import cityGuideImg from "../assets/services/city-guide.jpg";
 
 export const SERVICE_IMAGES = {
   // 1. Personal & Grooming
@@ -53,6 +55,10 @@ export const SERVICE_IMAGES = {
   "photography":    "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
   "decoration":     "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=500&q=80",
   "dj-music":       djMusicImg,
+
+  // 6. Personal Companion & Shopping Assistants (Unique)
+  "shopping-bag-assistant": shoppingAssistantImg,
+  "city-shopping-guide":    cityGuideImg,
 };
 
 export function getServiceImage(serviceId) {

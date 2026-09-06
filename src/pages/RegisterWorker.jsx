@@ -22,6 +22,8 @@ const TRADE_CATEGORIES = [
   { id: "women-salon", name: "Salon & Spa for Women", icon: "spa", defaultSkills: ["Facial & Cleanup", "Waxing", "Hair Styling", "Pedicure / Manicure"] },
   { id: "men-salon", name: "Men's Grooming & Salon", icon: "content_cut", defaultSkills: ["Haircut & Styling", "Beard Grooming", "Head Massage", "De-tan Pack"] },
   { id: "carpenter-mason", name: "Carpentry & Masonry", icon: "carpenter", defaultSkills: ["Furniture Repair", "Lock Repair", "Tile & Masonry Work", "Drill & Hang"] },
+  { id: "shopping-bag-assistant", name: "Market & Heavy Bag Shopping Assistant (Elder Care)", icon: "shopping_bag", badge: "NEW & HIGH DEMAND", defaultSkills: ["Heavy Bag Carrying", "Bazaar Grocery Shopping", "Elderly Market Assistance", "Luggage & Cart Helper", "Doorstep Loading/Unloading"] },
+  { id: "city-shopping-guide", name: "New City Shopping Guide & Market Navigator", icon: "explore", badge: "NEW & HIGH DEMAND", defaultSkills: ["Local Market Navigation", "Wholesale Shopping Guide", "Price Bargaining & Negotiation", "City Explorer & Language Guide", "Fabric, Clothes & Electronics Expert"] },
   { id: "custom-services", name: "Custom Trade & Services", icon: "handyman", defaultSkills: ["General Handyman", "Bazaar Assistant", "Appliance Setup"] },
 ];
 
@@ -344,8 +346,15 @@ export default function RegisterWorker() {
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${selected ? "bg-brand-purple text-white" : "bg-slate-100 text-slate-600"}`}>
                         <span className="material-symbols-outlined text-[20px]">{cat.icon}</span>
                       </div>
-                      <div>
-                        <p className="text-xs font-bold leading-snug">{cat.name}</p>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          <p className="text-xs font-bold leading-snug">{cat.name}</p>
+                          {cat.badge && (
+                            <span className="text-[9px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-800 border border-amber-300 shrink-0">
+                              {cat.badge}
+                            </span>
+                          )}
+                        </div>
                         <p className="text-[10px] text-slate-500 mt-0.5">{cat.defaultSkills.slice(0, 2).join(", ")}...</p>
                       </div>
                     </button>

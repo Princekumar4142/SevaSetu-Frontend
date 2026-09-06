@@ -316,6 +316,10 @@ export default function LandingHero() {
   const handleSearch = (e) => {
     if (e) e.preventDefault();
     const q = searchTerm.trim();
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
     if (q) {
       navigate(`/customer/services/${encodeURIComponent(q)}`);
     } else {
@@ -448,66 +452,68 @@ export default function LandingHero() {
                 </span>
               </div>
 
-              {/* Complete Workflow Infographic Image */}
-              <div className="relative rounded-xl overflow-hidden border border-slate-200/80 bg-slate-50 shadow-inner group/img">
+              {/* Complete Workflow Infographic Image - Unblocked so all 4 steps are clearly visible */}
+              <div className="rounded-xl overflow-hidden border border-slate-200/80 bg-slate-50 shadow-inner group/img">
                 <img
                   src={workflowImg}
-                  alt="SevaSetu Complete Workflow - Book service, verified arrival, quality work, happy customers and worker empowerment"
+                  alt="SevaSetu Complete 4-Step Workflow: 1. Book on App, 2. Verified Technician Arrival, 3. Quality 5-Star Service, 4. Instant Earnings"
                   className="w-full h-auto object-cover transition-transform duration-500 group-hover/img:scale-[1.02]"
                   loading="lazy"
                 />
-
-                {/* Micro overlay tag */}
-                <div className="absolute bottom-2 left-2 right-2 bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/80 shadow-xs flex items-center justify-between text-[10px] sm:text-[11px]">
-                  <span className="font-bold text-slate-800 flex items-center gap-1">
-                    <span className="text-emerald-600 font-black">✓</span> 100% Direct Worker Payouts
-                  </span>
-                  <span className="text-indigo-600 font-bold flex items-center gap-1">
-                    <span>Social Impact</span>
-                    <span>🌱</span>
-                  </span>
-                </div>
               </div>
 
-              {/* 4 Connected Step Badges */}
-              <div className="grid grid-cols-2 gap-2 mt-3">
-                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100/90 flex items-start gap-2">
-                  <span className="text-base leading-none shrink-0">📱</span>
-                  <div className="min-w-0">
-                    <h5 className="text-[11px] font-bold text-slate-800 leading-tight">1. Easy Booking</h5>
-                    <p className="text-[10px] text-slate-500 truncate">Book in 2 mins</p>
-                  </div>
+              {/* 4 Connected Step Sequence with Arrow Indicators (1 → 2 → 3 → 4) */}
+              <div className="mt-3 space-y-2">
+                <div className="flex items-center justify-between px-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                  <span>Step-by-Step Flow</span>
+                  <span>1 → 2 → 3 → 4</span>
                 </div>
 
-                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100/90 flex items-start gap-2">
-                  <span className="text-base leading-none shrink-0">🛵</span>
-                  <div className="min-w-0">
-                    <h5 className="text-[11px] font-bold text-slate-800 leading-tight">2. Verified Pro</h5>
-                    <p className="text-[10px] text-slate-500 truncate">Prompt doorstep visit</p>
+                <div className="grid grid-cols-2 gap-2">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">1</span>
+                    <div className="min-w-0">
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Book a Service</h5>
+                      <p className="text-[10px] text-slate-500 truncate">Select &amp; book in 2 mins</p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100/90 flex items-start gap-2">
-                  <span className="text-base leading-none shrink-0">⭐</span>
-                  <div className="min-w-0">
-                    <h5 className="text-[11px] font-bold text-slate-800 leading-tight">3. 5-Star Service</h5>
-                    <p className="text-[10px] text-slate-500 truncate">Customer happiness</p>
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">2</span>
+                    <div className="min-w-0">
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Verified Arrival</h5>
+                      <p className="text-[10px] text-slate-500 truncate">Partner reaches doorstep</p>
+                    </div>
                   </div>
-                </div>
 
-                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100/90 flex items-start gap-2">
-                  <span className="text-base leading-none shrink-0">💰</span>
-                  <div className="min-w-0">
-                    <h5 className="text-[11px] font-bold text-slate-800 leading-tight">4. Fair Earnings</h5>
-                    <p className="text-[10px] text-slate-500 truncate">Dignity & prosperity</p>
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">3</span>
+                    <div className="min-w-0">
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">5-Star Service</h5>
+                      <p className="text-[10px] text-slate-500 truncate">Customer smile &amp; rating</p>
+                    </div>
+                  </div>
+
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">4</span>
+                    <div className="min-w-0">
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Direct Earnings</h5>
+                      <p className="text-[10px] text-slate-500 truncate">Fair income &amp; dignity</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
               {/* Bottom Impact Strip */}
-              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-600">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                <span className="font-semibold text-slate-700">Transforming local lives</span>
+              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] sm:text-xs">
+                <span className="font-bold text-emerald-600 flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[15px]">check_circle</span>
+                  100% Direct Payouts
+                </span>
+                <span className="font-semibold text-slate-600 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                  Social Impact 🌱
+                </span>
               </div>
             </div>
 

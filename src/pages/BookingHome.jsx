@@ -33,6 +33,10 @@ export default function BookingHome() {
   const { currentUser, isAuthenticated } = useAuth();
 
   const handleSelectService = (item) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
     if (item && item.id) {
       navigate(`/customer/services/${item.id}`);
     } else {

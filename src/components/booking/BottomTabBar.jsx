@@ -19,8 +19,8 @@ export default function BottomTabBar() {
 
   const handleClick = (tab) => {
     if (tab.key === "uc") navigate(isAuthenticated ? "/customer" : "/");
-    else if (tab.key === "bookings") navigate("/customer/bookings");
-    else if (tab.key === "workers") navigate(isAuthenticated ? "/customer/workers" : "/login");
+    else if (tab.key === "bookings") navigate(isAuthenticated ? "/customer/bookings" : "/login");
+    else if (tab.key === "workers") navigate("/customer/workers");
     else if (tab.key === "plus") navigate(isAuthenticated ? "/customer/plus" : "/customer/plus");
     else if (tab.key === "account") navigate(isAuthenticated ? "/customer/profile" : "/login");
   };

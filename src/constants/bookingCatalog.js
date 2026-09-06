@@ -905,6 +905,114 @@ export const CATEGORIES = {
       },
     ],
   },
+
+  // 30. Market & Heavy Bag Shopping Assistant
+  "shopping-bag-assistant": {
+    id: "shopping-bag-assistant",
+    name: "Market & Heavy Bag Assistant",
+    tag: "Elder Care & Shopping Companion",
+    rating: 4.96,
+    ratingCount: "18K",
+    categoryType: "Shopping & Market Companion",
+    icon: "shopping_bag",
+    chips: [
+      { id: "market-bags", label: "Bag Carrying", icon: "shopping_bag" },
+      { id: "elder-care", label: "Elderly Companion", icon: "elderly" },
+      { id: "grocery-bazaar", label: "Bazaar Helper", icon: "storefront" },
+    ],
+    sections: [
+      {
+        id: "shopping-packages",
+        title: "Assistant Packages",
+        services: [
+          {
+            id: "sba-1",
+            name: "1-Hour Quick Market & Bag Carrying Assistant",
+            icon: "shopping_bag",
+            rating: 4.95,
+            ratingCount: "8k",
+            durationMins: 60,
+            price: 149,
+            desc: "Dedicated polite helper to accompany to local bazaar, carry heavy bags (up to 20kg), and help load/unload."
+          },
+          {
+            id: "sba-2",
+            name: "2-Hour Complete Grocery & Bazaar Companion (Elder Care)",
+            icon: "elderly",
+            rating: 4.98,
+            ratingCount: "12k",
+            durationMins: 120,
+            price: 279,
+            desc: "Patient, caring assistant for senior citizens or families. Full market walk-along, heavy bag lifting, cart handling, and doorstep drop."
+          },
+          {
+            id: "sba-3",
+            name: "Half-Day (4 Hours) Festival & Bulk Shopping Assistant",
+            icon: "shopping_cart",
+            rating: 4.93,
+            ratingCount: "5k",
+            durationMins: 240,
+            price: 499,
+            desc: "Extended companion for bulk shopping, multi-market trips, wedding shopping, or festival preparations."
+          },
+        ],
+      },
+    ],
+  },
+
+  // 31. New City Shopping Guide & Market Navigator
+  "city-shopping-guide": {
+    id: "city-shopping-guide",
+    name: "New City Shopping Guide",
+    tag: "Local Market Navigator & Bargaining Companion",
+    rating: 4.94,
+    ratingCount: "14K",
+    categoryType: "City Guide & Shopping Companion",
+    icon: "explore",
+    chips: [
+      { id: "wholesale-markets", label: "Wholesale Markets", icon: "store" },
+      { id: "bargaining", label: "Bargaining & Rates", icon: "handshake" },
+      { id: "city-navigation", label: "Market Navigation", icon: "explore" },
+    ],
+    sections: [
+      {
+        id: "guide-packages",
+        title: "City Shopping Guide Packages",
+        services: [
+          {
+            id: "csg-1",
+            name: "2-Hour Local Wholesale & Hidden Market Explorer",
+            icon: "explore",
+            rating: 4.92,
+            ratingCount: "6k",
+            durationMins: 120,
+            price: 299,
+            desc: "Local insider takes you directly to authentic wholesale shops, avoiding tourist traps and high retail markups."
+          },
+          {
+            id: "csg-2",
+            name: "4-Hour Half-Day Complete City Shopping & Bargaining Guide",
+            icon: "handshake",
+            rating: 4.96,
+            ratingCount: "11k",
+            durationMins: 240,
+            price: 549,
+            desc: "Accompanied shopping trip across top markets. Guide helps negotiate best prices, overcomes language barriers, and manages local transport."
+          },
+          {
+            id: "csg-3",
+            name: "Full-Day (8 Hours) Home Setup & Multi-Market Shopping Companion",
+            icon: "home_work",
+            rating: 4.94,
+            ratingCount: "4k",
+            durationMins: 480,
+            price: 999,
+            desc: "Complete personal guide for newcomers setting up a home: furniture, utensils, clothes, electronics, and daily essentials across the city."
+          },
+        ],
+      },
+    ],
+  },
 };
 
 /**
@@ -912,6 +1020,13 @@ export const CATEGORIES = {
  * Maps direct category IDs, human titles, URLs, and search keywords to the right catalog item.
  */
 const ALIAS_MAP = {
+  "shopping-bag-assistant": "shopping-bag-assistant",
+  "shopping assistant": "shopping-bag-assistant",
+  "market assistant": "shopping-bag-assistant",
+  "bag carrier": "shopping-bag-assistant",
+  "city-shopping-guide": "city-shopping-guide",
+  "shopping guide": "city-shopping-guide",
+  "city guide": "city-shopping-guide",
   // Personal & Grooming
   "salon-women": "salon-women",
   "salon": "salon-women",

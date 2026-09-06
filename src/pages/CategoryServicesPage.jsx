@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import {
   PERSONAL_SERVICES,
   HOME_SERVICES,
@@ -75,6 +76,7 @@ const CATEGORY_CONFIG = {
 export default function CategoryServicesPage() {
   const { categoryId } = useParams();
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const cat = CATEGORY_CONFIG[categoryId];
 
   if (!cat) {
@@ -151,7 +153,13 @@ export default function CategoryServicesPage() {
               <button
                 key={item.id + item.label}
                 type="button"
-                onClick={() => navigate(`/customer/services/${item.id}`)}
+                onClick={() => {
+                  if (!isAuthenticated) {
+                    navigate("/login");
+                  } else {
+                    navigate(`/customer/services/${item.id}`);
+                  }
+                }}
                 className="group bg-white rounded-2xl border border-slate-200 hover:border-indigo-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 overflow-hidden text-left relative"
               >
                 {/* Badge */}

@@ -55,18 +55,11 @@ import AdminCooperatives from "../pages/AdminCooperatives";
 export default function AppRoutes() {
   return (
     <Routes>
-      {/* Public home & public booking flows — uses CustomerLayout */}
+      {/* Public exploration routes — uses CustomerLayout */}
       <Route element={<CustomerLayout />}>
         <Route path="/" element={<BookingHome />} />
-        <Route path="/customer/services/:categoryId" element={<BookingCategory />} />
-        <Route path="/customer/package-builder/:categoryId" element={<BookingPackage />} />
-        <Route path="/customer/checkout/address" element={<BookingAddress />} />
-        <Route path="/customer/checkout/slot" element={<BookingSlot />} />
-        <Route path="/customer/checkout/payment" element={<BookingPayment />} />
-        <Route path="/customer/checkout/summary" element={<BookingSummary />} />
-        <Route path="/customer/bookings/track/:bookingId" element={<BookingTracking />} />
-        <Route path="/customer/plus" element={<SevaSetuPlus />} />
         <Route path="/customer/category/:categoryId" element={<CategoryServicesPage />} />
+        <Route path="/customer/workers" element={<VerifiedWorkers />} />
       </Route>
 
       {/* Public auth pages */}
