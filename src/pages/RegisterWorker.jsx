@@ -681,13 +681,6 @@ export default function RegisterWorker() {
           </div>
         </form>
 
-        {/* ── AI Voice Form Agent ── */}
-        <VoiceFormAgent
-          fields={WORKER_VOICE_FIELDS}
-          onFieldFill={handleVoiceFieldFill}
-          formType="worker"
-        />
-
         <p className="text-xs text-slate-500 text-center pb-8">
           Already registered as a partner?{" "}
           <Link to="/login" className="text-brand-purple font-bold hover:underline">
