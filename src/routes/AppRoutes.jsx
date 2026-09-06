@@ -78,6 +78,8 @@ export default function AppRoutes() {
 
       {/* Registration choice page — standalone, no PublicLayout shell */}
       <Route path="/register" element={<RegisterChoose />} />
+      <Route path="/register/choose" element={<RegisterChoose />} />
+      <Route path="/signup" element={<RegisterChoose />} />
 
       {/* Customer Protected Routes */}
       <Route element={<ProtectedRoute allowedRoles={[ROLES.CUSTOMER]} />}>
