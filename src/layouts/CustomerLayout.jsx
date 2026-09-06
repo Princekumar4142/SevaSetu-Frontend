@@ -35,36 +35,19 @@ export default function CustomerLayout() {
     ? `${currentUser.address}${currentUser.city ? `, ${currentUser.city}` : ""}`
     : "Add your service address";
 
-  const isRoot = location.pathname === "/" || location.pathname === "/customer";
-
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* ── Desktop/Tablet Top Navbar ── */}
       <header className="hidden md:block sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-outline-variant shadow-sm transition-all">
         <div className="max-w-screen-xl mx-auto flex items-center justify-between gap-6 px-margin-desktop h-16">
-          {/* Left: Back Button, Logo & Dynamic Address (when logged in) */}
+          {/* Left: Logo & Dynamic Address (when logged in) */}
           <div className="flex items-center gap-5">
-            <div className="flex items-center gap-3">
-              {!isRoot && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (window.history.length > 1) navigate(-1);
-                    else navigate("/customer");
-                  }}
-                  className="w-10 h-10 rounded-full bg-slate-100/80 hover:bg-slate-200 active:bg-slate-300 flex items-center justify-center text-slate-700 transition-colors shrink-0"
-                  aria-label="Go back"
-                >
-                  <span className="material-symbols-outlined text-[20px]">arrow_back</span>
-                </button>
-              )}
-              <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-2.5 shrink-0 group">
-                <Logo size={48} className="transition-transform group-hover:scale-105" />
-                <span className="font-headline-md text-headline-md font-extrabold text-primary tracking-tight">
-                  SevaSetu
-                </span>
-              </Link>
-            </div>
+            <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-2.5 shrink-0 group">
+              <Logo size={48} className="transition-transform group-hover:scale-105" />
+              <span className="font-headline-md text-headline-md font-extrabold text-primary tracking-tight">
+                SevaSetu
+              </span>
+            </Link>
 
             {/* Dynamic Address Pill — Only when user is logged in */}
             {isAuthenticated && (
@@ -148,25 +131,10 @@ export default function CustomerLayout() {
 
       {/* ── Mobile Top Bar ── */}
       <header className="md:hidden sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-outline-variant flex items-center justify-between gap-sm px-margin-mobile py-2.5">
-        <div className="flex items-center gap-2">
-          {!isRoot && (
-            <button
-              type="button"
-              onClick={() => {
-                if (window.history.length > 1) navigate(-1);
-                else navigate("/customer");
-              }}
-              className="w-8 h-8 rounded-full bg-slate-100 active:bg-slate-200 flex items-center justify-center text-slate-700 shrink-0"
-              aria-label="Go back"
-            >
-              <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-            </button>
-          )}
-          <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-1.5 shrink-0">
-            <Logo size={40} />
-            <span className="font-label-md text-label-md font-bold text-primary">SevaSetu</span>
-          </Link>
-        </div>
+        <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-1.5 shrink-0">
+          <Logo size={40} />
+          <span className="font-label-md text-label-md font-bold text-primary">SevaSetu</span>
+        </Link>
 
         {isAuthenticated ? (
           <div className="flex items-center gap-2 min-w-0">

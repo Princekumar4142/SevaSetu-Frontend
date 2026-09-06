@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
@@ -29,26 +29,19 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
   const sidebarContent = (
     <>
       <div className="mb-lg px-sm flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <button
-            type="button"
-            onClick={() => {
-              if (window.history.length > 1) navigate(-1);
-              else navigate("/");
-            }}
-            className="w-8 h-8 rounded-lg bg-surface-container-low hover:bg-surface-container-high flex items-center justify-center text-primary transition-colors shrink-0"
-            aria-label="Back"
-          >
-            <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-          </button>
+        <Link to="/" className="flex items-center gap-2.5 group">
+          <Logo size={40} className="transition-transform group-hover:scale-105 shrink-0" />
           <div>
-            <div className="flex items-center gap-2 mb-0.5">
-              <Logo size={36} />
-              <h1 className="font-headline-md text-headline-md font-extrabold text-primary">{title}</h1>
-            </div>
-            {subtitle && <p className="font-status-badge text-status-badge text-on-surface-variant mt-xs font-semibold">{subtitle}</p>}
+            <h1 className="font-headline-md text-headline-md font-extrabold text-primary leading-tight">SevaSetu</h1>
+            {subtitle ? (
+              <p className="font-status-badge text-status-badge text-on-surface-variant font-semibold">{subtitle}</p>
+            ) : (
+              title && title !== "SevaSetu" && (
+                <p className="font-status-badge text-status-badge text-on-surface-variant font-semibold">{title}</p>
+              )
+            )}
           </div>
-        </div>
+        </Link>
         {/* Close button visible only on mobile */}
         <button
           type="button"
