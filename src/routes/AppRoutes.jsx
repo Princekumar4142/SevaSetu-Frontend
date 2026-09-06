@@ -37,6 +37,7 @@ import BookingTracking from "../pages/BookingTracking";
 import BookingSummary from "../pages/BookingSummary";
 import CustomerBookings from "../pages/CustomerBookings";
 import SevaSetuPlus from "../pages/SevaSetuPlus";
+import CategoryServicesPage from "../pages/CategoryServicesPage";
 
 // Worker portal modules
 import WorkerBookings from "../pages/WorkerBookings";
@@ -65,6 +66,7 @@ export default function AppRoutes() {
         <Route path="/customer/checkout/summary" element={<BookingSummary />} />
         <Route path="/customer/bookings/track/:bookingId" element={<BookingTracking />} />
         <Route path="/customer/plus" element={<SevaSetuPlus />} />
+        <Route path="/customer/category/:categoryId" element={<CategoryServicesPage />} />
       </Route>
 
       {/* Public auth pages */}
