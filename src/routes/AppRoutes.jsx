@@ -58,6 +58,7 @@ export default function AppRoutes() {
       {/* Public exploration routes — uses CustomerLayout */}
       <Route element={<CustomerLayout />}>
         <Route path="/" element={<BookingHome />} />
+        <Route path="/customer/services" element={<BookingHome />} />
         <Route path="/customer/category/:categoryId" element={<CategoryServicesPage />} />
         <Route path="/customer/workers" element={<VerifiedWorkers />} />
       </Route>

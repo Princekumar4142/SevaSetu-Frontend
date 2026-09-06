@@ -9,7 +9,12 @@ import AddressModal from "../components/AddressModal";
 import Footer from "../components/Footer";
 import Avatar from "../components/Avatar";
 
-const NAV_LINKS = [
+const PUBLIC_NAV_LINKS = [
+  { label: "Services", href: "/customer/services" },
+  { label: "Workers", href: "/customer/workers" },
+];
+
+const AUTH_NAV_LINKS = [
   { label: "Services", href: "/customer/services" },
   { label: "Workers", href: "/customer/workers" },
   { label: "My Bookings", href: "/customer/bookings" },
@@ -77,19 +82,17 @@ export default function CustomerLayout() {
 
           {/* Right: Nav links & Auth actions */}
           <div className="flex items-center gap-4">
-            {isAuthenticated && (
-              <nav className="hidden lg:flex items-center gap-md mr-2">
-                {NAV_LINKS.map((l) => (
-                  <Link
-                    key={l.href}
-                    to={l.href}
-                    className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors"
-                  >
-                    {l.label}
-                  </Link>
-                ))}
-              </nav>
-            )}
+            <nav className="hidden md:flex items-center gap-md mr-2">
+              {(isAuthenticated ? AUTH_NAV_LINKS : PUBLIC_NAV_LINKS).map((l) => (
+                <Link
+                  key={l.href}
+                  to={l.href}
+                  className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium"
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </nav>
 
             {isAuthenticated ? (
               <div className="flex items-center gap-sm">
