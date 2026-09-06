@@ -89,34 +89,57 @@ export default function CategoryServicesPage() {
 
   return (
     <div className="min-h-screen bg-slate-50">
-      {/* ── Hero Banner — left-aligned with back button + emoji + name ── */}
-      <div className={`bg-gradient-to-r ${cat.gradient} py-5 sm:py-6 shadow-sm`}>
-        <div className="max-w-screen-xl mx-auto px-4 sm:px-8 flex items-center gap-3.5">
-          <button
-            type="button"
-            onClick={() => {
-              if (window.history.length > 1) navigate(-1);
-              else navigate("/");
-            }}
-            className="w-10 h-10 rounded-full bg-white/20 hover:bg-white/30 active:bg-white/40 text-white backdrop-blur-sm flex items-center justify-center transition-all shrink-0 shadow-sm"
-            aria-label="Go back"
-            title="Go back"
-          >
-            <span className="material-symbols-outlined text-[22px]">arrow_back</span>
-          </button>
+      {/* ── Professional Floating Hero Banner Card (Spaced down from navbar) ── */}
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pt-4 sm:pt-6">
+        <div
+          className={`relative overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-r ${cat.gradient} p-4 sm:p-6 md:p-7 shadow-lg text-white`}
+        >
+          {/* Subtle decorative glow for premium feel */}
+          <div className="absolute -right-8 -top-8 w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute right-24 -bottom-10 w-36 h-36 bg-white/10 rounded-full blur-xl pointer-events-none" />
 
-          <div className="flex items-center gap-2.5 min-w-0">
-            <span className="text-2xl sm:text-3xl shrink-0">{cat.emoji}</span>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white tracking-tight drop-shadow truncate">
-              {cat.label}
-            </h1>
+          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5 sm:gap-4">
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.history.length > 1) navigate(-1);
+                  else navigate("/");
+                }}
+                className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-white/20 hover:bg-white/30 active:scale-95 text-white backdrop-blur-md flex items-center justify-center transition-all shrink-0 shadow-sm border border-white/20"
+                aria-label="Go back"
+                title="Go back"
+              >
+                <span className="material-symbols-outlined text-[22px]">arrow_back</span>
+              </button>
+
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl sm:text-3xl shrink-0">{cat.emoji}</span>
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight drop-shadow-sm">
+                    {cat.label}
+                  </h1>
+                </div>
+                <p className="text-xs sm:text-sm text-white/90 font-medium mt-0.5 flex items-center gap-2">
+                  <span>{cat.items.length} verified services</span>
+                  <span>•</span>
+                  <span>Trusted & Guaranteed</span>
+                </p>
+              </div>
+            </div>
+
+            {/* Instant booking pill badge */}
+            <div className="hidden sm:flex items-center gap-2 bg-white/15 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-full text-xs font-semibold shadow-inner">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Instant Booking Available</span>
+            </div>
           </div>
         </div>
       </div>
 
       {/* ── Services Grid ── */}
-      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 py-8 sm:py-12">
-        <h2 className="text-lg font-extrabold text-slate-800 mb-6">
+      <div className="max-w-screen-xl mx-auto px-4 sm:px-8 pt-6 pb-12 sm:pb-16">
+        <h2 className="text-lg font-extrabold text-slate-800 mb-5">
           All Services in {cat.label}
         </h2>
 
