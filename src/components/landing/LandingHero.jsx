@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import {
+  PERSONAL_SERVICES,
+  HOME_SERVICES,
+  TRENDING_SERVICES,
+  PROFESSIONAL_SERVICES,
+  HEALTH_WELLNESS_SERVICES,
+  EVENT_SERVICES,
+} from "../../constants/bookingCatalog";
 
 /* ── 3D-Styled Vector Icons (Rich gradients, bevels, depth & specular glints) ── */
 
@@ -249,13 +257,79 @@ function Icon3DPainting() {
   );
 }
 
-const CATEGORY_TILES = [
-  { id: "ac-repair", label: "AC Repair", component: <Icon3DAC />, bg: "from-sky-50 to-blue-50/50 hover:border-sky-300" },
-  { id: "electrical-plumbing", label: "Electrician", component: <Icon3DElectrician />, bg: "from-amber-50 to-yellow-50/50 hover:border-amber-300" },
-  { id: "electrical-plumbing", label: "Plumber", component: <Icon3DPlumber />, bg: "from-cyan-50 to-teal-50/50 hover:border-cyan-300" },
-  { id: "cleaning-pest-1", label: "Deep Cleaning", component: <Icon3DCleaning />, bg: "from-emerald-50 to-green-50/50 hover:border-emerald-300" },
-  { id: "salon-women", label: "Salon at Home", component: <Icon3DSalon />, bg: "from-pink-50 to-rose-50/50 hover:border-pink-300" },
-  { id: "home-painting", label: "Painting", component: <Icon3DPainting />, bg: "from-purple-50 to-violet-50/50 hover:border-purple-300" },
+const ROOT_CATEGORIES = [
+  {
+    id: "personal",
+    label: "Personal Services",
+    emoji: "✨",
+    icon: "self_care",
+    color: "from-pink-500 to-rose-500",
+    lightBg: "bg-pink-50",
+    border: "border-pink-200",
+    textColor: "text-pink-600",
+    activeBg: "bg-pink-500",
+    items: PERSONAL_SERVICES,
+  },
+  {
+    id: "home",
+    label: "Home Services",
+    emoji: "🏠",
+    icon: "home_repair_service",
+    color: "from-blue-500 to-indigo-500",
+    lightBg: "bg-blue-50",
+    border: "border-blue-200",
+    textColor: "text-blue-600",
+    activeBg: "bg-blue-500",
+    items: HOME_SERVICES,
+  },
+  {
+    id: "trending",
+    label: "Trending",
+    emoji: "🔥",
+    icon: "trending_up",
+    color: "from-orange-500 to-amber-500",
+    lightBg: "bg-orange-50",
+    border: "border-orange-200",
+    textColor: "text-orange-600",
+    activeBg: "bg-orange-500",
+    items: TRENDING_SERVICES,
+  },
+  {
+    id: "professional",
+    label: "Professional",
+    emoji: "💼",
+    icon: "work",
+    color: "from-violet-500 to-purple-600",
+    lightBg: "bg-violet-50",
+    border: "border-violet-200",
+    textColor: "text-violet-600",
+    activeBg: "bg-violet-500",
+    items: PROFESSIONAL_SERVICES,
+  },
+  {
+    id: "health",
+    label: "Health & Wellness",
+    emoji: "🏥",
+    icon: "favorite",
+    color: "from-emerald-500 to-teal-500",
+    lightBg: "bg-emerald-50",
+    border: "border-emerald-200",
+    textColor: "text-emerald-600",
+    activeBg: "bg-emerald-500",
+    items: HEALTH_WELLNESS_SERVICES,
+  },
+  {
+    id: "events",
+    label: "Event Services",
+    emoji: "🎉",
+    icon: "celebration",
+    color: "from-fuchsia-500 to-pink-600",
+    lightBg: "bg-fuchsia-50",
+    border: "border-fuchsia-200",
+    textColor: "text-fuchsia-600",
+    activeBg: "bg-fuchsia-500",
+    items: EVENT_SERVICES,
+  },
 ];
 
 const POPULAR_TAGS = [
@@ -303,6 +377,7 @@ export default function LandingHero() {
   const navigate = useNavigate();
   const { currentUser, isAuthenticated } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeCategory, setActiveCategory] = useState(null);
   const firstName = currentUser?.name?.split(" ")[0] || "";
 
   const handleSearch = (e) => {
@@ -313,6 +388,10 @@ export default function LandingHero() {
     } else {
       navigate("/customer/services/electrical-plumbing");
     }
+  };
+
+  const handleCategoryClick = (cat) => {
+    setActiveCategory(activeCategory?.id === cat.id ? null : cat);
   };
 
   return (
@@ -386,29 +465,82 @@ export default function LandingHero() {
             </form>
 
 
-            {/* ── 3D Quick Category Tiles ── */}
+            {/* ── Root Category Tabs + Sub-Service Panel ── */}
             <div className="pt-2">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
                 Explore Services with 1-Tap Booking
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-3.5">
-                {CATEGORY_TILES.map((cat) => (
-                  <button
-                    key={cat.label}
-                    type="button"
-                    onClick={() => navigate(`/customer/services/${cat.id}`)}
-                    className={`flex flex-col items-center justify-center p-3.5 sm:p-3 rounded-2xl bg-gradient-to-b ${cat.bg} border border-slate-200/80 hover:shadow-md hover:-translate-y-1 transition-all text-center group cursor-pointer relative overflow-hidden`}
-                  >
 
-                    <div className="w-14 h-14 sm:w-12 sm:h-12 flex items-center justify-center mb-1.5 sm:mb-1 group-hover:scale-110 transition-transform">
-                      {cat.component}
-                    </div>
-                    <span className="text-xs sm:text-xs font-bold text-slate-800 group-hover:text-indigo-600 leading-tight">
+              {/* Category Tab Pills */}
+              <div className="flex flex-wrap gap-2 mb-3">
+                {ROOT_CATEGORIES.map((cat) => {
+                  const isActive = activeCategory?.id === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => handleCategoryClick(cat)}
+                      className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold border transition-all duration-200 ${
+                        isActive
+                          ? `${cat.activeBg} text-white border-transparent shadow-md`
+                          : `bg-white ${cat.textColor} ${cat.border} hover:${cat.lightBg} hover:shadow-sm`
+                      }`}
+                    >
+                      <span>{cat.emoji}</span>
                       {cat.label}
-                    </span>
-                  </button>
-                ))}
+                      <span className={`material-symbols-outlined text-[14px] transition-transform duration-200 ${isActive ? "rotate-180" : ""}`}>
+                        expand_more
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
+
+              {/* Sub-Services Panel */}
+              {activeCategory && (
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-lg p-4 animate-fade-in">
+                  <div className="flex items-center justify-between mb-3">
+                    <h4 className="font-extrabold text-slate-800 flex items-center gap-1.5">
+                      <span>{activeCategory.emoji}</span>
+                      <span>{activeCategory.label}</span>
+                    </h4>
+                    <button
+                      type="button"
+                      onClick={() => setActiveCategory(null)}
+                      className="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[16px]">close</span>
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                    {activeCategory.items.map((item) => (
+                      <button
+                        key={item.id + item.label}
+                        type="button"
+                        onClick={() => navigate(`/customer/services/${item.id}`)}
+                        className={`group flex flex-col items-center text-center p-3 rounded-xl border ${activeCategory.border} ${activeCategory.lightBg} hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 relative overflow-hidden`}
+                      >
+                        {item.badge && (
+                          <span className="absolute top-1.5 right-1.5 text-[9px] font-black px-1.5 py-0.5 rounded-full bg-amber-500 text-white shadow-sm">
+                            {item.badge}
+                          </span>
+                        )}
+                        <div className={`w-12 h-12 rounded-xl bg-white border ${activeCategory.border} flex items-center justify-center mb-2 group-hover:scale-110 transition-transform shadow-sm`}>
+                          <span className={`material-symbols-outlined text-[24px] ${activeCategory.textColor}`}>
+                            {item.icon}
+                          </span>
+                        </div>
+                        <span className="text-xs font-bold text-slate-800 leading-tight">
+                          {item.label}
+                        </span>
+                        <span className={`text-[10px] font-semibold mt-0.5 ${activeCategory.textColor}`}>
+                          Book now →
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
           </div>
