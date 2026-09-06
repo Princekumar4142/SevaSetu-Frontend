@@ -92,10 +92,6 @@ export default function BookingHome() {
           items={EVENT_SERVICES}
           onSelect={handleSelectService}
           bgClass="bg-surface"
-          exploreLink={{
-            label: "View All Services →",
-            onClick: () => navigate("/customer/services/electrical-plumbing"),
-          }}
         />
       </div>
 

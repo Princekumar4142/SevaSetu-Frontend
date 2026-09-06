@@ -8,6 +8,7 @@ import trendingImg from "../../assets/services/trending-services.jpg";
 import professionalImg from "../../assets/services/professional-services.jpg";
 import healthImg from "../../assets/services/health-wellness.jpg";
 import eventImg from "../../assets/services/event-services.jpg";
+import workflowImg from "../../assets/sevasetu_workflow.jpg";
 
 /* ── 3D-Styled Vector Icons (Rich gradients, bevels, depth & specular glints) ── */
 
@@ -432,62 +433,93 @@ export default function LandingHero() {
           {/* ── Right Column: Live Showcase & Plus Banner (Light Theme) ── */}
           <div className="lg:col-span-5 space-y-4">
 
-            {/* Frequently Booked Services Card */}
-            <div className="bg-white rounded-2xl p-5 border border-slate-200/90 shadow-xl shadow-slate-200/60">
+            {/* ── SevaSetu Workflow & Social Impact Card ── */}
+            <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-xl shadow-slate-200/60 relative overflow-hidden group">
+              {/* Card Header */}
               <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-100">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Frequently Booked Today
+                  <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                    How SevaSetu Works & Empowers
                   </span>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full">
-                  45-min arrival
+                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                  Fair & Transparent
                 </span>
               </div>
 
-              <div className="space-y-2.5">
-                {POPULAR_BOOKINGS.map((item) => (
-                  <div
-                    key={item.title}
-                    onClick={() => navigate(`/customer/services/${item.id}`)}
-                    className="flex items-center justify-between p-3 rounded-xl bg-slate-50/80 hover:bg-indigo-50/50 border border-slate-200/80 hover:border-indigo-200 transition-all cursor-pointer group gap-2.5 sm:gap-3"
-                  >
-                    <div className="flex items-center gap-2.5 sm:gap-3 min-w-0 flex-1">
-                      <div className="w-10 h-10 rounded-xl bg-white border border-slate-200/80 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-all shrink-0 shadow-2xs">
-                        <span className="material-symbols-outlined text-[20px]">{item.icon}</span>
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-colors truncate">
-                          {item.title}
-                        </h4>
-                        <div className="flex items-center gap-2 text-[11px] text-slate-500 mt-0.5">
-                          <span className="text-amber-500 font-bold flex items-center gap-0.5">
-                            ★ {item.rating}
-                          </span>
-                          <span className="text-slate-300">•</span>
-                          <span>{item.time}</span>
-                        </div>
-                      </div>
-                    </div>
+              {/* Complete Workflow Infographic Image */}
+              <div className="relative rounded-xl overflow-hidden border border-slate-200/80 bg-slate-50 shadow-inner group/img">
+                <img
+                  src={workflowImg}
+                  alt="SevaSetu Complete Workflow - Book service, verified arrival, quality work, happy customers and worker empowerment"
+                  className="w-full h-auto object-cover transition-transform duration-500 group-hover/img:scale-[1.02]"
+                  loading="lazy"
+                />
 
-                    {/* Stacked Pricing & Modern Book CTA */}
-                    <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 pl-1">
-                      <div className="text-right">
-                        <div className="text-xs sm:text-sm font-black text-slate-900 leading-tight">
-                          {item.price}
-                        </div>
-                        <div className="text-[10px] text-slate-400 line-through font-medium leading-tight">
-                          {item.originalPrice}
-                        </div>
-                      </div>
-                      <span className="px-2.5 py-1 sm:py-1.5 rounded-lg bg-indigo-600 text-white text-[11px] font-bold shadow-xs shadow-indigo-600/20 group-hover:bg-indigo-700 transition-all flex items-center gap-0.5">
-                        <span>Book</span>
-                        <span className="material-symbols-outlined text-[13px] leading-none">arrow_forward</span>
-                      </span>
-                    </div>
+                {/* Micro overlay tag */}
+                <div className="absolute bottom-2 left-2 right-2 bg-white/95 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/80 shadow-xs flex items-center justify-between text-[10px] sm:text-[11px]">
+                  <span className="font-bold text-slate-800 flex items-center gap-1">
+                    <span className="text-emerald-600 font-black">✓</span> 100% Direct Worker Payouts
+                  </span>
+                  <span className="text-indigo-600 font-bold flex items-center gap-1">
+                    <span>Social Impact</span>
+                    <span>🌱</span>
+                  </span>
+                </div>
+              </div>
+
+              {/* 4 Connected Step Badges */}
+              <div className="grid grid-cols-2 gap-2 mt-3">
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100/90 flex items-start gap-2">
+                  <span className="text-base leading-none shrink-0">📱</span>
+                  <div className="min-w-0">
+                    <h5 className="text-[11px] font-bold text-slate-800 leading-tight">1. Easy Booking</h5>
+                    <p className="text-[10px] text-slate-500 truncate">Book in 2 mins</p>
                   </div>
-                ))}
+                </div>
+
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100/90 flex items-start gap-2">
+                  <span className="text-base leading-none shrink-0">🛵</span>
+                  <div className="min-w-0">
+                    <h5 className="text-[11px] font-bold text-slate-800 leading-tight">2. Verified Pro</h5>
+                    <p className="text-[10px] text-slate-500 truncate">Prompt doorstep visit</p>
+                  </div>
+                </div>
+
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100/90 flex items-start gap-2">
+                  <span className="text-base leading-none shrink-0">⭐</span>
+                  <div className="min-w-0">
+                    <h5 className="text-[11px] font-bold text-slate-800 leading-tight">3. 5-Star Service</h5>
+                    <p className="text-[10px] text-slate-500 truncate">Customer happiness</p>
+                  </div>
+                </div>
+
+                <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 border border-slate-100/90 flex items-start gap-2">
+                  <span className="text-base leading-none shrink-0">💰</span>
+                  <div className="min-w-0">
+                    <h5 className="text-[11px] font-bold text-slate-800 leading-tight">4. Fair Earnings</h5>
+                    <p className="text-[10px] text-slate-500 truncate">Dignity & prosperity</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Impact & Action Strip */}
+              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-600">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="font-semibold text-slate-800">Transforming local lives</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => navigate("/register/choose")}
+                  className="text-[11px] sm:text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 group/btn"
+                >
+                  <span>Join SevaSetu</span>
+                  <span className="material-symbols-outlined text-[13px] group-hover/btn:translate-x-0.5 transition-transform">
+                    arrow_forward
+                  </span>
+                </button>
               </div>
             </div>
 

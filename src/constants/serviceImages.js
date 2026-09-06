@@ -10,6 +10,7 @@ import cleaningPestImg from "../assets/services/cleaning-pest.jpg";
 import spaWomenImg from "../assets/services/spa-women.jpg";
 import acRepairImg from "../assets/services/ac-repair.jpg";
 import homePaintingImg from "../assets/services/home-painting.jpg";
+import djMusicImg from "../assets/services/dj-music.jpg";
 
 export const SERVICE_IMAGES = {
   // 1. Personal & Grooming
@@ -51,7 +52,7 @@ export const SERVICE_IMAGES = {
   "catering":       "https://images.unsplash.com/photo-1555244162-803834f70033?auto=format&fit=crop&w=500&q=80",
   "photography":    "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=500&q=80",
   "decoration":     "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&w=500&q=80",
-  "dj-music":       "https://images.unsplash.com/photo-1571266752671-f4f225c68099?auto=format&fit=crop&w=500&q=80",
+  "dj-music":       djMusicImg,
 };
 
 export function getServiceImage(serviceId) {
