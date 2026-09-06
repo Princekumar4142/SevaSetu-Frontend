@@ -504,22 +504,10 @@ export default function LandingHero() {
                 </div>
               </div>
 
-              {/* Bottom Impact & Action Strip */}
-              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-600">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
-                  <span className="font-semibold text-slate-800">Transforming local lives</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => navigate("/register/choose")}
-                  className="text-[11px] sm:text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-0.5 group/btn"
-                >
-                  <span>Join SevaSetu</span>
-                  <span className="material-symbols-outlined text-[13px] group-hover/btn:translate-x-0.5 transition-transform">
-                    arrow_forward
-                  </span>
-                </button>
+              {/* Bottom Impact Strip */}
+              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-600">
+                <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                <span className="font-semibold text-slate-700">Transforming local lives</span>
               </div>
             </div>
 

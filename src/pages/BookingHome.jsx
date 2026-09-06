@@ -68,10 +68,6 @@ export default function BookingHome() {
           title="🔥 Trending Services"
           items={TRENDING_SERVICES}
           onSelect={handleSelectService}
-          exploreLink={{
-            label: "Explore All Trending Services →",
-            onClick: () => navigate("/customer/services/ac-repair"),
-          }}
         />
 
         <ServiceSection
