@@ -79,8 +79,8 @@ export default function Login() {
           {/* Customer Signup Link */}
           <div className="pt-6 mt-6 border-t border-slate-100 text-center text-xs text-slate-500">
             Need home or skilled services?{" "}
-            <Link to="/register/customer" className="text-brand-purple font-bold hover:underline">
-              Create Customer Account
+            <Link to="/register" className="text-brand-purple font-bold hover:underline">
+              Create an Account
             </Link>
           </div>
         </div>

@@ -24,6 +24,7 @@ export default function Footer() {
               <div className="bg-white rounded-xl p-1 shadow-lg">
                 <Logo size={44} className="transition-transform group-hover:scale-105" />
               </div>
+              <span className="text-lg font-black text-white tracking-tight">SevaSetu</span>
             </Link>
             <p className="text-xs text-slate-400 leading-relaxed">
               India&apos;s cooperative home &amp; personal service network. 0% worker commission, upfront fixed prices.

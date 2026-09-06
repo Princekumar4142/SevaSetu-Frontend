@@ -13,6 +13,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "../pages/Login";
 import RegisterCustomer from "../pages/RegisterCustomer";
 import RegisterWorker from "../pages/RegisterWorker";
+import RegisterChoose from "../pages/RegisterChoose";
 import NotFound from "../pages/NotFound";
 import Profile from "../pages/Profile";
 
@@ -72,6 +73,9 @@ export default function AppRoutes() {
         <Route path="/register/customer" element={<RegisterCustomer />} />
         <Route path="/register/worker" element={<RegisterWorker />} />
       </Route>
+
+      {/* Registration choice page — standalone, no PublicLayout shell */}
+      <Route path="/register" element={<RegisterChoose />} />
 
       {/* Customer Protected Routes */}
       <Route element={<ProtectedRoute allowedRoles={[ROLES.CUSTOMER]} />}>

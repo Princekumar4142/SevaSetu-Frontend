@@ -60,6 +60,9 @@ export default function CustomerLayout() {
               )}
               <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-2.5 shrink-0 group">
                 <Logo size={48} className="transition-transform group-hover:scale-105" />
+                <span className="font-headline-md text-headline-md font-extrabold text-primary tracking-tight">
+                  SevaSetu
+                </span>
               </Link>
             </div>
 
@@ -132,7 +135,7 @@ export default function CustomerLayout() {
                   Login
                 </Link>
                 <Link
-                  to="/register/customer"
+                  to="/register"
                   className="bg-brand-purple text-white font-label-md text-label-md font-semibold px-lg py-sm rounded-full hover:bg-brand-purple-dark transition-colors shadow-sm"
                 >
                   Sign Up
@@ -161,6 +164,7 @@ export default function CustomerLayout() {
           )}
           <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-1.5 shrink-0">
             <Logo size={40} />
+            <span className="font-label-md text-label-md font-bold text-primary">SevaSetu</span>
           </Link>
         </div>
 
@@ -190,7 +194,7 @@ export default function CustomerLayout() {
               Login
             </Link>
             <Link
-              to="/register/customer"
+              to="/register"
               className="font-label-md text-xs bg-brand-purple text-white font-semibold px-3 py-1.5 rounded-full shadow-sm"
             >
               Sign Up

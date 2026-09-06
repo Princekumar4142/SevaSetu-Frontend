@@ -22,6 +22,7 @@ export default function PublicLayout() {
 
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Logo size={40} />
+          <span className="text-lg font-bold text-primary tracking-tight">SevaSetu</span>
         </Link>
       </div>
 

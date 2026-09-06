@@ -11,6 +11,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto flex justify-between items-center px-margin-mobile md:px-margin-desktop py-md">
         <Link to="/" className="flex items-center gap-2 group">
           <Logo size={44} className="transition-transform group-hover:scale-105" />
+          <span className="text-headline-md font-headline-md font-bold text-primary tracking-tight">SevaSetu</span>
         </Link>
 
         <div className="hidden md:flex items-center gap-lg">
@@ -26,7 +27,7 @@ export default function Navbar() {
             {tr("nav_login")}
           </Link>
           <Link
-            to="/register/customer"
+            to="/register"
             className="bg-primary text-white font-label-md text-label-md px-lg py-sm rounded-lg hover:bg-primary-container transition-colors shadow-sm whitespace-nowrap"
           >
             {tr("nav_signUp")}
