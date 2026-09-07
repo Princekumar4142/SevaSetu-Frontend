@@ -30,7 +30,11 @@ const SKILL_ALIAS = {
   beauty: "salon-women",
   "salon for men": "salon-men",
   barber: "salon-men",
+  pedicure: "manicure-pedicure",
+  manicure: "manicure-pedicure",
+  "nail care": "manicure-pedicure",
   physiotherapy: "physiotherapy",
+
   nursing: "nursing-care",
   yoga: "yoga-trainer",
   photographer: "photography",

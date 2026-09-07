@@ -8,6 +8,10 @@ const authService = {
   login: (payload) => api.post("/auth/login", payload).then((r) => r.data),
   logout: () => api.post("/auth/logout").then((r) => r.data),
   me: () => api.get("/auth/me").then((r) => r.data),
+  forgotPasswordSendOtp: (email) => api.post("/auth/forgot-password/send-otp", { email }).then((r) => r.data),
+  forgotPasswordVerifyOtp: (email, otp) => api.post("/auth/forgot-password/verify-otp", { email, otp }).then((r) => r.data),
+  resetPassword: ({ email, otp, newPassword }) => api.post("/auth/reset-password", { email, otp, newPassword }).then((r) => r.data),
 };
 
 export default authService;
+

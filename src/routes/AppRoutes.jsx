@@ -11,9 +11,11 @@ import PlatformAdminLayout from "../layouts/PlatformAdminLayout";
 import ProtectedRoute from "./ProtectedRoute";
 
 import Login from "../pages/Login";
+import ForgotPassword from "../pages/ForgotPassword";
 import RegisterCustomer from "../pages/RegisterCustomer";
 import RegisterWorker from "../pages/RegisterWorker";
 import RegisterChoose from "../pages/RegisterChoose";
+
 import NotFound from "../pages/NotFound";
 import Profile from "../pages/Profile";
 
@@ -66,9 +68,11 @@ export default function AppRoutes() {
       {/* Public auth pages */}
       <Route element={<PublicLayout />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/register/customer" element={<RegisterCustomer />} />
         <Route path="/register/worker" element={<RegisterWorker />} />
       </Route>
+
 
       {/* Registration choice page — standalone, no PublicLayout shell */}
       <Route path="/register" element={<RegisterChoose />} />

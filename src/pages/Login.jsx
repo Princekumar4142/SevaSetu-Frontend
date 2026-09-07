@@ -74,6 +74,16 @@ export default function Login() {
               className="py-2.5 sm:py-3 text-sm sm:text-base"
             />
 
+            <div className="flex items-center justify-end -mt-1 sm:-mt-2">
+              <Link
+                to="/forgot-password"
+                className="text-xs sm:text-sm font-bold text-brand-purple hover:text-brand-purple-dark hover:underline transition-colors"
+              >
+                Forgot Password?
+              </Link>
+            </div>
+
+
             <Button
               type="submit"
               loading={loading}

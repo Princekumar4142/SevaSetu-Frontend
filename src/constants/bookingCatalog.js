@@ -9,8 +9,9 @@ export const PERSONAL_SERVICES = [
   { id: "spa-women", label: "Spa for Women", icon: "spa" },
   { id: "hair-skin", label: "Hair & Skin", icon: "face_retouching_natural", badge: "NEW" },
   { id: "salon-men", label: "Salon for Men", icon: "face" },
-  { id: "massage-men", label: "Massage for Men", icon: "self_improvement" },
+  { id: "manicure-pedicure", label: "Manicure & Pedicure", icon: "spa" },
 ];
+
 
 export const HOME_SERVICES = [
   { id: "electrical-plumbing", label: "Electrical & Plumbing", icon: "plumbing" },
@@ -204,32 +205,65 @@ export const CATEGORIES = {
     ],
   },
 
-  // 5. Massage for Men
-  "massage-men": {
-    id: "massage-men",
-    name: "Massage for Men",
-    tag: "Certified Therapists",
-    rating: 4.89,
-    ratingCount: "74K",
-    categoryType: "Wellness",
-    icon: "self_improvement",
+  // 5. Manicure & Pedicure (Nail & Foot Spa)
+  "manicure-pedicure": {
+    id: "manicure-pedicure",
+    name: "Manicure & Pedicure",
+    tag: "Certified Nail & Foot Specialists",
+    rating: 4.92,
+    ratingCount: "86K",
+    categoryType: "Personal Care",
+    icon: "spa",
     chips: [
-      { id: "deep-tissue-men", label: "Deep Tissue", icon: "fitness_center" },
-      { id: "swedish-men", label: "Swedish Massage", icon: "spa" },
-      { id: "pain-relief", label: "Pain Relief", icon: "healing" },
+      { id: "pedicure-chip", label: "Pedicure", icon: "spa" },
+      { id: "manicure-chip", label: "Manicure", icon: "pan_tool" },
+      { id: "detan-hands-feet", label: "De-Tan Spa", icon: "brightness_6" },
+      { id: "nail-care-chip", label: "Nail Care", icon: "brush" },
     ],
     sections: [
       {
-        id: "men-massages",
-        title: "Therapeutic Massages",
+        id: "pedicure-care",
+        title: "Pedicure & Foot Spa",
         services: [
-          { id: "mm-1", name: "Deep Tissue Sports Recovery Massage", icon: "fitness_center", rating: 4.91, ratingCount: "44k", durationMins: 60, price: 249, desc: "Relieves muscle soreness, stiff neck, and workout fatigue" },
-          { id: "mm-2", name: "Full Body Stress Relief Swedish Massage", icon: "spa", rating: 4.88, ratingCount: "38k", durationMins: 60, price: 199, desc: "Smooth relaxation massage with herbal warm oils" },
-          { id: "mm-3", name: "Lower Back & Shoulder Pain Focus", icon: "healing", rating: 4.94, ratingCount: "25k", durationMins: 45, price: 299, desc: "Targeted acupressure for posture strain & desk job aches" },
+          { id: "mp-1", name: "Deluxe Herbal Foot Spa & Pedicure", icon: "spa", rating: 4.93, ratingCount: "58k", durationMins: 45, price: 249, desc: "Warm herbal foot soak, cuticle clean, heel scrubbing, and soothing foot massage" },
+          { id: "mp-2", name: "Raaga De-Tan Pedicure & Callus Relief", icon: "brightness_6", rating: 4.89, ratingCount: "42k", durationMins: 50, price: 299, desc: "Deep tan-removal pack, exfoliating apricot scrub, and intensive heel hydration" },
+          { id: "mp-3", name: "Cracked Heel Healing & Softening Therapy", icon: "healing", rating: 4.91, ratingCount: "31k", durationMins: 40, price: 229, desc: "Specialized deep moisturizing treatment for dry, cracked feet" },
+        ],
+      },
+      {
+        id: "manicure-care",
+        title: "Manicure & Hand Care",
+        services: [
+          { id: "mp-4", name: "Classic Rose Manicure & Cuticle Care", icon: "pan_tool", rating: 4.88, ratingCount: "47k", durationMins: 35, price: 199, desc: "Gentle nail shaping, cuticle nourishment, hand scrub, and moisture seal" },
+          { id: "mp-5", name: "Luxury Mani + Pedi Rejuvenation Combo", icon: "spa", rating: 4.96, ratingCount: "74k", durationMins: 75, price: 399, desc: "Full complete hands and feet spa package with shine buffing & stress relief" },
         ],
       },
     ],
   },
+  "massage-men": {
+    id: "manicure-pedicure",
+    name: "Manicure & Pedicure",
+    tag: "Certified Nail & Foot Specialists",
+    rating: 4.92,
+    ratingCount: "86K",
+    categoryType: "Personal Care",
+    icon: "spa",
+    chips: [
+      { id: "pedicure-chip", label: "Pedicure", icon: "spa" },
+      { id: "manicure-chip", label: "Manicure", icon: "pan_tool" },
+    ],
+    sections: [
+      {
+        id: "pedicure-care",
+        title: "Pedicure & Foot Spa",
+        services: [
+          { id: "mp-1", name: "Deluxe Herbal Foot Spa & Pedicure", icon: "spa", rating: 4.93, ratingCount: "58k", durationMins: 45, price: 249, desc: "Warm herbal foot soak, cuticle clean, heel scrubbing, and soothing foot massage" },
+          { id: "mp-5", name: "Luxury Mani + Pedi Rejuvenation Combo", icon: "spa", rating: 4.96, ratingCount: "74k", durationMins: 75, price: 399, desc: "Full complete hands and feet spa package with shine buffing & stress relief" },
+        ],
+      },
+    ],
+  },
+
 
   // 6. Electrical & Plumbing
   "electrical-plumbing": {
@@ -1042,9 +1076,16 @@ const ALIAS_MAP = {
   "salon for men": "salon-men",
   "men-salon": "salon-men",
   "barber": "salon-men",
-  "massage-men": "massage-men",
-  "massage for men": "massage-men",
+  "manicure-pedicure": "manicure-pedicure",
+  "manicure & pedicure": "manicure-pedicure",
+  "pedicure": "manicure-pedicure",
+  "manicure": "manicure-pedicure",
+  "nail": "manicure-pedicure",
+  "nail-care": "manicure-pedicure",
+  "massage-men": "manicure-pedicure",
+  "massage for men": "manicure-pedicure",
   "bleach-detan": "bleach-detan",
+
   "bleach & detan": "bleach-detan",
   "detan": "bleach-detan",
   "hair-care": "hair-care",
@@ -1189,9 +1230,13 @@ export function getCategoryDetails(categoryId) {
   if (clean.includes("hair") && clean.includes("care")) {
     return CATEGORIES["hair-care"];
   }
-  if (clean.includes("head") || clean.includes("massage")) {
-    return clean.includes("men") ? CATEGORIES["massage-men"] : CATEGORIES["head-massage"];
+  if (clean.includes("mani") || clean.includes("pedi") || clean.includes("nail")) {
+    return CATEGORIES["manicure-pedicure"];
   }
+  if (clean.includes("head") || clean.includes("massage")) {
+    return CATEGORIES["head-massage"];
+  }
+
   if (clean.includes("ca") || clean.includes("account") || clean.includes("gst") || clean.includes("bookkeep")) {
     return CATEGORIES["ca-accounting"];
   }
