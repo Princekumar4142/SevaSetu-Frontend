@@ -421,8 +421,39 @@ export default function IncomingOrderModal() {
     setPhase("accepted");
 
     const workerId = currentUser?._id || "worker-partner";
-    if (socket) {
-      socket.emit("accept_order", { orderId: incomingOrder.orderId, workerId });
+    const bookingId = incomingOrder.orderId;
+
+    const emitAcceptWithCoords = (coords = null) => {
+      if (socket) {
+        socket.emit("accept_order", {
+          orderId: bookingId,
+          workerId,
+          lat: coords?.lat,
+          lng: coords?.lng,
+        });
+        if (coords) {
+          socket.emit("worker_location_update", {
+            bookingId,
+            workerId,
+            lat: coords.lat,
+            lng: coords.lng,
+          });
+        }
+      }
+    };
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          emitAcceptWithCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+        },
+        () => {
+          emitAcceptWithCoords(null);
+        },
+        { enableHighAccuracy: true, timeout: 5000 }
+      );
+    } else {
+      emitAcceptWithCoords(null);
     }
 
     try {

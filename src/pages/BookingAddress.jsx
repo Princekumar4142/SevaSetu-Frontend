@@ -35,10 +35,10 @@ export default function BookingAddress() {
         line1: fullAddress,
         flatNo,
         landmark,
-        city: city || "Pune",
-        pincode: pincode || "411014",
-        lat: coords?.lat || 18.5793,
-        lng: coords?.lng || 73.9787,
+        city: city || "Bettiah",
+        pincode: pincode || "845438",
+        lat: coords?.lat || 26.8023,
+        lng: coords?.lng || 84.5074,
         contactName: currentUser?.name || "Customer",
       })
     );

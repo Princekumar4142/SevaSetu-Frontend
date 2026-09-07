@@ -32,8 +32,8 @@ export default function BookingTracking() {
     bookingNumber: navState.bookingNumber || bookingId || "BK-" + Math.floor(100000 + Math.random() * 900000),
     _id: navState._id || null,
     address: navState.address || "Service Destination Address",
-    lat: navState.lat || 18.5793,
-    lng: navState.lng || 73.9787,
+    lat: navState.lat || 26.8023,
+    lng: navState.lng || 84.5074,
     slot: navState.slot || "Today · 11:00 AM",
     payable: navState.payable || 599,
     paymentMethod: navState.paymentMethod || "ONLINE",
@@ -127,6 +127,15 @@ export default function BookingTracking() {
       setWorkerAssigned(true);
       setBookingStatus("ASSIGNED");
       setAssignedToast(true);
+
+      if (data.workerLiveLocation?.lat && data.workerLiveLocation?.lng) {
+        setWorkerLiveGps({
+          lat: Number(data.workerLiveLocation.lat),
+          lng: Number(data.workerLiveLocation.lng),
+          heading: data.workerLiveLocation.heading || 0,
+          speed: data.workerLiveLocation.speed || 0,
+        });
+      }
 
       if (data.worker) {
         setWorkerInfo({

@@ -124,8 +124,8 @@ export default function WorkerBookings() {
     };
   }, [socket, loadJobs]);
 
-  // Find active journey job (ON_THE_WAY or ARRIVED)
-  const onTheWayJob = jobs.find((j) => j.status === "ON_THE_WAY");
+  // Find active journey job (ASSIGNED, ACCEPTED, ON_THE_WAY or ARRIVED)
+  const activeJob = jobs.find((j) => ["ASSIGNED", "ACCEPTED", "ON_THE_WAY", "ARRIVED"].includes(j.status));
 
   // Send GPS location via socket and browser Geolocation
   const transmitCurrentGps = useCallback((bookingId) => {
@@ -140,7 +140,7 @@ export default function WorkerBookings() {
         setGpsBroadcasting(true);
         if (socket) {
           socket.emit("worker_location_update", {
-            bookingId: bookingId || onTheWayJob?._id,
+            bookingId: bookingId || activeJob?._id,
             workerId: currentUser?._id,
             lat: latitude,
             lng: longitude,
@@ -154,11 +154,32 @@ export default function WorkerBookings() {
       },
       { enableHighAccuracy: true, timeout: 10000, maximumAge: 3000 }
     );
-  }, [socket, currentUser, onTheWayJob]);
+  }, [socket, currentUser, activeJob]);
 
-  // Start continuous watchPosition when a job is ON_THE_WAY
+  // Transmit initial GPS coordinates upon loading
   useEffect(() => {
-    if (!onTheWayJob) {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setLiveGpsCoords({ lat: pos.coords.latitude, lng: pos.coords.longitude });
+          if (socket && currentUser?._id) {
+            socket.emit("worker_location_update", {
+              bookingId: activeJob?._id,
+              workerId: currentUser._id,
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+            });
+          }
+        },
+        () => {},
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
+  }, [socket, currentUser, activeJob?._id]);
+
+  // Start continuous watchPosition when an active job is in progress
+  useEffect(() => {
+    if (!activeJob) {
       if (watchIdRef.current) {
         navigator.geolocation.clearWatch(watchIdRef.current);
         watchIdRef.current = null;
@@ -168,7 +189,7 @@ export default function WorkerBookings() {
     }
 
     // Immediately transmit first point
-    transmitCurrentGps(onTheWayJob._id);
+    transmitCurrentGps(activeJob._id);
 
     if (navigator.geolocation) {
       watchIdRef.current = navigator.geolocation.watchPosition(
@@ -178,7 +199,7 @@ export default function WorkerBookings() {
           setGpsBroadcasting(true);
           if (socket) {
             socket.emit("worker_location_update", {
-              bookingId: onTheWayJob._id,
+              bookingId: activeJob._id,
               workerId: currentUser?._id,
               lat: latitude,
               lng: longitude,
@@ -198,7 +219,7 @@ export default function WorkerBookings() {
         watchIdRef.current = null;
       }
     };
-  }, [onTheWayJob?._id, socket, currentUser, transmitCurrentGps]);
+  }, [activeJob?._id, socket, currentUser, transmitCurrentGps]);
 
   const handleUpdateStatus = async (jobId, nextStatus, successMsg) => {
     try {
@@ -207,8 +228,25 @@ export default function WorkerBookings() {
       console.warn("Status update fallback:", err.message);
     }
 
-    if (nextStatus === "ASSIGNED" && socket) {
-      socket.emit("accept_order", { orderId: jobId, workerId: currentUser?._id });
+    if ((nextStatus === "ASSIGNED" || nextStatus === "ACCEPTED") && socket) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            socket.emit("accept_order", {
+              orderId: jobId,
+              workerId: currentUser?._id,
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude,
+            });
+            transmitCurrentGps(jobId);
+          },
+          () => {
+            socket.emit("accept_order", { orderId: jobId, workerId: currentUser?._id });
+          }
+        );
+      } else {
+        socket.emit("accept_order", { orderId: jobId, workerId: currentUser?._id });
+      }
     }
 
     if (nextStatus === "ON_THE_WAY") {
