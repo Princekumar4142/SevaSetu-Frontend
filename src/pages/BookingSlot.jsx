@@ -250,19 +250,6 @@ export default function BookingSlot() {
             <span className="text-xs text-on-surface-variant font-medium">45-min arrival window</span>
           </div>
 
-          {/* Guidance Banner for Today's Expired Slots */}
-          {selectedDate?.isToday && hasTodaySlots && (
-            <div className="bg-amber-50/80 border border-amber-200/90 rounded-xl p-2.5 sm:p-3 flex items-start gap-2.5 text-xs text-amber-900">
-              <span className="material-symbols-outlined text-amber-600 text-[18px] shrink-0 mt-0.5">info</span>
-              <div>
-                <p className="font-bold">Present time se pehle ke slots book nahi kiye ja sakte (✕)</p>
-                <p className="text-amber-800 text-[11px] mt-0.5 leading-relaxed">
-                  Aap sirf aane wale (upcoming) active slots hi select kar sakte hain. Beete hue samay ke slots par cross (✕) laga hai.
-                </p>
-              </div>
-            </div>
-          )}
-
           {/* All Slots Closed Alert if user views Today after hours */}
           {selectedDate?.isToday && !hasTodaySlots && (
             <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-rose-900">
