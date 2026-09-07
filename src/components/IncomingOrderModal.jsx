@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketContext";
 import { useAuth } from "../hooks/useAuth";
 import Avatar from "./Avatar";
@@ -174,9 +175,7 @@ function triggerSystemNotification(data) {
       notif.onclick = () => {
         try {
           window.focus();
-          if (!window.location.pathname.startsWith("/worker")) {
-            window.location.href = "/worker";
-          }
+          window.location.href = "/worker/bookings";
         } catch (e) {}
         notif.close();
       };
@@ -189,6 +188,7 @@ function triggerSystemNotification(data) {
 }
 
 export default function IncomingOrderModal() {
+  const navigate = useNavigate();
   const { socket } = useSocket();
   const { currentUser } = useAuth();
   const [incomingOrder, setIncomingOrder] = useState(null);
@@ -464,11 +464,13 @@ export default function IncomingOrderModal() {
       console.error("[Socket] Accept API error:", err.message);
     }
 
+    const acceptedOrderId = incomingOrder.orderId;
     setTimeout(() => {
       setIncomingOrder(null);
       setPhase("idle");
-    }, 3000);
-  }, [incomingOrder, socket, currentUser, stopRinging, clearCountdown]);
+      navigate("/worker/bookings", { state: { tab: "ACTIVE", bookingId: acceptedOrderId } });
+    }, 1200);
+  }, [incomingOrder, socket, currentUser, stopRinging, clearCountdown, navigate]);
 
   const handleReject = useCallback(
     ({ reason = "manual", e } = {}) => {
