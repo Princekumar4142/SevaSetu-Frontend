@@ -4,6 +4,8 @@ import Button from "../components/Button";
 import Badge from "../components/Badge";
 import Input from "../components/Input";
 import { LoadingState } from "../components/Feedback";
+import ConfirmModal from "../components/ConfirmModal";
+
 
 const MOCK_COOP_WORKERS = [
   {
@@ -58,10 +60,16 @@ const MOCK_COOP_WORKERS = [
 
 export default function CooperativeWorkers() {
   const [workers, setWorkers] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [skillFilter, setSkillFilter] = useState("ALL");
   const [selectedWorker, setSelectedWorker] = useState(null);
+  const [workerToDelete, setWorkerToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+  const [actionSuccess, setActionSuccess] = useState("");
+  const [actionError, setActionError] = useState("");
+
 
   useEffect(() => {
     async function fetchWorkers() {
@@ -89,6 +97,28 @@ export default function CooperativeWorkers() {
     return (nameMatch || phoneMatch) && skillMatch;
   });
 
+  const handleDeleteWorker = async () => {
+    if (!workerToDelete) return;
+    setDeleting(true);
+    setActionError("");
+    try {
+      await workerService.deleteWorker(workerToDelete._id);
+      setWorkers((prev) => prev.filter((w) => w._id !== workerToDelete._id));
+      setActionSuccess(`Worker profile for "${workerToDelete.user?.name || "Worker"}" was permanently deleted.`);
+      setTimeout(() => setActionSuccess(""), 4500);
+      if (selectedWorker?._id === workerToDelete._id) {
+        setSelectedWorker(null);
+      }
+      setWorkerToDelete(null);
+    } catch (err) {
+      setActionError(err.response?.data?.message || "Failed to delete worker profile.");
+      setTimeout(() => setActionError(""), 5000);
+      setWorkerToDelete(null);
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -105,6 +135,20 @@ export default function CooperativeWorkers() {
           </span>
         </div>
       </div>
+
+      {actionSuccess && (
+        <div className="p-4 bg-emerald-50 text-emerald-800 rounded-xl border border-emerald-200 flex items-center gap-2 font-label-md font-medium">
+          <span className="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+          {actionSuccess}
+        </div>
+      )}
+
+      {actionError && (
+        <div className="p-4 bg-red-50 text-red-800 rounded-xl border border-red-200 flex items-center gap-2 font-label-md font-medium">
+          <span className="material-symbols-outlined text-[20px] text-red-600">error</span>
+          {actionError}
+        </div>
+      )}
 
       {/* Filter Bar */}
       <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-4 flex flex-col md:flex-row items-center gap-4 shadow-sm">
@@ -198,13 +242,24 @@ export default function CooperativeWorkers() {
                       ₹{worker.earnings?.welfareContribution || 0}
                     </td>
                     <td className="py-4 px-4 text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => setSelectedWorker(worker)}
-                      >
-                        Details
-                      </Button>
+                      <div className="flex items-center justify-end gap-1.5">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setSelectedWorker(worker)}
+                        >
+                          Details
+                        </Button>
+                        <button
+                          type="button"
+                          onClick={() => setWorkerToDelete(worker)}
+                          title="Delete Worker Profile"
+                          className="px-2.5 py-1.5 rounded-lg text-xs font-bold bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200 transition-all flex items-center gap-1 active:scale-95 shadow-sm"
+                        >
+                          <span className="material-symbols-outlined text-[15px]">delete</span>
+                          <span>Delete</span>
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -262,7 +317,15 @@ export default function CooperativeWorkers() {
                 </div>
               </div>
             </div>
-            <div className="pt-3 flex justify-end">
+            <div className="pt-3 flex items-center justify-between border-t border-outline-variant">
+              <button
+                type="button"
+                onClick={() => setWorkerToDelete(selectedWorker)}
+                className="px-3 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200 transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+              >
+                <span className="material-symbols-outlined text-[16px]">delete</span>
+                <span>Delete Profile</span>
+              </button>
               <Button variant="purple" onClick={() => setSelectedWorker(null)}>
                 Close
               </Button>
@@ -270,6 +333,20 @@ export default function CooperativeWorkers() {
           </div>
         </div>
       )}
+
+      {/* Confirmation Modal */}
+      <ConfirmModal
+        isOpen={Boolean(workerToDelete)}
+        onClose={() => setWorkerToDelete(null)}
+        onConfirm={handleDeleteWorker}
+        loading={deleting}
+        title="Delete Worker Profile?"
+        targetName={workerToDelete?.user?.name}
+        message={`Are you sure you want to permanently delete the profile for "${workerToDelete?.user?.name}"? This will remove their worker profile and delete their associated user account from the platform.`}
+        confirmText="Yes, Delete Worker"
+        cancelText="Cancel"
+      />
     </div>
   );
 }
+

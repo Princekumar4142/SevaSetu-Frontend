@@ -6,6 +6,7 @@ import Button from "../components/Button";
 import { LoadingState, ErrorBanner } from "../components/Feedback";
 
 import Avatar from "../components/Avatar";
+import ConfirmModal from "../components/ConfirmModal";
 
 export default function WorkerVerification() {
   const [params] = useSearchParams();
@@ -15,8 +16,12 @@ export default function WorkerVerification() {
   const [status, setStatus] = useState(params.get("status") || "PENDING");
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [reason, setReason] = useState("");
+
 
   const load = async () => {
     setLoading(true); setError("");
@@ -51,6 +56,24 @@ export default function WorkerVerification() {
     finally { setActionLoading(false); }
   };
 
+  const handleDeleteWorker = async () => {
+    if (!selected) return;
+    setDeleteLoading(true);
+    setError("");
+    try {
+      await workerService.deleteWorker(selected._id);
+      setSuccess(`Worker profile for ${selected.user?.name || "Worker"} deleted permanently.`);
+      setTimeout(() => setSuccess(""), 4000);
+      setSelected(null);
+      setShowDeleteModal(false);
+      await load();
+    } catch (e) {
+      setError(e.response?.data?.message || "Failed to delete worker profile");
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   return <div className="flex flex-col gap-lg">
     <div className="flex flex-col md:flex-row md:items-center justify-between gap-md">
       <div className="flex items-center gap-3">
@@ -75,6 +98,12 @@ export default function WorkerVerification() {
         {["PENDING","VERIFIED","REJECTED"].map((s) => <button key={s} onClick={() => { setStatus(s); setSelected(null); }} className={`px-md py-xs rounded-md font-label-md text-label-md ${status === s ? "bg-primary text-on-primary" : "text-on-surface-variant"}`}>{s}</button>)}
       </div>
     </div>
+    {success && (
+      <div className="p-4 bg-emerald-50 text-emerald-800 rounded-xl border border-emerald-200 flex items-center gap-2 font-label-md font-medium">
+        <span className="material-symbols-outlined text-[20px] text-emerald-600">check_circle</span>
+        {success}
+      </div>
+    )}
     <ErrorBanner message={error} />
     {loading ? <LoadingState label="Loading workers…" /> : <div className="grid grid-cols-1 xl:grid-cols-[380px_1fr] gap-lg min-h-[520px]">
       <div className="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
@@ -88,7 +117,26 @@ export default function WorkerVerification() {
 
       <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
         {!selected ? <div className="h-full min-h-[420px] flex flex-col items-center justify-center text-center text-on-surface-variant"><span className="material-symbols-outlined text-5xl">fact_check</span><h3 className="font-headline-md text-headline-md text-on-surface mt-md">Select a worker</h3><p className="font-body-md text-body-md max-w-md mt-xs">Review their profile, skills and location here before taking an action.</p></div> : <div className="flex flex-col gap-lg">
-          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-md"><div className="flex items-center gap-md"><Avatar src={selected.user?.profilePhoto} name={selected.user?.name} size="xl" /><div><h2 className="font-headline-md text-headline-md text-on-surface">{selected.user?.name}</h2><p className="text-on-surface-variant">{selected.user?.email} · {selected.user?.phone}</p><div className="mt-xs"><Badge tone={selected.verificationStatus === "VERIFIED" ? "verified" : selected.verificationStatus === "REJECTED" ? "rejected" : "pending"}>{selected.verificationStatus}</Badge></div></div></div></div>
+          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-md">
+            <div className="flex items-center gap-md">
+              <Avatar src={selected.user?.profilePhoto} name={selected.user?.name} size="xl" />
+              <div>
+                <h2 className="font-headline-md text-headline-md text-on-surface">{selected.user?.name}</h2>
+                <p className="text-on-surface-variant">{selected.user?.email} · {selected.user?.phone}</p>
+                <div className="mt-xs">
+                  <Badge tone={selected.verificationStatus === "VERIFIED" ? "verified" : selected.verificationStatus === "REJECTED" ? "rejected" : "pending"}>{selected.verificationStatus}</Badge>
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setShowDeleteModal(true)}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200 transition-all flex items-center gap-1.5 shadow-sm active:scale-95 self-start"
+            >
+              <span className="material-symbols-outlined text-[16px]">delete</span>
+              <span>Delete Worker Profile</span>
+            </button>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
             <Info title="Experience" value={`${selected.experienceYears || 0} years`} icon="work_history" />
             <Info title="Skill Level" value={selected.skillLevel || "Level 1"} icon="workspace_premium" />
@@ -102,6 +150,19 @@ export default function WorkerVerification() {
         </div>}
       </div>
     </div>}
+
+    <ConfirmModal
+      isOpen={showDeleteModal}
+      onClose={() => setShowDeleteModal(false)}
+      onConfirm={handleDeleteWorker}
+      loading={deleteLoading}
+      title="Delete Worker Profile?"
+      targetName={selected?.user?.name}
+      message={`Are you sure you want to permanently delete the profile of "${selected?.user?.name}"? This will delete their worker profile and completely remove their user account from the platform.`}
+      confirmText="Yes, Delete Worker"
+      cancelText="Cancel"
+    />
   </div>;
 }
 function Info({title,value,icon}) { return <div className="p-md rounded-lg bg-surface-container-low border border-outline-variant"><div className="flex items-center gap-xs text-on-surface-variant"><span className="material-symbols-outlined text-[18px]">{icon}</span><span className="font-status-badge text-status-badge">{title}</span></div><p className="font-label-md text-label-md text-on-surface font-bold mt-xs capitalize">{value}</p></div>; }
+

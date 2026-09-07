@@ -5,6 +5,9 @@ import Badge from "../components/Badge";
 import { LoadingState, ErrorBanner } from "../components/Feedback";
 import { useDispatch } from "react-redux";
 import { addItem } from "../store/slices/cartSlice";
+import { useAuth } from "../hooks/useAuth";
+import ConfirmModal from "../components/ConfirmModal";
+
 
 // Maps skill names (like "Electrician") -> categoryId (like "electrical-plumbing")
 const SKILL_ALIAS = {
@@ -39,9 +42,14 @@ export default function WorkerDetail() {
   const { workerId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { currentUser } = useAuth();
+  const isAdmin = ["PLATFORM_ADMIN", "COOPERATIVE_ADMIN"].includes(currentUser?.role);
+
   const [worker, setWorker] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   // Derive categoryId from worker's primary skill
   const getWorkerCategoryId = (w) => {
@@ -55,6 +63,21 @@ export default function WorkerDetail() {
     navigate(`/customer/services/${categoryId}`, {
       state: { workerName: worker.user?.name, workerId: worker._id }
     });
+  };
+
+  const handleDeleteWorker = async () => {
+    if (!worker) return;
+    setDeleting(true);
+    try {
+      await workerService.deleteWorker(worker._id);
+      setShowDeleteModal(false);
+      navigate(-1);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to delete worker profile");
+      setShowDeleteModal(false);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   useEffect(() => {
@@ -78,8 +101,8 @@ export default function WorkerDetail() {
 
   return (
     <div className="min-h-screen bg-surface">
-      {/* Back button */}
-      <div className="px-margin-mobile md:px-margin-desktop pt-lg">
+      {/* Top action bar */}
+      <div className="px-margin-mobile md:px-margin-desktop pt-lg flex items-center justify-between">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors"
@@ -87,9 +110,21 @@ export default function WorkerDetail() {
           <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           Back to Workers
         </button>
+
+        {isAdmin && (
+          <button
+            type="button"
+            onClick={() => setShowDeleteModal(true)}
+            className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-red-50 text-red-700 hover:bg-red-600 hover:text-white border border-red-200 transition-all flex items-center gap-1.5 shadow-sm active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[16px]">delete</span>
+            <span>Admin: Delete Profile</span>
+          </button>
+        )}
       </div>
 
       <div className="px-margin-mobile md:px-margin-desktop py-lg max-w-screen-lg mx-auto">
+
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-lg">
 
           {/* ── Left: Profile Card ── */}
@@ -268,9 +303,22 @@ export default function WorkerDetail() {
           </div>
         </div>
       </div>
+
+      <ConfirmModal
+        isOpen={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        onConfirm={handleDeleteWorker}
+        loading={deleting}
+        title="Delete Worker Profile?"
+        targetName={worker.user?.name}
+        message={`Are you sure you want to permanently delete the profile of "${worker.user?.name}"? This action will remove the worker's profile and delete their associated user login account.`}
+        confirmText="Yes, Delete Worker"
+        cancelText="Cancel"
+      />
     </div>
   );
 }
+
 
 function InfoTile({ icon, label, value }) {
   return (

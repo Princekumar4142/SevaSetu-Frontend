@@ -9,6 +9,8 @@ const workerService = {
   rejectWorker: (workerId, reason) => api.patch(`/workers/verification/${workerId}/reject`, { reason }).then((r) => r.data),
   getVerifiedWorkers: (params = {}) => api.get("/workers/verified", { params }).then((r) => r.data),
   getVerifiedWorkerById: (workerId) => api.get(`/workers/verified/${workerId}`).then((r) => r.data),
+  deleteWorker: (workerId) => api.delete(`/workers/${workerId}`).then((r) => r.data),
 };
 
 export default workerService;
+
