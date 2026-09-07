@@ -26,6 +26,7 @@ export default function BookingTracking() {
   const [callAlert, setCallAlert] = useState(false);
   const [dismissedBanner, setDismissedBanner] = useState(false);
   const [assignedToast, setAssignedToast] = useState(false);
+  const [workerLiveGps, setWorkerLiveGps] = useState(null);
 
   const [bookingData, setBookingData] = useState({
     bookingNumber: navState.bookingNumber || bookingId || "BK-" + Math.floor(100000 + Math.random() * 900000),
@@ -47,6 +48,7 @@ export default function BookingTracking() {
           vehicle: "Service Vehicle",
           rating: navState.worker.rating || 4.9,
           cooperative: navState.worker.cooperative?.name || "Cooperative Network",
+          location: navState.worker.location || null,
         }
       : null
   );
@@ -66,6 +68,15 @@ export default function BookingTracking() {
             setBookingStatus(b.status || "ASSIGNED");
           }
 
+          if (b.workerLiveLocation?.lat && b.workerLiveLocation?.lng) {
+            setWorkerLiveGps({
+              lat: Number(b.workerLiveLocation.lat),
+              lng: Number(b.workerLiveLocation.lng),
+              heading: b.workerLiveLocation.heading || 0,
+              speed: b.workerLiveLocation.speed || 0,
+            });
+          }
+
           setBookingData((prev) => ({
             ...prev,
             bookingNumber: b.bookingNumber || prev.bookingNumber,
@@ -80,12 +91,14 @@ export default function BookingTracking() {
 
           if (b.worker) {
             setWorkerInfo({
+              id: b.worker._id,
               name: b.worker.user?.name || "Verified Partner",
               phone: b.worker.user?.phone || "",
               profilePhoto: b.worker.user?.profilePhoto || "",
               vehicle: "Service Vehicle",
               rating: b.worker.rating || 4.9,
               cooperative: b.cooperative?.name || "Cooperative Network",
+              location: b.worker.location || null,
             });
           }
         }
@@ -105,7 +118,7 @@ export default function BookingTracking() {
     };
   }, [bookingId]);
 
-  // Listen for real-time worker_assigned, booking_updated, and status_updated socket events
+  // Listen for real-time worker_assigned, booking_updated, and worker_location_broadcast socket events
   useEffect(() => {
     if (!socket) return;
 
@@ -117,12 +130,14 @@ export default function BookingTracking() {
 
       if (data.worker) {
         setWorkerInfo({
+          id: data.worker._id,
           name: data.worker.user?.name || "Verified Partner",
           phone: data.worker.user?.phone || "",
           profilePhoto: data.worker.user?.profilePhoto || "",
           vehicle: "Service Vehicle",
           rating: data.worker.rating || 4.9,
           cooperative: data.worker.cooperative?.name || "Cooperative Network",
+          location: data.worker.location || null,
         });
       }
 
@@ -145,25 +160,40 @@ export default function BookingTracking() {
         if (data.booking?.worker) {
           const w = data.booking.worker;
           setWorkerInfo({
+            id: w._id,
             name: w.user?.name || "Verified Partner",
             phone: w.user?.phone || "",
             profilePhoto: w.user?.profilePhoto || "",
             vehicle: "Service Vehicle",
             rating: w.rating || 4.9,
             cooperative: w.cooperative?.name || "Cooperative Network",
+            location: w.location || null,
           });
         }
+      }
+    };
+
+    const handleWorkerGps = (data) => {
+      if (data && typeof data.lat === "number" && typeof data.lng === "number") {
+        setWorkerLiveGps({
+          lat: data.lat,
+          lng: data.lng,
+          heading: data.heading || 0,
+          speed: data.speed || 0,
+        });
       }
     };
 
     socket.on("worker_assigned", handleWorkerAssigned);
     socket.on("booking_updated", handleBookingUpdated);
     socket.on("status_updated", handleBookingUpdated);
+    socket.on("worker_location_broadcast", handleWorkerGps);
 
     return () => {
       socket.off("worker_assigned", handleWorkerAssigned);
       socket.off("booking_updated", handleBookingUpdated);
       socket.off("status_updated", handleBookingUpdated);
+      socket.off("worker_location_broadcast", handleWorkerGps);
     };
   }, [socket, bookingId, bookingData.bookingNumber, bookingData._id]);
 
@@ -195,17 +225,20 @@ export default function BookingTracking() {
         id: 3,
         title: "On The Way",
         desc: isPending ? "Waiting for worker to accept" : `${workerName} is traveling to your location`,
-        completed: ["IN_PROGRESS", "COMPLETED"].includes(bookingStatus),
+        completed: ["ARRIVED", "IN_PROGRESS", "COMPLETED"].includes(bookingStatus),
         current: ["ASSIGNED", "ACCEPTED", "ON_THE_WAY"].includes(bookingStatus) && !isPending,
         time: isPending ? "Pending" : "Live GPS",
       },
       {
         id: 4,
         title: "Arrived at Doorstep",
-        desc: "Worker has arrived at your service location",
+        desc:
+          bookingStatus === "ARRIVED"
+            ? `${workerName} is outside your doorstep right now!`
+            : "Worker has arrived at your service location",
         completed: ["IN_PROGRESS", "COMPLETED"].includes(bookingStatus),
         current: bookingStatus === "ARRIVED",
-        time: "Est. 12 mins",
+        time: bookingStatus === "ARRIVED" ? "Arrived" : "Doorstep",
       },
       {
         id: 5,
@@ -300,12 +333,13 @@ export default function BookingTracking() {
 
           <LiveTrackingMap
             userLocation={{
-              lat: bookingData.lat || 18.5793,
-              lng: bookingData.lng || 73.9787,
+              lat: bookingData.lat,
+              lng: bookingData.lng,
               address: bookingData.address,
             }}
+            workerLocation={workerLiveGps || workerInfo?.location}
             workerInfo={workerInfo || { name: "Searching Partner", phone: "", rating: 4.9 }}
-            height="360px"
+            height="380px"
             status={bookingStatus}
           />
         </div>

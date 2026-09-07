@@ -13,12 +13,16 @@ import homePaintingImg from "../assets/services/home-painting.jpg";
 import djMusicImg from "../assets/services/dj-music.jpg";
 import shoppingAssistantImg from "../assets/services/shopping-assistant.jpg";
 import cityGuideImg from "../assets/services/city-guide.jpg";
+import salonMenImg from "../assets/services/salon-men.jpg";
 
 export const SERVICE_IMAGES = {
   // 1. Personal & Grooming
   "salon-women": salonWomenImg,
   "salon-classic": salonWomenImg,
   "spa-women": spaWomenImg,
+  "salon-men": salonMenImg,
+  "men-salon": salonMenImg,
+  "barber": salonMenImg,
   "hair-skin": "https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=500&q=80",
   "manicure-pedicure": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=500&q=80",
   "massage-men": "https://images.unsplash.com/photo-1632345031435-8727f6897d53?auto=format&fit=crop&w=500&q=80",

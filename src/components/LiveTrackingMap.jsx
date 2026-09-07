@@ -1,42 +1,89 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import L from "leaflet";
 
+/**
+ * Calculates geodesic distance between two coordinate pairs in kilometers using the Haversine formula.
+ */
+function haversineDistanceKm(lat1, lon1, lat2, lon2) {
+  if (lat1 === null || lon1 === null || lat2 === null || lon2 === null) return 0;
+  const R = 6371; // Earth's radius in km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return Number((R * c).toFixed(2));
+}
+
 export default function LiveTrackingMap({
-  userLocation = { lat: 18.5793, lng: 73.9787, address: "Service Destination" },
+  userLocation = { lat: 19.076, lng: 72.8777, address: "Service Destination" },
+  workerLocation = null, // { lat: number, lng: number }
   workerInfo = { name: "Searching Partner", phone: "", vehicle: "Service Vehicle", rating: 4.9 },
   height = "380px",
   status = "ON_THE_WAY",
 }) {
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
+  const userMarkerRef = useRef(null);
   const workerMarkerRef = useRef(null);
   const routeLineRef = useRef(null);
-  const [etaMins, setEtaMins] = useState(12);
-  const [distanceKm, setDistanceKm] = useState("2.2");
-  const [routeCoordinates, setRouteCoordinates] = useState([]);
+
+  const [etaMins, setEtaMins] = useState(null);
+  const [distanceKm, setDistanceKm] = useState(null);
   const [isLiveRouting, setIsLiveRouting] = useState(false);
+  const [realUserCoords, setRealUserCoords] = useState(() => ({
+    lat: userLocation?.lat || 19.076,
+    lng: userLocation?.lng || 72.8777,
+  }));
 
-  const uLat = userLocation?.lat || 18.5793;
-  const uLng = userLocation?.lng || 73.9787;
-  const uAddr = userLocation?.address || "Service Destination";
-
-  // Worker starts ~1.8 km offset from user
-  const initialWorkerLat = uLat - 0.012;
-  const initialWorkerLng = uLng - 0.014;
-
+  // Resolve user coordinates: if browser GPS is available and permitted, use it for 100% precision
   useEffect(() => {
-    if (!mapContainerRef.current) return;
-    if (mapInstanceRef.current) {
-      mapInstanceRef.current.remove();
-      mapInstanceRef.current = null;
+    if (userLocation?.lat && userLocation?.lng && userLocation.lat !== 18.5793 && userLocation.lat !== 19.076) {
+      setRealUserCoords({ lat: userLocation.lat, lng: userLocation.lng });
+      return;
     }
 
-    // User Home Pin Icon
-    const userHomeIcon = L.divIcon({
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          setRealUserCoords({
+            lat: pos.coords.latitude,
+            lng: pos.coords.longitude,
+          });
+        },
+        () => {
+          // Keep current fallback
+        },
+        { timeout: 8000, maximumAge: 60000 }
+      );
+    }
+  }, [userLocation?.lat, userLocation?.lng]);
+
+  const uLat = realUserCoords.lat;
+  const uLng = realUserCoords.lng;
+  const uAddr = userLocation?.address || "Service Destination Address";
+
+  // Effective real worker coordinates: either from real live GPS, worker profile location, or offset from destination
+  const effectiveWorkerCoords = workerLocation?.lat && workerLocation?.lng
+    ? { lat: Number(workerLocation.lat), lng: Number(workerLocation.lng) }
+    : workerInfo?.location?.lat && workerInfo?.location?.lng
+    ? { lat: Number(workerInfo.location.lat), lng: Number(workerInfo.location.lng) }
+    : null;
+
+  const wLat = effectiveWorkerCoords?.lat;
+  const wLng = effectiveWorkerCoords?.lng;
+
+  // Custom User Home Pin Icon
+  const getUserHomeIcon = useCallback(() => {
+    return L.divIcon({
       className: "custom-user-home-pin",
       html: `
         <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
-          <div style="position: absolute; width: 48px; height: 48px; border-radius: 50%; background: rgba(94, 53, 177, 0.25); animation: ping 2s infinite; top: -5px;"></div>
+          <div style="position: absolute; width: 48px; height: 48px; border-radius: 50%; background: rgba(94, 53, 177, 0.25); animation: ping 2.5s infinite; top: -5px;"></div>
           <div style="background: #5E35B1; color: white; width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(94, 53, 177, 0.5); border: 3px solid #ffffff; z-index: 2;">
             <span class="material-symbols-outlined" style="font-size: 20px;">home</span>
           </div>
@@ -47,28 +94,47 @@ export default function LiveTrackingMap({
       iconAnchor: [19, 48],
       popupAnchor: [0, -48],
     });
+  }, []);
 
-    // Worker Vehicle Live Icon
-    const workerLiveIcon = L.divIcon({
+  // Custom Worker Live Vehicle Icon
+  const getWorkerLiveIcon = useCallback(() => {
+    const isArrived = status === "ARRIVED";
+    const bgCol = isArrived ? "#059669" : "#002045";
+    const borderCol = isArrived ? "#10B981" : "#F5A623";
+    const iconName = isArrived ? "doorbell" : "two_wheeler";
+
+    return L.divIcon({
       className: "custom-worker-live-pin",
       html: `
         <div style="position: relative; display: flex; flex-direction: column; align-items: center;">
-          <div style="background: #002045; color: #F5A623; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(0, 32, 69, 0.5); border: 3px solid #F5A623; transform: scale(1.05);">
-            <span class="material-symbols-outlined" style="font-size: 22px;">two_wheeler</span>
+          <div style="background: ${bgCol}; color: #ffffff; width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 18px rgba(0, 32, 69, 0.5); border: 3px solid ${borderCol};">
+            <span class="material-symbols-outlined" style="font-size: 22px; color: ${borderCol};">${iconName}</span>
           </div>
-          <div style="background: #002045; color: #ffffff; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-top: 3px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">
-            ${workerInfo?.name?.split(" ")[0] || "Worker"} (Partner)
+          <div style="background: ${bgCol}; color: #ffffff; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; margin-top: 3px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2);">
+            ${workerInfo?.name?.split(" ")[0] || "Worker Partner"}
           </div>
         </div>
       `,
-      iconSize: [42, 62],
-      iconAnchor: [21, 57],
-      popupAnchor: [0, -57],
+      iconSize: [44, 64],
+      iconAnchor: [22, 58],
+      popupAnchor: [0, -58],
     });
+  }, [status, workerInfo?.name]);
+
+  // Initialize Map
+  useEffect(() => {
+    if (!mapContainerRef.current) return;
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+    }
+
+    const centerLat = wLat && wLng ? (uLat + wLat) / 2 : uLat;
+    const centerLng = wLat && wLng ? (uLng + wLng) / 2 : uLng;
 
     const map = L.map(mapContainerRef.current, {
-      center: [(uLat + initialWorkerLat) / 2, (uLng + initialWorkerLng) / 2],
-      zoom: 15,
+      center: [centerLat, centerLng],
+      zoom: wLat && wLng ? 14 : 15,
       zoomControl: false,
     });
 
@@ -80,133 +146,186 @@ export default function LiveTrackingMap({
     L.control.zoom({ position: "topright" }).addTo(map);
 
     // User Home Marker
-    const userMarker = L.marker([uLat, uLng], { icon: userHomeIcon }).addTo(map);
-    userMarker.bindPopup(`<b>Your Address</b><br/>${uAddr}`).openPopup();
-
-    // Worker Live Moving Marker
-    const workerMarker = L.marker([initialWorkerLat, initialWorkerLng], { icon: workerLiveIcon }).addTo(map);
-    workerMarker.bindPopup(`<b>${workerInfo.name || "Partner"}</b><br/>⭐ ${workerInfo.rating || "4.9"} · On the way`);
+    const userMarker = L.marker([uLat, uLng], { icon: getUserHomeIcon() }).addTo(map);
+    userMarker.bindPopup(`<b>Your Service Location</b><br/>${uAddr}`);
+    userMarkerRef.current = userMarker;
 
     mapInstanceRef.current = map;
-    workerMarkerRef.current = workerMarker;
-
-    let moveInterval = null;
-
-    // Fetch real road route from OSRM Navigation API
-    async function fetchRoadRoute() {
-      setIsLiveRouting(true);
-      let waypoints = [
-        [initialWorkerLat, initialWorkerLng],
-        [uLat, uLng],
-      ];
-
-      try {
-        const url = `https://router.project-osrm.org/route/v1/driving/${initialWorkerLng},${initialWorkerLat};${uLng},${uLat}?overview=full&geometries=geojson`;
-        const res = await fetch(url);
-        const data = await res.json();
-
-        if (data.routes && data.routes.length > 0) {
-          const route = data.routes[0];
-          // OSRM returns coordinates as [lng, lat], convert to Leaflet [lat, lng]
-          waypoints = route.geometry.coordinates.map(([lon, lat]) => [lat, lon]);
-
-          const distKm = (route.distance / 1000).toFixed(1);
-          const durMins = Math.max(2, Math.round(route.duration / 60));
-
-          setDistanceKm(distKm);
-          setEtaMins(durMins);
-        }
-      } catch (err) {
-        console.warn("OSRM routing API fallback:", err.message);
-        // Fallback straight line / curve
-        waypoints = [
-          [initialWorkerLat, initialWorkerLng],
-          [initialWorkerLat + 0.005, initialWorkerLng + 0.006],
-          [uLat, uLng],
-        ];
-      } finally {
-        setIsLiveRouting(false);
-      }
-
-      setRouteCoordinates(waypoints);
-
-      if (routeLineRef.current) {
-        routeLineRef.current.remove();
-      }
-
-      const routeLine = L.polyline(waypoints, {
-        color: "#5E35B1",
-        weight: 5,
-        opacity: 0.85,
-        lineCap: "round",
-        lineJoin: "round",
-      }).addTo(map);
-
-      routeLineRef.current = routeLine;
-      map.fitBounds(routeLine.getBounds(), { padding: [50, 50] });
-
-      // Animate worker along real road waypoints
-      if (waypoints.length > 1) {
-        let currentIndex = 0;
-        const totalSteps = waypoints.length;
-        const maxStep = Math.max(1, Math.floor(totalSteps * 0.85)); // Arrives near destination
-
-        moveInterval = setInterval(() => {
-          if (currentIndex < maxStep) {
-            currentIndex += 1;
-            const currentPoint = waypoints[currentIndex];
-            if (currentPoint && workerMarkerRef.current) {
-              workerMarkerRef.current.setLatLng(currentPoint);
-
-              const progressRatio = currentIndex / totalSteps;
-              const remainingD = Math.max(0.2, (2.2 * (1 - progressRatio)).toFixed(1));
-              const remainingT = Math.max(2, Math.round(12 * (1 - progressRatio)));
-
-              setDistanceKm(remainingD.toString());
-              setEtaMins(remainingT);
-            }
-          }
-        }, 1800);
-      }
-    }
-
-    fetchRoadRoute();
 
     return () => {
-      if (moveInterval) clearInterval(moveInterval);
       if (mapInstanceRef.current) {
         mapInstanceRef.current.remove();
         mapInstanceRef.current = null;
       }
     };
-  }, [uLat, uLng, workerInfo?.name]);
+  }, [uLat, uLng, getUserHomeIcon]);
+
+  // Update User Marker position if coordinates change
+  useEffect(() => {
+    if (userMarkerRef.current && uLat && uLng) {
+      userMarkerRef.current.setLatLng([uLat, uLng]);
+    }
+  }, [uLat, uLng]);
+
+  // Update Worker Marker & Real Road Navigation Route
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (!wLat || !wLng) {
+      // Worker location is not yet available
+      if (workerMarkerRef.current) {
+        workerMarkerRef.current.remove();
+        workerMarkerRef.current = null;
+      }
+      if (routeLineRef.current) {
+        routeLineRef.current.remove();
+        routeLineRef.current = null;
+      }
+      setDistanceKm(null);
+      setEtaMins(null);
+      return;
+    }
+
+    // Update or create Worker Marker
+    if (!workerMarkerRef.current) {
+      const marker = L.marker([wLat, wLng], { icon: getWorkerLiveIcon() }).addTo(map);
+      marker.bindPopup(`<b>${workerInfo.name || "Partner"}</b><br/>⭐ ${workerInfo.rating || "4.9"} · Live GPS Location`);
+      workerMarkerRef.current = marker;
+    } else {
+      workerMarkerRef.current.setLatLng([wLat, wLng]);
+      workerMarkerRef.current.setIcon(getWorkerLiveIcon());
+    }
+
+    // Fetch REAL road route from OSRM between actual worker GPS and actual user location
+    let isCancelled = false;
+    async function calculateRealRoadRoute() {
+      setIsLiveRouting(true);
+      let waypoints = [
+        [wLat, wLng],
+        [uLat, uLng],
+      ];
+
+      try {
+        const url = `https://router.project-osrm.org/route/v1/driving/${wLng},${wLat};${uLng},${uLat}?overview=full&geometries=geojson`;
+        const res = await fetch(url);
+        const data = await res.json();
+
+        if (!isCancelled && data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          waypoints = route.geometry.coordinates.map(([lon, lat]) => [lat, lon]);
+
+          const dist = (route.distance / 1000).toFixed(1);
+          const dur = Math.max(1, Math.round(route.duration / 60));
+
+          setDistanceKm(dist);
+          setEtaMins(dur);
+        } else if (!isCancelled) {
+          throw new Error("No OSRM route found");
+        }
+      } catch {
+        // Fallback: Haversine geodesic math
+        if (!isCancelled) {
+          const straightDist = haversineDistanceKm(uLat, uLng, wLat, wLng);
+          // Road distance is typically ~1.25x straight line
+          const estRoadDist = Number((straightDist * 1.25).toFixed(1));
+          // Average 25 km/h urban two-wheeler speed
+          const estMins = Math.max(2, Math.round((estRoadDist / 25) * 60));
+
+          setDistanceKm(estRoadDist.toString());
+          setEtaMins(estMins);
+
+          waypoints = [
+            [wLat, wLng],
+            [uLat, uLng],
+          ];
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsLiveRouting(false);
+
+          if (routeLineRef.current) {
+            routeLineRef.current.remove();
+          }
+
+          const routeLine = L.polyline(waypoints, {
+            color: "#5E35B1",
+            weight: 5,
+            opacity: 0.85,
+            lineCap: "round",
+            lineJoin: "round",
+          }).addTo(map);
+
+          routeLineRef.current = routeLine;
+
+          try {
+            map.fitBounds(routeLine.getBounds(), { padding: [55, 55], maxZoom: 16 });
+          } catch {
+            map.setView([uLat, uLng], 14);
+          }
+        }
+      }
+    }
+
+    calculateRealRoadRoute();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [wLat, wLng, uLat, uLng, getWorkerLiveIcon, workerInfo.name, workerInfo.rating]);
 
   return (
     <div className="relative w-full rounded-2xl overflow-hidden border border-outline-variant shadow-md">
       <div ref={mapContainerRef} style={{ height, width: "100%" }} className="z-10" />
 
-      {/* Top Floating ETA Card */}
+      {/* Top Floating ETA & Distance Banner */}
       <div className="absolute top-3 left-3 right-3 sm:right-auto z-20 bg-slate-900/90 backdrop-blur-md text-white px-4 py-2.5 rounded-2xl shadow-xl border border-white/10 flex items-center justify-between sm:justify-start gap-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-amber-400 text-slate-900 flex items-center justify-center font-black">
-            <span className="material-symbols-outlined text-[22px] fill">two_wheeler</span>
+            <span className="material-symbols-outlined text-[22px] fill">
+              {status === "ARRIVED" ? "doorbell" : "two_wheeler"}
+            </span>
           </div>
           <div>
             <div className="text-[11px] font-bold text-amber-300 uppercase tracking-wider">
-              {status === "ON_THE_WAY" ? "Partner Arriving In" : "Live Real-Time Status"}
+              {status === "ARRIVED"
+                ? "Worker At Doorstep"
+                : status === "ON_THE_WAY"
+                ? "Partner Arriving In"
+                : status === "IN_PROGRESS"
+                ? "Service In Progress"
+                : "Live GPS Tracking"}
             </div>
-            <div className="text-lg font-black text-white leading-tight">
-              {etaMins} Mins <span className="text-xs text-slate-400 font-normal">({distanceKm} km away)</span>
+            <div className="text-base sm:text-lg font-black text-white leading-tight">
+              {status === "ARRIVED" ? (
+                <span className="text-emerald-400 font-bold">Arrived Outside Doorstep</span>
+              ) : etaMins !== null && distanceKm !== null ? (
+                <>
+                  {etaMins} Mins{" "}
+                  <span className="text-xs text-slate-300 font-medium">({distanceKm} km away)</span>
+                </>
+              ) : (
+                <span className="text-xs text-slate-300 font-medium">
+                  {wLat && wLng ? "Calculating live road route..." : "Waiting for partner GPS coordinates..."}
+                </span>
+              )}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Live Movement Radar Ping */}
+      {/* Bottom Live GPS Connection Badge */}
       <div className="absolute bottom-3 left-3 z-20 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl shadow-md border border-slate-200 text-xs font-bold text-slate-800 flex items-center gap-2">
-        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-        <span>{isLiveRouting ? "Calculating Road Navigation..." : "Live GPS Road Navigation Connected"}</span>
+        <span className={`w-2.5 h-2.5 rounded-full ${wLat && wLng ? "bg-emerald-500 animate-pulse" : "bg-amber-500 animate-ping"}`} />
+        <span>
+          {isLiveRouting
+            ? "Computing Real Road Route..."
+            : wLat && wLng
+            ? "100% Real Live GPS Coordinates Active"
+            : "Broadcasting to Worker Partners..."}
+        </span>
       </div>
     </div>
   );
 }
+

@@ -1,9 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import bookingService from "../services/bookingService";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
 import { LoadingState, EmptyState } from "../components/Feedback";
+import { useSocket } from "../context/SocketContext";
+import { useAuth } from "../hooks/useAuth";
 
 const MOCK_WORKER_JOBS = [
   {
@@ -16,7 +18,7 @@ const MOCK_WORKER_JOBS = [
       { id: "2", name: "Fan & Switchboard Deep Dusting", qty: 2, price: 199, durationMins: 30, icon: "power" },
     ],
     slot: { date: "Today", time: "11:30 AM" },
-    address: { label: "Home", line1: "Flat 402, Sunshine Heights, Andheri West", city: "Mumbai" },
+    address: { label: "Home", line1: "Flat 402, Sunshine Heights, Andheri West", city: "Mumbai", lat: 19.1136, lng: 72.8697 },
     pricing: { subtotal: 997, totalAmount: 897, payoutAmount: 762, paymentStatus: "PAID", paymentMethod: "ONLINE" },
     distance: "2.4 km away",
   },
@@ -29,7 +31,7 @@ const MOCK_WORKER_JOBS = [
       { id: "3", name: "Full Home Deep Cleaning (2 BHK)", qty: 1, price: 2199, durationMins: 180, icon: "home" },
     ],
     slot: { date: "Tomorrow", time: "09:00 AM" },
-    address: { label: "Apartment", line1: "Tower B-14, Oberoi Springs, Andheri West", city: "Mumbai" },
+    address: { label: "Apartment", line1: "Tower B-14, Oberoi Springs, Andheri West", city: "Mumbai", lat: 19.1197, lng: 72.8464 },
     pricing: { subtotal: 2199, totalAmount: 2199, payoutAmount: 1869, paymentStatus: "PAID", paymentMethod: "ONLINE" },
     distance: "1.8 km away",
   },
@@ -42,7 +44,7 @@ const MOCK_WORKER_JOBS = [
       { id: "4", name: "AC Filter Cleaning & Deep Servicing", qty: 2, price: 998, durationMins: 90, icon: "ac_unit" },
     ],
     slot: { date: "28 Aug 2026", time: "02:00 PM" },
-    address: { label: "Home", line1: "Bungalow 7, Juhu Scheme", city: "Mumbai" },
+    address: { label: "Home", line1: "Bungalow 7, Juhu Scheme", city: "Mumbai", lat: 19.1075, lng: 72.8263 },
     pricing: { subtotal: 998, totalAmount: 998, payoutAmount: 848, paymentStatus: "PAID", paymentMethod: "ONLINE" },
     distance: "3.5 km away",
   },
@@ -50,29 +52,153 @@ const MOCK_WORKER_JOBS = [
 
 export default function WorkerBookings() {
   const navigate = useNavigate();
+  const { socket } = useSocket();
+  const { currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState("NEW");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionSuccess, setActionSuccess] = useState("");
+  const [liveGpsCoords, setLiveGpsCoords] = useState(null);
+  const [gpsBroadcasting, setGpsBroadcasting] = useState(false);
+  const watchIdRef = useRef(null);
+
+  const loadJobs = useCallback(async () => {
+    try {
+      const res = await bookingService.getWorkerBookings();
+      if (res.data?.bookings && res.data.bookings.length > 0) {
+        setJobs(res.data.bookings);
+      } else {
+        setJobs(MOCK_WORKER_JOBS);
+      }
+    } catch (err) {
+      console.warn("Fallback to mock worker jobs:", err.message);
+      setJobs(MOCK_WORKER_JOBS);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function loadJobs() {
-      try {
-        const res = await bookingService.getWorkerBookings();
-        if (res.data?.bookings && res.data.bookings.length > 0) {
-          setJobs(res.data.bookings);
-        } else {
-          setJobs(MOCK_WORKER_JOBS);
-        }
-      } catch (err) {
-        console.warn("Fallback to mock worker jobs:", err.message);
-        setJobs(MOCK_WORKER_JOBS);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadJobs();
-  }, []);
+    const interval = setInterval(loadJobs, 6000);
+    return () => clearInterval(interval);
+  }, [loadJobs]);
+
+  // Listen to live socket events (new orders, cancellations, updates)
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleIncoming = (newOrder) => {
+      console.log("[Worker] Incoming order via socket:", newOrder);
+      if (newOrder) {
+        setJobs((prev) => {
+          const exists = prev.some((j) => (j._id && j._id === newOrder._id) || j.bookingNumber === newOrder.bookingNumber);
+          if (exists) return prev;
+          return [newOrder, ...prev];
+        });
+        setActionSuccess(`New Job Dispatched! #${newOrder.bookingNumber || ""}`);
+        setTimeout(() => setActionSuccess(""), 4000);
+      }
+    };
+
+    const handleAcceptedByOther = (data) => {
+      if (data?.orderId) {
+        setJobs((prev) => prev.filter((j) => j._id !== data.orderId && j.bookingNumber !== data.orderId));
+      }
+    };
+
+    const handleUpdated = (data) => {
+      if (data?.orderId || data?.bookingNumber) {
+        loadJobs();
+      }
+    };
+
+    socket.on("incoming_order", handleIncoming);
+    socket.on("order_accepted_by_other", handleAcceptedByOther);
+    socket.on("booking_updated", handleUpdated);
+
+    return () => {
+      socket.off("incoming_order", handleIncoming);
+      socket.off("order_accepted_by_other", handleAcceptedByOther);
+      socket.off("booking_updated", handleUpdated);
+    };
+  }, [socket, loadJobs]);
+
+  // Find active journey job (ON_THE_WAY or ARRIVED)
+  const onTheWayJob = jobs.find((j) => j.status === "ON_THE_WAY");
+
+  // Send GPS location via socket and browser Geolocation
+  const transmitCurrentGps = useCallback((bookingId) => {
+    if (!navigator.geolocation) {
+      console.warn("Geolocation not supported by browser");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude, heading, speed } = pos.coords;
+        setLiveGpsCoords({ lat: latitude, lng: longitude });
+        setGpsBroadcasting(true);
+        if (socket) {
+          socket.emit("worker_location_update", {
+            bookingId: bookingId || onTheWayJob?._id,
+            workerId: currentUser?._id,
+            lat: latitude,
+            lng: longitude,
+            heading: heading || 0,
+            speed: speed || 0,
+          });
+        }
+      },
+      (err) => {
+        console.warn("Could not get current GPS coordinates:", err.message);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 3000 }
+    );
+  }, [socket, currentUser, onTheWayJob]);
+
+  // Start continuous watchPosition when a job is ON_THE_WAY
+  useEffect(() => {
+    if (!onTheWayJob) {
+      if (watchIdRef.current) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+      setGpsBroadcasting(false);
+      return;
+    }
+
+    // Immediately transmit first point
+    transmitCurrentGps(onTheWayJob._id);
+
+    if (navigator.geolocation) {
+      watchIdRef.current = navigator.geolocation.watchPosition(
+        (pos) => {
+          const { latitude, longitude, heading, speed } = pos.coords;
+          setLiveGpsCoords({ lat: latitude, lng: longitude });
+          setGpsBroadcasting(true);
+          if (socket) {
+            socket.emit("worker_location_update", {
+              bookingId: onTheWayJob._id,
+              workerId: currentUser?._id,
+              lat: latitude,
+              lng: longitude,
+              heading: heading || 0,
+              speed: speed || 0,
+            });
+          }
+        },
+        (err) => console.warn("Watch position error:", err.message),
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 }
+      );
+    }
+
+    return () => {
+      if (watchIdRef.current) {
+        navigator.geolocation.clearWatch(watchIdRef.current);
+        watchIdRef.current = null;
+      }
+    };
+  }, [onTheWayJob?._id, socket, currentUser, transmitCurrentGps]);
 
   const handleUpdateStatus = async (jobId, nextStatus, successMsg) => {
     try {
@@ -80,15 +206,26 @@ export default function WorkerBookings() {
     } catch (err) {
       console.warn("Status update fallback:", err.message);
     }
+
+    if (nextStatus === "ASSIGNED" && socket) {
+      socket.emit("accept_order", { orderId: jobId, workerId: currentUser?._id });
+    }
+
+    if (nextStatus === "ON_THE_WAY") {
+      transmitCurrentGps(jobId);
+    }
+
     setJobs((prev) =>
       prev.map((j) => (j._id === jobId ? { ...j, status: nextStatus } : j))
     );
     setActionSuccess(successMsg);
-    setTimeout(() => setActionSuccess(""), 3500);
+    setTimeout(() => setActionSuccess(""), 4000);
   };
 
   const newRequests = jobs.filter((j) => j.status === "PENDING");
-  const activeJobs = jobs.filter((j) => ["ASSIGNED", "ON_THE_WAY", "IN_PROGRESS"].includes(j.status));
+  const activeJobs = jobs.filter((j) =>
+    ["ASSIGNED", "ACCEPTED", "ON_THE_WAY", "ARRIVED", "IN_PROGRESS"].includes(j.status)
+  );
   const completedJobs = jobs.filter((j) => j.status === "COMPLETED");
 
   const displayedJobs =
@@ -117,9 +254,25 @@ export default function WorkerBookings() {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3.5 py-1.5 rounded-full font-label-md font-bold self-start sm:self-auto">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          Status: Available for Jobs
+
+        {/* Live GPS Broadcast Indicator & Status */}
+        <div className="flex flex-wrap items-center gap-2 self-start sm:self-auto">
+          {gpsBroadcasting ? (
+            <div className="flex items-center gap-2 bg-purple-50 text-brand-purple border border-purple-200 px-3.5 py-1.5 rounded-full font-label-md font-bold text-xs shadow-xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-brand-purple animate-ping" />
+              <span>Live GPS Broadcasting</span>
+              {liveGpsCoords && (
+                <span className="text-[10px] text-brand-purple/70 hidden md:inline">
+                  ({liveGpsCoords.lat.toFixed(4)}, {liveGpsCoords.lng.toFixed(4)})
+                </span>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3.5 py-1.5 rounded-full font-label-md font-bold text-xs">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Status: Available for Jobs</span>
+            </div>
+          )}
         </div>
       </div>
 
@@ -308,6 +461,30 @@ export default function WorkerBookings() {
                 )}
 
                 {job.status === "ON_THE_WAY" && (
+                  <>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => transmitCurrentGps(job._id)}
+                      title="Send current GPS coordinates to customer"
+                    >
+                      <span className="material-symbols-outlined text-[18px]">my_location</span>
+                      Send Live GPS
+                    </Button>
+                    <Button
+                      variant="purple"
+                      size="sm"
+                      onClick={() =>
+                        handleUpdateStatus(job._id, "ARRIVED", "Doorstep arrival recorded! Customer notified.")
+                      }
+                    >
+                      <span className="material-symbols-outlined text-[18px]">doorbell</span>
+                      Mark Arrived at Doorstep
+                    </Button>
+                  </>
+                )}
+
+                {job.status === "ARRIVED" && (
                   <Button
                     variant="purple"
                     size="sm"
@@ -316,7 +493,7 @@ export default function WorkerBookings() {
                     }
                   >
                     <span className="material-symbols-outlined text-[18px]">play_arrow</span>
-                    Arrived &amp; Start Work
+                    Start Service / Work
                   </Button>
                 )}
 

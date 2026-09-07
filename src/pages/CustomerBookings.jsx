@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import bookingService from "../services/bookingService";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
 import { LoadingState, EmptyState } from "../components/Feedback";
+import { useSocket } from "../context/SocketContext";
 
 const MOCK_CUSTOMER_BOOKINGS = [
   {
@@ -53,35 +54,82 @@ const MOCK_CUSTOMER_BOOKINGS = [
 const STATUS_CONFIG = {
   PENDING: { label: "Searching Partner", variant: "warning", icon: "hourglass_empty", step: 1 },
   ASSIGNED: { label: "Partner Assigned", variant: "info", icon: "person_check", step: 2 },
+  ACCEPTED: { label: "Partner Assigned", variant: "info", icon: "person_check", step: 2 },
   ON_THE_WAY: { label: "On The Way", variant: "primary", icon: "directions_car", step: 3 },
-  IN_PROGRESS: { label: "In Progress", variant: "primary", icon: "handyman", step: 4 },
-  COMPLETED: { label: "Completed", variant: "success", icon: "check_circle", step: 5 },
+  ARRIVED: { label: "Arrived at Doorstep", variant: "warning", icon: "doorbell", step: 4 },
+  IN_PROGRESS: { label: "In Progress", variant: "primary", icon: "handyman", step: 5 },
+  COMPLETED: { label: "Completed", variant: "success", icon: "check_circle", step: 6 },
   CANCELLED: { label: "Cancelled", variant: "danger", icon: "cancel", step: 0 },
 };
 
 export default function CustomerBookings() {
   const navigate = useNavigate();
+  const { socket } = useSocket();
   const [activeTab, setActiveTab] = useState("ACTIVE");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [liveToast, setLiveToast] = useState("");
 
-  useEffect(() => {
-    async function loadBookings() {
-      try {
-        const res = await bookingService.getMyBookings();
-        setBookings(res.data?.bookings || []);
-      } catch (err) {
-        console.warn("Could not load bookings:", err.message);
-        setBookings([]);
-      } finally {
-        setLoading(false);
-      }
+  const loadBookings = useCallback(async () => {
+    try {
+      const res = await bookingService.getMyBookings();
+      setBookings(res.data?.bookings || []);
+    } catch (err) {
+      console.warn("Could not load bookings:", err.message);
+      setBookings([]);
+    } finally {
+      setLoading(false);
     }
-    loadBookings();
   }, []);
 
-  const activeBookings = bookings.filter((b) => ["PENDING", "ASSIGNED", "ON_THE_WAY", "IN_PROGRESS"].includes(b.status));
+  useEffect(() => {
+    loadBookings();
+    const interval = setInterval(loadBookings, 6000);
+    return () => clearInterval(interval);
+  }, [loadBookings]);
+
+  // Live Socket.io updates for worker acceptance, journey status, arrival, progress
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleWorkerAssigned = (data) => {
+      console.log("[CustomerBookings] Worker assigned via socket:", data);
+      const workerName = data.worker?.user?.name || "Verified Partner";
+      setLiveToast(`Partner Assigned: ${workerName} accepted your order!`);
+      setTimeout(() => setLiveToast(""), 5000);
+      loadBookings();
+    };
+
+    const handleBookingUpdated = (data) => {
+      console.log("[CustomerBookings] Booking updated via socket:", data);
+      if (data?.status === "ARRIVED") {
+        setLiveToast("Ding dong! Your worker partner has arrived at your doorstep.");
+        setTimeout(() => setLiveToast(""), 6000);
+      } else if (data?.status === "ON_THE_WAY") {
+        setLiveToast("Your worker partner is on the way to your location!");
+        setTimeout(() => setLiveToast(""), 5000);
+      } else if (data?.status === "COMPLETED") {
+        setLiveToast("Service completed! Thank you for choosing SevaSetu.");
+        setTimeout(() => setLiveToast(""), 5000);
+      }
+      loadBookings();
+    };
+
+    socket.on("worker_assigned", handleWorkerAssigned);
+    socket.on("booking_updated", handleBookingUpdated);
+    socket.on("status_updated", handleBookingUpdated);
+
+    return () => {
+      socket.off("worker_assigned", handleWorkerAssigned);
+      socket.off("booking_updated", handleBookingUpdated);
+      socket.off("status_updated", handleBookingUpdated);
+    };
+  }, [socket, loadBookings]);
+
+  const activeBookings = bookings.filter((b) =>
+    ["PENDING", "ASSIGNED", "ACCEPTED", "ON_THE_WAY", "ARRIVED", "IN_PROGRESS"].includes(b.status)
+  );
   const pastBookings = bookings.filter((b) => b.status === "COMPLETED");
   const cancelledBookings = bookings.filter((b) => b.status === "CANCELLED");
 
@@ -117,6 +165,25 @@ export default function CustomerBookings() {
             Book New Service
           </Button>
         </div>
+
+        {/* Live Real-Time Toast Notification */}
+        {liveToast && (
+          <div className="mb-4 p-4 rounded-2xl bg-brand-purple text-white shadow-lg shadow-brand-purple/25 flex items-center justify-between gap-3 animate-fade-in">
+            <div className="flex items-center gap-2.5">
+              <span className="material-symbols-outlined text-[22px] text-amber-300 animate-bounce">
+                notifications_active
+              </span>
+              <span className="text-sm font-bold">{liveToast}</span>
+            </div>
+            <button
+              type="button"
+              onClick={() => setLiveToast("")}
+              className="w-6 h-6 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-xs text-white"
+            >
+              ✕
+            </button>
+          </div>
+        )}
 
         {/* Tab Filters */}
         <div className="flex border-b border-outline-variant gap-1 sm:gap-2 mb-6 overflow-x-auto scrollbar-none">
