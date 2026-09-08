@@ -1,4 +1,5 @@
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { useLanguage } from "../../context/LanguageContext";
 
 const STEPS = [
   {
@@ -33,6 +34,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   const { ref, isRevealed } = useScrollReveal();
+  const { tr } = useLanguage();
 
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-primary/[0.03] to-white relative overflow-hidden">
@@ -40,13 +42,13 @@ export default function HowItWorks() {
         {/* Section header */}
         <div className={`text-center mb-16 ${isRevealed ? "animate-fade-in-up" : "opacity-0"}`}>
           <span className="inline-block px-4 py-1.5 rounded-full bg-brand-success/10 text-brand-success text-xs font-bold uppercase tracking-widest mb-4">
-            Simple Process
+            {tr("Simple Process")}
           </span>
           <h2 className="text-3xl md:text-5xl font-black text-on-surface mb-4">
-            How It <span className="text-gradient">Works</span>
+            {tr("How It Works")}
           </h2>
           <p className="text-on-surface-variant text-base md:text-lg max-w-2xl mx-auto">
-            Getting professional help has never been easier. Just 4 simple steps.
+            {tr("Getting professional help has never been easier. Just 4 simple steps.")}
           </p>
         </div>
 
@@ -73,8 +75,8 @@ export default function HowItWorks() {
                 </div>
               )}
 
-              <h3 className="text-lg font-bold text-on-surface mb-2">{step.title}</h3>
-              <p className="text-sm text-on-surface-variant leading-relaxed max-w-xs">{step.desc}</p>
+              <h3 className="text-lg font-bold text-on-surface mb-2">{tr(step.title)}</h3>
+              <p className="text-sm text-on-surface-variant leading-relaxed max-w-xs">{tr(step.desc)}</p>
             </div>
           ))}
         </div>

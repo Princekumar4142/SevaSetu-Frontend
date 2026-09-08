@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { SERVICE_IMAGES, getServiceImage } from "../../constants/serviceImages";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function CategoryIconGrid({ title, items, onSelect, exploreLink }) {
   const [imgErrors, setImgErrors] = useState({});
+  const { tr } = useLanguage();
 
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-lg md:text-xl text-on-surface font-extrabold tracking-tight">
-          {title}
+          {tr(title)}
         </h3>
       </div>
 
@@ -39,7 +41,7 @@ export default function CategoryIconGrid({ title, items, onSelect, exploreLink }
                       : "bg-slate-800 text-white"
                   }`}
                 >
-                  {item.badge}
+                  {tr(item.badge)}
                 </span>
               )}
 
@@ -48,7 +50,7 @@ export default function CategoryIconGrid({ title, items, onSelect, exploreLink }
                 {serviceImg && !hasImgError ? (
                   <img
                     src={serviceImg}
-                    alt={item.label}
+                    alt={tr(item.label)}
                     className="w-full h-full object-cover"
                     loading="lazy"
                     onError={() => setImgErrors((prev) => ({ ...prev, [item.id]: true }))}
@@ -66,11 +68,11 @@ export default function CategoryIconGrid({ title, items, onSelect, exploreLink }
 
               {/* Service Label */}
               <span className="text-xs sm:text-sm font-black text-slate-800 group-hover:text-emerald-700 transition-colors leading-tight line-clamp-2 px-1">
-                {item.label}
+                {tr(item.label)}
               </span>
 
               <span className="text-[11px] text-slate-400 font-bold mt-1.5 flex items-center gap-0.5 group-hover:text-emerald-700 transition-colors">
-                Book now <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+                {tr("Book now")} <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
               </span>
             </button>
           );
@@ -84,7 +86,7 @@ export default function CategoryIconGrid({ title, items, onSelect, exploreLink }
             onClick={exploreLink.onClick}
             className="text-xs sm:text-sm text-brand-purple hover:text-brand-purple-dark font-bold inline-flex items-center gap-1 hover:underline"
           >
-            {exploreLink.label}
+            {tr(exploreLink.label)}
           </button>
         </div>
       )}

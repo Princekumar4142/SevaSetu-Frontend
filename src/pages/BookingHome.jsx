@@ -1,8 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import { useScrollReveal } from "../hooks/useScrollReveal";
 import CategoryIconGrid from "../components/booking/CategoryIconGrid";
 import {
+  COOP_SKILLED_SERVICES,
   AGRI_MECHANIZATION_SERVICES,
   FOODTECH_PROCESSING_SERVICES,
   RURAL_INFRASTRUCTURE_SERVICES,
@@ -18,6 +20,7 @@ import JoinAsWorker from "../components/landing/JoinAsWorker";
 /** Wrapper that applies scroll-reveal to each service section. */
 function ServiceSection({ title, items, onSelect, exploreLink, bgClass = "bg-white", badge = null }) {
   const { ref, isRevealed } = useScrollReveal();
+  const { tr } = useLanguage();
 
   return (
     <div ref={ref} className={`border-b border-outline-variant/30 py-12 md:py-16 ${bgClass}`}>
@@ -26,7 +29,7 @@ function ServiceSection({ title, items, onSelect, exploreLink, bgClass = "bg-whi
           <div className="mb-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
-              {badge}
+              {tr(badge)}
             </span>
           </div>
         )}
@@ -38,13 +41,10 @@ function ServiceSection({ title, items, onSelect, exploreLink, bgClass = "bg-whi
 
 export default function BookingHome() {
   const navigate = useNavigate();
-  const { currentUser, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const { tr } = useLanguage();
 
   const handleSelectService = (item) => {
-    if (!isAuthenticated) {
-      navigate("/login");
-      return;
-    }
     if (item && item.id) {
       navigate(`/customer/services/${item.id}`);
     } else {
@@ -68,10 +68,10 @@ export default function BookingHome() {
             <span className="material-symbols-outlined text-amber-200 text-2xl animate-bounce">electric_bolt</span>
             <div>
               <p className="text-xs sm:text-sm font-black tracking-wide uppercase">
-                ⚡ Tatkal Farm Emergency Dispatch (45-Minute Arrival)
+                {tr("⚡ Tatkal Farm Emergency Dispatch (45-Minute Arrival)")}
               </p>
               <p className="text-[11px] sm:text-xs text-rose-100 font-medium">
-                Burnt tube-well pump motor, electrical field starter failure, or critical livestock aid across rural blocks.
+                {tr("Burnt tube-well pump motor, electrical field starter failure, or critical livestock aid across rural blocks.")}
               </p>
             </div>
           </div>
@@ -82,22 +82,30 @@ export default function BookingHome() {
             }}
             className="shrink-0 bg-white text-rose-700 hover:bg-rose-50 font-black text-xs px-4 py-2 rounded-xl shadow transition-all flex items-center gap-1.5 cursor-pointer"
           >
-            <span>Book Emergency Tech</span>
+            <span>{tr("Book Emergency Tech")}</span>
             <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
           </button>
         </div>
       </div>
 
       {/* ═══════════════════════════════════════════════════════
-          PRIMARY SECTIONS: Agriculture, FoodTech & Rural Development
+          CORE SECTION: Labour Cooperative Skilled Workforce (Verified Trades)
        ═══════════════════════════════════════════════════════ */}
       <div className="flex-1">
+        <ServiceSection
+          title="🛠️ Labour Cooperative Skilled Workforce (Verified Trades)"
+          badge="Federation Verified Pool · 10 Core Skilled Trades · Direct Fair Living Wages"
+          items={COOP_SKILLED_SERVICES}
+          onSelect={handleSelectService}
+          bgClass="bg-white"
+        />
+
         <ServiceSection
           title="🚜 Agri & Farm Mechanization Services"
           badge="Cooperative Fleet · Tractor, Solar Pump & Agri-Drone"
           items={AGRI_MECHANIZATION_SERVICES}
           onSelect={handleSelectService}
-          bgClass="bg-white"
+          bgClass="bg-slate-50/80"
         />
 
         <ServiceSection

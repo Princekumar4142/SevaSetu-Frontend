@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { useLanguage } from "../../context/LanguageContext";
 
 import personalImg from "../../assets/services/personal-services.jpg";
 import homeImg from "../../assets/services/ac-repair.jpg";
@@ -16,6 +17,9 @@ import ruralInfrastructureImg from "../../assets/services/rural-infrastructure.j
 import dairyLivestockImg from "../../assets/services/dairy-livestock.jpg";
 import ruralEmergencyImg from "../../assets/services/rural-emergency.jpg";
 import institutionalBulkImg from "../../assets/services/institutional-bulk.jpg";
+import electricalPlumbingImg from "../../assets/services/electrical-plumbing.jpg";
+import homePaintingImg from "../../assets/services/home-painting.jpg";
+import cleaningPestImg from "../../assets/services/cleaning-pest.jpg";
 
 /* ── 3D-Styled Vector Icons (Rich gradients, bevels, depth & specular glints) ── */
 
@@ -265,20 +269,25 @@ function Icon3DPainting() {
 }
 
 const ROOT_CATEGORIES = [
-  { id: "agri-mechanization",   label: "Agri & Farm Mechanization",  emoji: "🚜", image: agriMechanizationImg,   bg: "from-emerald-50 to-green-50",   border: "hover:border-emerald-500",  shadow: "hover:shadow-emerald-100" },
-  { id: "foodtech-processing",  label: "FoodTech & Agro-Processing", emoji: "🌾", image: foodtechProcessingImg,  bg: "from-amber-50 to-yellow-50",   border: "hover:border-amber-500",    shadow: "hover:shadow-amber-100" },
-  { id: "rural-infrastructure", label: "Rural & Panchayat Infra",    emoji: "🏡", image: ruralInfrastructureImg, bg: "from-sky-50 to-blue-50",       border: "hover:border-sky-500",      shadow: "hover:shadow-sky-100" },
-  { id: "dairy-livestock",      label: "Dairy & Animal Husbandry",   emoji: "🐄", image: dairyLivestockImg,      bg: "from-teal-50 to-emerald-50",   border: "hover:border-teal-500",     shadow: "hover:shadow-teal-100" },
-  { id: "rural-emergency",      label: "Tatkal Farm Breakdown",      emoji: "⚡", image: ruralEmergencyImg,      bg: "from-rose-50 to-red-50",       border: "hover:border-rose-500",     shadow: "hover:shadow-rose-100" },
-  { id: "institutional-bulk",   label: "FPO & Bulk Squads",          emoji: "🏢", image: institutionalBulkImg,   bg: "from-indigo-50 to-violet-50",  border: "hover:border-indigo-500",   shadow: "hover:shadow-indigo-100" },
+  { id: "electricians",         label: "Electricians & Tech",        emoji: "⚡", image: electricalPlumbingImg, bg: "from-amber-50 to-orange-50",   border: "hover:border-amber-500",    shadow: "hover:shadow-amber-100" },
+  { id: "plumbers",             label: "Plumbers & Carpenters",       emoji: "🔧", image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=500&q=80", bg: "from-sky-50 to-blue-50", border: "hover:border-sky-500", shadow: "hover:shadow-sky-100" },
+  { id: "domestic-helpers",     label: "Domestic Help & Cleaners",    emoji: "🏡", image: cleaningPestImg,       bg: "from-emerald-50 to-teal-50",   border: "hover:border-emerald-500",  shadow: "hover:shadow-emerald-100" },
+  { id: "caregivers",           label: "Caregivers & Drivers",        emoji: "❤️", image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=500&q=80", bg: "from-rose-50 to-pink-50", border: "hover:border-rose-500", shadow: "hover:shadow-rose-100" },
+  { id: "painters",             label: "Painters & Gardeners",        emoji: "🎨", image: homePaintingImg,       bg: "from-purple-50 to-violet-50",  border: "hover:border-purple-500",   shadow: "hover:shadow-purple-100" },
+  { id: "agri-mechanization",   label: "Agri & Farm Mechanization",   emoji: "🚜", image: agriMechanizationImg,  bg: "from-green-50 to-emerald-50",  border: "hover:border-green-500",    shadow: "hover:shadow-green-100" },
 ];
 
 const POPULAR_TAGS = [
-  { label: "Tractor Operator", id: "agri-mechanization" },
-  { label: "Solar Pump Repair", id: "agri-mechanization" },
-  { label: "Cold Storage Tech", id: "foodtech-processing" },
-  { label: "Paravet Cattle Visit", id: "dairy-livestock" },
-  { label: "Panchayat Drain Fix", id: "rural-infrastructure" },
+  { label: "Electricians", id: "electricians", emoji: "⚡" },
+  { label: "Plumbers", id: "plumbers", emoji: "🔧" },
+  { label: "Carpenters", id: "carpenters", emoji: "🪚" },
+  { label: "Painters", id: "painters", emoji: "🎨" },
+  { label: "Domestic Helpers", id: "domestic-helpers", emoji: "🏡" },
+  { label: "Caregivers", id: "caregivers", emoji: "❤️" },
+  { label: "Drivers", id: "drivers", emoji: "🚗" },
+  { label: "Gardeners", id: "gardeners", emoji: "🌿" },
+  { label: "Cleaners", id: "cleaners", emoji: "🧹" },
+  { label: "Technicians", id: "technicians", emoji: "🧰" },
 ];
 
 const POPULAR_BOOKINGS = [
@@ -317,6 +326,7 @@ const POPULAR_BOOKINGS = [
 export default function LandingHero() {
   const navigate = useNavigate();
   const { currentUser, isAuthenticated } = useAuth();
+  const { tr } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
   const firstName = currentUser?.name?.split(" ")[0] || "";
 
@@ -350,7 +360,7 @@ export default function LandingHero() {
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-emerald-200/80 shadow-sm">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-bold text-emerald-900 tracking-wide">
-                Labour Cooperative Federation · Agriculture, FoodTech & Rural Development
+                {tr("Labour Cooperative Federation · Skilled Trades & Rural Services")}
               </span>
             </div>
 
@@ -359,25 +369,25 @@ export default function LandingHero() {
               {isAuthenticated ? (
                 <div className="space-y-1">
                   <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
-                    Welcome Back · Cooperative Member Portal
+                    {tr("Welcome Back · Cooperative Member Portal")}
                   </span>
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-                    Hello, <span className="text-emerald-700">{firstName}</span>.
+                    {tr("Hello,")} <span className="text-emerald-700">{firstName}</span>.
                   </h1>
                   <p className="text-sm sm:text-base text-slate-600 max-w-xl pt-1">
-                    Book verified cooperative agri-technicians, farm machinery operators, and paravets for your fields & community.
+                    {tr("Book verified cooperative electricians, plumbers, carpenters, domestic helpers, caregivers, technicians and farm operators.")}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-1">
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-                    Cooperative Services for <br />
+                    {tr("Cooperative Services for")} <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-teal-700">
-                      Agriculture & Rural Bharat.
+                      {tr("Households & Rural Bharat.")}
                     </span>
                   </h1>
                   <p className="text-sm sm:text-base text-slate-600 max-w-xl pt-1 leading-relaxed">
-                    Connecting Labour Cooperative Federations, PACS & FPOs with verified machinery operators, foodtech processors, and rural technicians with 100% fair living wages.
+                    {tr("Connecting Labour Cooperative Federations with households & enterprises for verified electricians, plumbers, carpenters, painters, domestic helpers, caregivers, drivers, gardeners, cleaners & technicians.")}
                   </p>
                 </div>
               )}
@@ -391,24 +401,42 @@ export default function LandingHero() {
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder="Search for services..."
+                  placeholder={tr("Search for services...")}
                   className="min-w-0 w-full flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 text-sm sm:text-base placeholder:text-slate-400 bg-transparent font-medium"
                 />
                 <button
                   type="submit"
                   className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1 shrink-0"
                 >
-                  <span>Search</span>
+                  <span>{tr("Search")}</span>
                   <span className="material-symbols-outlined text-[16px] hidden sm:inline">arrow_forward</span>
                 </button>
               </div>
             </form>
 
+            {/* Quick Skilled Trade Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none pt-1">
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 shrink-0 mr-1">
+                {tr("Quick Book:")}
+              </span>
+              {POPULAR_TAGS.map((tag) => (
+                <button
+                  key={tag.id}
+                  type="button"
+                  onClick={() => navigate(`/customer/services/${tag.id}`)}
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-400 text-slate-700 hover:text-emerald-800 transition-all shrink-0 shadow-sm cursor-pointer"
+                >
+                  <span className="text-xs">{tag.emoji}</span>
+                  <span>{tr(tag.label)}</span>
+                </button>
+              ))}
+            </div>
+
 
             {/* ── Root Category Image Tiles ── */}
             <div className="pt-2">
               <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                Explore Services with 1-Tap Booking
+                {tr("Explore Services with 1-Tap Booking")}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3">
                 {ROOT_CATEGORIES.map((cat) => (
@@ -431,7 +459,7 @@ export default function LandingHero() {
                     <div className="px-2 py-2.5 flex flex-col items-center">
                       <span className="text-lg leading-none mb-1">{cat.emoji}</span>
                       <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-600 leading-tight">
-                        {cat.label}
+                        {tr(cat.label)}
                       </span>
                     </div>
                   </button>
@@ -451,11 +479,11 @@ export default function LandingHero() {
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                   <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
-                    How SevaSetu Agri-Coop Works
+                    {tr("How SevaSetu Agri-Coop Works")}
                   </span>
                 </div>
                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
-                  Fair & Transparent
+                  {tr("Fair & Transparent")}
                 </span>
               </div>
 
@@ -472,7 +500,7 @@ export default function LandingHero() {
               {/* 4 Connected Step Sequence with Arrow Indicators (1 → 2 → 3 → 4) */}
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between px-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  <span>Farm-to-Doorstep Flow</span>
+                  <span>{tr("Farm-to-Doorstep Flow")}</span>
                   <span>1 → 2 → 3 → 4</span>
                 </div>
 
@@ -480,32 +508,32 @@ export default function LandingHero() {
                   <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">1</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Book Farm Service</h5>
-                      <p className="text-[10px] text-slate-500 truncate">Tractor, pump &amp; tech in 2 mins</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">{tr("Book Farm Service")}</h5>
+                      <p className="text-[10px] text-slate-500 truncate">{tr("Tractor, pump & tech in 2 mins")}</p>
                     </div>
                   </div>
 
                   <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">2</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Verified Arrival</h5>
-                      <p className="text-[10px] text-slate-500 truncate">PACS &amp; certified technician</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">{tr("Verified Arrival")}</h5>
+                      <p className="text-[10px] text-slate-500 truncate">{tr("PACS & certified technician")}</p>
                     </div>
                   </div>
 
                   <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-amber-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">3</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">5-Star Field Service</h5>
-                      <p className="text-[10px] text-slate-500 truncate">Quality harvest &amp; repair output</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">{tr("5-Star Field Service")}</h5>
+                      <p className="text-[10px] text-slate-500 truncate">{tr("Quality harvest & repair output")}</p>
                     </div>
                   </div>
 
                   <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-purple-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">4</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Direct Earnings</h5>
-                      <p className="text-[10px] text-slate-500 truncate">Fair income &amp; dignity</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">{tr("Direct Earnings")}</h5>
+                      <p className="text-[10px] text-slate-500 truncate">{tr("Fair income & dignity")}</p>
                     </div>
                   </div>
                 </div>
@@ -515,11 +543,11 @@ export default function LandingHero() {
               <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] sm:text-xs">
                 <span className="font-bold text-emerald-600 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[15px]">check_circle</span>
-                  100% Direct Payouts
+                  {tr("100% Direct Payouts")}
                 </span>
                 <span className="font-semibold text-slate-600 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
-                  Social Impact 🌱
+                  {tr("Social Impact 🌱")}
                 </span>
               </div>
             </div>

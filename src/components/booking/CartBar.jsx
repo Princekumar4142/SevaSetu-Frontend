@@ -1,9 +1,11 @@
 import { useSelector } from "react-redux";
 import { selectCartCount, selectCartSubtotal } from "../../store/slices/cartSlice";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function CartBar({ buttonLabel = "Proceed", onProceed, disabled = false }) {
   const count = useSelector(selectCartCount);
   const subtotal = useSelector(selectCartSubtotal);
+  const { tr } = useLanguage();
 
   if (count === 0) return null;
 
@@ -12,7 +14,9 @@ export default function CartBar({ buttonLabel = "Proceed", onProceed, disabled =
       <div className="max-w-5xl mx-auto flex items-center justify-between gap-4">
         <div>
           <p className="font-label-md text-label-md text-on-surface font-bold text-base">₹{subtotal}</p>
-          <p className="font-status-badge text-status-badge text-on-surface-variant">{count} item{count > 1 ? "s" : ""}</p>
+          <p className="font-status-badge text-status-badge text-on-surface-variant">
+            {count} {count > 1 ? tr("Services") : tr("Service")}
+          </p>
         </div>
         <button
           type="button"
@@ -20,7 +24,7 @@ export default function CartBar({ buttonLabel = "Proceed", onProceed, disabled =
           onClick={onProceed}
           className="bg-brand-purple text-white font-label-md text-label-md font-bold px-6 py-2.5 rounded-xl hover:bg-brand-purple-dark transition-colors disabled:opacity-50 shadow-md shadow-brand-purple/20 cursor-pointer"
         >
-          {buttonLabel}
+          {tr(buttonLabel)}
         </button>
       </div>
     </div>

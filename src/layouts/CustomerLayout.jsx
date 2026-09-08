@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useAuth } from "../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
+import { useLanguage } from "../context/LanguageContext";
 import BottomTabBar from "../components/booking/BottomTabBar";
 import Logo from "../components/Logo";
 import AddressModal from "../components/AddressModal";
@@ -23,6 +24,7 @@ const AUTH_NAV_LINKS = [
 
 export default function CustomerLayout() {
   const { isAuthenticated, currentUser } = useAuth();
+  const { tr } = useLanguage();
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
@@ -39,7 +41,7 @@ export default function CustomerLayout() {
 
   const addressSummary = currentUser?.address
     ? `${currentUser.address}${currentUser.city ? `, ${currentUser.city}` : ""}`
-    : "Add your service address";
+    : tr("Add your service address");
 
   return (
     <div className="min-h-screen bg-surface flex flex-col">
@@ -69,7 +71,7 @@ export default function CustomerLayout() {
                 <div className="min-w-0 pr-1">
                   <div className="flex items-center gap-1">
                     <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                      Service Address
+                      {tr("Service Address")}
                     </span>
                     <span className="material-symbols-outlined text-[13px] text-slate-400">expand_more</span>
                   </div>
@@ -90,7 +92,7 @@ export default function CustomerLayout() {
                   to={l.href}
                   className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium"
                 >
-                  {l.label}
+                  {tr(l.label)}
                 </Link>
               ))}
             </nav>
@@ -113,7 +115,7 @@ export default function CustomerLayout() {
                   onClick={handleLogout}
                   className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors px-sm"
                 >
-                  Logout
+                  {tr("Logout")}
                 </button>
               </div>
             ) : (
@@ -122,13 +124,13 @@ export default function CustomerLayout() {
                   to="/login"
                   className="font-label-md text-label-md text-primary font-semibold hover:text-brand-purple-dark transition-colors px-md py-sm"
                 >
-                  Login
+                  {tr("Login")}
                 </Link>
                 <Link
                   to="/register"
                   className="bg-brand-purple text-white font-label-md text-label-md font-semibold px-lg py-sm rounded-full hover:bg-brand-purple-dark transition-colors shadow-sm"
                 >
-                  Sign Up
+                  {tr("Sign Up")}
                 </Link>
               </div>
             )}
@@ -156,7 +158,7 @@ export default function CustomerLayout() {
             >
               <span className="material-symbols-outlined text-indigo-600 text-[15px] shrink-0">location_on</span>
               <span className="text-xs font-semibold text-slate-800 truncate">
-                {currentUser?.city || currentUser?.address?.split(",")[0] || "Set address"}
+                {currentUser?.city || currentUser?.address?.split(",")[0] || tr("Service Address")}
               </span>
               <span className="material-symbols-outlined text-slate-400 text-[13px] shrink-0">expand_more</span>
             </button>
@@ -170,13 +172,13 @@ export default function CustomerLayout() {
         ) : (
           <div className="flex items-center gap-2">
             <Link to="/login" className="font-label-md text-label-md text-brand-purple font-bold px-2 py-1">
-              Login
+              {tr("Login")}
             </Link>
             <Link
               to="/register"
               className="font-label-md text-xs bg-brand-purple text-white font-semibold px-3 py-1.5 rounded-full shadow-sm"
             >
-              Sign Up
+              {tr("Sign Up")}
             </Link>
           </div>
         )}

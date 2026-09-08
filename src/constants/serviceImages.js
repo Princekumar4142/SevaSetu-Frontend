@@ -85,6 +85,28 @@ export const SERVICE_IMAGES = {
   "hair-care": "https://images.unsplash.com/photo-1527799820374-dcf8d9d4a388?auto=format&fit=crop&w=500&q=80",
   "head-massage": "https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=500&q=80",
 
+  // ── Core Skilled Cooperative Federation Workforce (10 Essential Trades) ──
+  "electricians": electricalPlumbingImg,
+  "electrician": electricalPlumbingImg,
+  "plumbers": "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=500&q=80",
+  "plumber": "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=500&q=80",
+  "carpenters": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=500&q=80",
+  "carpenter": "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=500&q=80",
+  "painters": homePaintingImg,
+  "painter": homePaintingImg,
+  "domestic-helpers": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=500&q=80",
+  "domestic-helper": "https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=500&q=80",
+  "caregivers": "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=500&q=80",
+  "caregiver": "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=500&q=80",
+  "drivers": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=500&q=80",
+  "driver": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=500&q=80",
+  "gardeners": "https://images.unsplash.com/photo-1592417817098-8f3d69109853?auto=format&fit=crop&w=500&q=80",
+  "gardener": "https://images.unsplash.com/photo-1592417817098-8f3d69109853?auto=format&fit=crop&w=500&q=80",
+  "cleaners": cleaningPestImg,
+  "cleaner": cleaningPestImg,
+  "technicians": acRepairImg,
+  "technician": acRepairImg,
+
   // 2. Home Services
   "electrical-plumbing": electricalPlumbingImg,
   "cleaning-pest-1": cleaningPestImg,
@@ -274,14 +296,22 @@ export function getServiceImage(serviceId, serviceName = "", categoryId = "") {
     return SERVICE_IMAGES["city-shopping-guide"];
   }
 
+  // ── Core 10 Skilled Cooperative Workforce Fallbacks ──
+  if (query.includes("electric") || query.startsWith("elec-")) return SERVICE_IMAGES["electricians"];
+  if (query.includes("plumb") || query.startsWith("plumb-")) return SERVICE_IMAGES["plumbers"];
+  if (query.includes("carpenter") || query.includes("carpentry") || query.startsWith("carp-")) return SERVICE_IMAGES["carpenters"];
+  if (query.includes("paint") || query.startsWith("paint-")) return SERVICE_IMAGES["painters"];
+  if (query.includes("domestic") || query.includes("jhadu") || query.includes("bartan") || query.startsWith("dh-")) return SERVICE_IMAGES["domestic-helpers"];
+  if (query.includes("caregiver") || query.includes("elderly") || query.includes("patient") || query.startsWith("care-")) return SERVICE_IMAGES["caregivers"];
+  if (query.includes("driver") || query.includes("chauffeur") || query.startsWith("drv-")) return SERVICE_IMAGES["drivers"];
+  if (query.includes("garden") || query.includes("mali") || query.includes("lawn") || query.startsWith("gard-")) return SERVICE_IMAGES["gardeners"];
+  if (query.includes("clean") || query.startsWith("cln-")) return SERVICE_IMAGES["cleaners"];
+  if (query.includes("tech") || query.includes("appliance") || query.startsWith("tech-")) return SERVICE_IMAGES["technicians"];
+
   // Fallbacks for Urban Services
   if (query.includes("salon") && query.includes("men")) return SERVICE_IMAGES["salon-men"];
   if (query.includes("salon") || query.includes("facial") || query.includes("beauty")) return SERVICE_IMAGES["salon-women"];
   if (query.includes("spa") || query.includes("massage")) return SERVICE_IMAGES["spa-women"];
-  if (query.includes("plumb") || query.includes("leak") || query.includes("pipe")) return SERVICE_IMAGES["electrical-plumbing"];
-  if (query.includes("paint")) return SERVICE_IMAGES["home-painting"];
-  if (query.includes("clean") || query.includes("pest")) return SERVICE_IMAGES["cleaning-pest-1"];
-  if (query.includes("ac") || query.includes("appliance")) return SERVICE_IMAGES["ac-repair"];
   if (query.includes("ca") || query.includes("account") || query.includes("tax") || query.includes("audit")) return SERVICE_IMAGES["ca-accounting"];
   if (query.includes("legal") || query.includes("law") || query.includes("court")) return SERVICE_IMAGES["legal-advisor"];
   if (query.includes("event") || query.includes("cater") || query.includes("dj")) return SERVICE_IMAGES["dj-music"];

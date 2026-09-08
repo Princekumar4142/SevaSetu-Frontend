@@ -2,7 +2,8 @@
  * LanguageContext — Global multilanguage support for SevaSetu
  * Supported: Hindi, English, Bengali, Marathi, Tamil, Telugu, Gujarati, Kannada
  */
-import { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react";
+import { PHRASE_TRANSLATIONS } from "./translationsData";
 
 // ── Supported Languages ──────────────────────────────────────────────────────
 export const LANGUAGES = [
@@ -87,7 +88,7 @@ export const TRANSLATIONS = {
   },
   ai_fillNow: {
     hi: "अभी भरें", en: "Fill Now", bn: "এখন পূরণ করুন", mr: "आता भरा",
-    ta: "இப்போது நிரப்புக", te: "ఇప్పుడు నింపండి", gu: "હવે ભરો", kn: "ಈಗ ತುಂಬಿ",
+    ta: "இப்போது நிரப்புக", te: "இప్పుడు నింపండి", gu: "હવે ભરો", kn: "ಈಗ ತುಂಬಿ",
   },
   ai_start: {
     hi: "🎤 Start करें — बोलकर भरें", en: "🎤 Start — Speak to fill", bn: "🎤 শুরু করুন", mr: "🎤 सुरू करा",
@@ -100,7 +101,7 @@ export const TRANSLATIONS = {
   ai_close_done: {
     hi: "शानदार! Form भर गया — Close करें", en: "Great! Form filled — Close",
     bn: "দারুণ! ফর্ম পূরণ হলো — বন্ধ করুন", mr: "छान! फॉर्म भरला — बंद करा",
-    ta: "அற்புதம்! படிவம் நிரம்பியது — மூடு", te: "అద్భుతం! ఫారం నిండింది — మూసివేయి",
+    ta: "அற்புதம்! படிவம் நிரம்பியது — மூடு", te: "அద్భుతం! ఫారం నిండింది — మూసివేయి",
     gu: "શ્રેષ્ઠ! ફોર્મ ભરાઈ ગઈ — બંધ કરો", kn: "ಅದ್ಭುತ! ಫಾರ್ಮ್ ತುಂಬಿತು — ಮುಚ್ಚಿ",
   },
   ai_privacy: {
@@ -272,55 +273,38 @@ export const TRANSLATIONS = {
     gu: "6 અંકનો પિનકોડ બોલો.",
     kn: "6 ಅಂಕಿಯ ಪಿನ್‌ಕೋಡ್ ಹೇಳಿ.",
   },
-
-  // ── Agriculture & Rural Theme Labels ──────────────────────────────────────
-  cat_agri: {
-    hi: "कृषि एवं फार्म यंत्रीकरण",
-    en: "Agri & Farm Mechanization",
-    bn: "কৃষি ও খামার যান্ত্রিকীকরণ",
-    mr: "शेती व कृषी यांत्रिकीकरण",
-  },
-  cat_foodtech: {
-    hi: "खाद्य प्रसंस्करण एवं भंडारण",
-    en: "FoodTech & Agro-Processing",
-    bn: "খাদ্য প্রক্রিয়াকরণ ও সংরক্ষণ",
-    mr: "अन्न प्रक्रिया व साठवणूक",
-  },
-  cat_rural: {
-    hi: "ग्रामीण अवसंरचना व पंचायत",
-    en: "Rural & Panchayat Infrastructure",
-    bn: "গ্রামীণ অবকাঠামো ও পঞ্চায়েত",
-    mr: "ग्रामीण पायाभूत सुविधा व पंचायत",
-  },
-  cat_dairy: {
-    hi: "डेयरी, पशुपालन व पशु सखी",
-    en: "Dairy & Animal Husbandry",
-    bn: "দুগ্ধ ও পশুপালন",
-    mr: "दुग्धव्यवसाय व पशुसंवर्धन",
-  },
-  cat_emergency: {
-    hi: "तत्काल फार्म आपातकालीन (45 मिनट)",
-    en: "Tatkal Farm Breakdown (45-Min)",
-    bn: "জরুরি খামার সেবা",
-    mr: "तातडीची शेती यंत्रणा दुरुस्ती",
-  },
-  cat_bulk: {
-    hi: "FPO व संस्थागत बल्क बुकिंग",
-    en: "FPO & Institutional Bulk Squads",
-    bn: "এফপিও ও যৌথ বুকিং",
-    mr: "एफपीओ व संस्थात्मक बल्क बुकिंग",
-  },
-  coop_fair_wage: {
-    hi: "90% प्रत्यक्ष कारीगर पारिश्रमिक · 5% कल्याण व बीमा · 5% समिति",
-    en: "90% Direct Fair Wage · 5% Welfare & PMSBY · 5% Cooperative Ops",
-    bn: "৯০% সরাসরি পারিশ্রমিক",
-    mr: "९०% थेट कामगार मोबदला",
-  },
 };
 
-// ── Helper ───────────────────────────────────────────────────────────────────
-export function t(key, langCode) {
-  return TRANSLATIONS[key]?.[langCode] ?? TRANSLATIONS[key]?.["en"] ?? key;
+// ── Smart Translation Helper ─────────────────────────────────────────────────
+export function t(keyOrPhrase, langCode) {
+  if (!keyOrPhrase || typeof keyOrPhrase !== "string") return keyOrPhrase;
+  if (langCode === "en") return keyOrPhrase;
+
+  // 1. Direct TRANSLATIONS key lookup (e.g. nav_findWork)
+  if (TRANSLATIONS[keyOrPhrase]?.[langCode]) {
+    return TRANSLATIONS[keyOrPhrase][langCode];
+  }
+
+  // 2. Direct PHRASE_TRANSLATIONS exact string lookup
+  const trimmed = keyOrPhrase.trim();
+  if (PHRASE_TRANSLATIONS[trimmed]?.[langCode]) {
+    return PHRASE_TRANSLATIONS[trimmed][langCode];
+  }
+
+  // 3. Fallback to Hindi if target language is regional but doesn't have translation yet
+  if (PHRASE_TRANSLATIONS[trimmed]?.["hi"]) {
+    return PHRASE_TRANSLATIONS[trimmed]["hi"];
+  }
+
+  // 4. Case-insensitive lookup in PHRASE_TRANSLATIONS
+  const lower = trimmed.toLowerCase();
+  for (const [k, map] of Object.entries(PHRASE_TRANSLATIONS)) {
+    if (k.toLowerCase() === lower) {
+      return map[langCode] || map["hi"] || keyOrPhrase;
+    }
+  }
+
+  return keyOrPhrase;
 }
 
 // ── Context ───────────────────────────────────────────────────────────────────
@@ -338,12 +322,93 @@ export function LanguageProvider({ children }) {
 
   const lang = LANGUAGES.find((l) => l.code === langCode) || LANGUAGES[0];
 
-  // Helper: translate a key with current language
-  const tr = useCallback((key) => t(key, langCode), [langCode]);
+  // Helper: translate a key or English text with current language
+  const tr = useCallback((keyOrPhrase) => t(keyOrPhrase, langCode), [langCode]);
 
+  // Update HTML lang attribute
   useEffect(() => {
     document.documentElement.lang = lang.speechLang.split("-")[0];
   }, [lang]);
+
+  // ── Universal DOM-Level Text Replacement & Observer Fallback ──────────────
+  // This automatically translates any text nodes in the DOM whose text matches
+  // a known phrase in PHRASE_TRANSLATIONS, ensuring 100% full-site translation!
+  const isTranslatingRef = useRef(false);
+
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+
+    const translateNode = (node) => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        const text = node.nodeValue;
+        if (!text) return;
+        const trimmed = text.trim();
+        if (trimmed.length < 2) return;
+
+        if (langCode === "en") {
+          if (node._originalText !== undefined) {
+            node.nodeValue = node._originalText;
+            delete node._originalText;
+          }
+          return;
+        }
+
+        // Look for translation in PHRASE_TRANSLATIONS
+        const translated = PHRASE_TRANSLATIONS[trimmed]?.[langCode] || PHRASE_TRANSLATIONS[trimmed]?.["hi"];
+        if (translated && translated !== trimmed) {
+          if (node._originalText === undefined) {
+            node._originalText = text;
+          }
+          node.nodeValue = text.replace(trimmed, translated);
+        }
+      } else if (node.nodeType === Node.ELEMENT_NODE) {
+        // Skip script, style, code, pre, input, textarea
+        const tag = node.tagName.toLowerCase();
+        if (tag === "script" || tag === "style" || tag === "input" || tag === "textarea" || tag === "pre" || tag === "code") {
+          return;
+        }
+        for (let i = 0; i < node.childNodes.length; i++) {
+          translateNode(node.childNodes[i]);
+        }
+      }
+    };
+
+    const runTranslation = () => {
+      if (isTranslatingRef.current) return;
+      isTranslatingRef.current = true;
+      try {
+        const root = document.getElementById("root") || document.body;
+        if (root) {
+          translateNode(root);
+        }
+      } finally {
+        isTranslatingRef.current = false;
+      }
+    };
+
+    // Run immediately on langCode change
+    runTranslation();
+
+    // Observe future DOM changes (route navigations, dynamic modals, tabs)
+    const observer = new MutationObserver(() => {
+      if (!isTranslatingRef.current && langCode !== "en") {
+        runTranslation();
+      }
+    });
+
+    const rootEl = document.getElementById("root") || document.body;
+    if (rootEl) {
+      observer.observe(rootEl, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+      });
+    }
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [langCode]);
 
   return (
     <LanguageContext.Provider value={{ langCode, lang, setLanguage, tr, LANGUAGES }}>

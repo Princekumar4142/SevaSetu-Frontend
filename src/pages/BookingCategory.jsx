@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import { getCategoryDetails } from "../constants/bookingCatalog";
 import { addItem, incrementItem, decrementItem, selectCartItems } from "../store/slices/cartSlice";
 import CartBar from "../components/booking/CartBar";
@@ -15,6 +16,7 @@ export default function BookingCategory() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentUser } = useAuth();
+  const { tr } = useLanguage();
   const cartItems = useSelector(selectCartItems);
 
   const category = useMemo(() => getCategoryDetails(categoryId), [categoryId]);
@@ -195,14 +197,14 @@ export default function BookingCategory() {
             </button>
             <div>
               <h1 className="font-label-lg text-label-lg font-bold text-on-surface truncate max-w-[200px] sm:max-w-xs md:max-w-md">
-                {category.name}
+                {tr(category.name)}
               </h1>
               <p className="font-status-badge text-[11px] text-on-surface-variant flex items-center gap-1">
-                <span>{category.categoryType || "Services"}</span>
+                <span>{tr(category.categoryType || "Services")}</span>
                 <span>•</span>
                 <span className="text-brand-success font-semibold flex items-center gap-0.5">
                   <span className="material-symbols-outlined text-[13px] fill">verified</span>
-                  {category.tag || "Verified Professionals"}
+                  {tr(category.tag || "Verified Professionals")}
                 </span>
               </p>
             </div>
@@ -214,7 +216,7 @@ export default function BookingCategory() {
             className="text-on-surface-variant hover:text-brand-purple flex items-center gap-1 text-status-badge font-bold font-status-badge px-3 py-1.5 rounded-full bg-surface-container-low"
           >
             <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-            <span className="hidden sm:inline">My Bookings</span>
+            <span className="hidden sm:inline">{tr("My Bookings")}</span>
           </button>
         </div>
       </div>
@@ -229,9 +231,9 @@ export default function BookingCategory() {
               </div>
               <div>
                 <span className="text-[11px] uppercase tracking-wider font-bold text-amber-300 bg-white/10 px-2.5 py-0.5 rounded-full inline-block mb-1">
-                  {category.categoryType || "Verified Co-op Service"}
+                  {tr(category.categoryType || "Verified Co-op Service")}
                 </span>
-                <h2 className="text-xl md:text-2xl font-black">{category.name}</h2>
+                <h2 className="text-xl md:text-2xl font-black">{tr(category.name)}</h2>
                 <div className="flex items-center gap-2 mt-1 text-sm text-white/90">
                   <span className="flex items-center gap-1 font-bold bg-white/20 px-2 py-0.5 rounded-md text-xs">
                     <span className="material-symbols-outlined text-[14px] text-amber-300 fill">star</span>
@@ -239,14 +241,14 @@ export default function BookingCategory() {
                   </span>
                   <span>({category.ratingCount || "100k+"} reviews)</span>
                   <span>•</span>
-                  <span className="text-emerald-300 font-semibold">100% Fixed Pricing</span>
+                  <span className="text-emerald-300 font-semibold">{tr("100% Fixed Pricing")}</span>
                 </div>
               </div>
             </div>
 
             <div className="sm:text-right border-t sm:border-t-0 pt-3 sm:pt-0 border-white/15">
-              <p className="text-xs text-white/70">Need instant assistance?</p>
-              <p className="text-sm font-bold text-white">45-min arrival guarantee</p>
+              <p className="text-xs text-white/70">{tr("Need instant assistance?")}</p>
+              <p className="text-sm font-bold text-white">{tr("45-min arrival guarantee")}</p>
             </div>
           </div>
         </div>
@@ -257,16 +259,16 @@ export default function BookingCategory() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
               <div>
                 <span className="text-[10px] font-black uppercase tracking-wider text-brand-purple bg-purple-50 px-2.5 py-0.5 rounded-full border border-purple-100">
-                  Verified Local Network
+                  {tr("Verified Local Network")}
                 </span>
                 <h3 className="text-base sm:text-lg font-black text-slate-900 mt-1 flex items-center gap-2">
                   <span className="material-symbols-outlined text-brand-purple text-[20px]">storefront</span>
-                  Available Verified Workers ({categoryWorkers.length})
+                  {tr("Available Verified Workers")} ({categoryWorkers.length})
                 </h3>
               </div>
               <span className="text-xs text-emerald-600 font-bold flex items-center gap-1.5 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-                {categoryWorkers.length} Active in Your Area
+                {categoryWorkers.length} {tr("Active in Your Area")}
               </span>
             </div>
 
@@ -346,7 +348,7 @@ export default function BookingCategory() {
 
                     <div className="flex items-center justify-between gap-2 pt-3 mt-3 border-t border-slate-100">
                       <div>
-                        <span className="text-[10px] font-semibold text-slate-400 uppercase block">Starting Rate</span>
+                        <span className="text-[10px] font-semibold text-slate-400 uppercase block">{tr("Starting Rate")}</span>
                         <span className="text-sm font-black text-slate-900">₹{worker.hourlyRate || 299}</span>
                       </div>
                       <button
@@ -362,7 +364,7 @@ export default function BookingCategory() {
                         }}
                         className="px-4 py-2 bg-brand-purple hover:bg-brand-purple-dark text-white rounded-xl text-xs font-bold shadow-md shadow-brand-purple/20 transition-all flex items-center gap-1"
                       >
-                        <span>Book Partner</span>
+                        <span>{tr("Book Partner")}</span>
                         <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                       </button>
                     </div>
@@ -384,7 +386,7 @@ export default function BookingCategory() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={`Search in ${category.name} (e.g. tap, clean, massage, repair)...`}
+              placeholder={`${tr("Search in")} ${tr(category.name)}...`}
               className="w-full bg-white border border-outline-variant rounded-xl pl-10 pr-4 py-2.5 text-body-md text-on-surface placeholder:text-on-surface-variant/60 focus:outline-none focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 shadow-sm"
             />
             {searchQuery && (
@@ -410,7 +412,7 @@ export default function BookingCategory() {
                     : "bg-white border border-outline-variant text-on-surface hover:border-brand-purple/50"
                 }`}
               >
-                All Services
+                {tr("All Services")}
               </button>
               {category.chips.map((chip) => {
                 const selected = activeChip === chip.id;
@@ -426,7 +428,7 @@ export default function BookingCategory() {
                     }`}
                   >
                     <span className="material-symbols-outlined text-[16px]">{chip.icon}</span>
-                    <span>{chip.label}</span>
+                    <span>{tr(chip.label)}</span>
                   </button>
                 );
               })}
@@ -435,33 +437,29 @@ export default function BookingCategory() {
         </div>
 
         {/* Services List */}
-        {filteredSections.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-outline-variant p-8 my-6 text-center">
-            <span className="material-symbols-outlined text-[40px] text-on-surface-variant mb-2">search_off</span>
-            <h3 className="font-label-lg font-bold text-on-surface">No services match your search</h3>
-            <p className="font-body-md text-on-surface-variant mt-1">Try searching with a different term or clear filters.</p>
-            <button
-              type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setActiveChip(null);
-              }}
-              className="mt-4 px-4 py-2 bg-brand-purple-light text-brand-purple font-bold rounded-xl text-sm"
-            >
-              Clear Filters
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-6">
-            {filteredSections.map((section) => (
-              <div key={section.id} className="space-y-3">
-                <div className="flex items-center justify-between border-b border-outline-variant/60 pb-2">
-                  <h3 className="font-label-lg text-label-lg font-black text-on-surface flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-brand-purple" />
-                    {section.title}
+        <div className="space-y-6">
+          {filteredSections.length === 0 ? (
+            <div className="bg-white rounded-2xl border border-outline-variant/80 p-8 text-center space-y-3">
+              <EmptyState
+                icon="search_off"
+                title={tr("No services match your query")}
+                description={tr("Try changing your keyword or clearing the subcategory filter")}
+                actionLabel={tr("Show All Services")}
+                onAction={() => {
+                  setSearchQuery("");
+                  setActiveChip(null);
+                }}
+              />
+            </div>
+          ) : (
+            filteredSections.map((section) => (
+              <div key={section.title} className="space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-title-lg text-title-lg font-black text-on-surface">
+                    {tr(section.title)}
                   </h3>
-                  <span className="font-status-badge text-[12px] text-on-surface-variant font-medium">
-                    {section.services.length} {section.services.length === 1 ? "Option" : "Options"}
+                  <span className="text-xs text-on-surface-variant font-medium">
+                    {section.services.length} {tr("Services")}
                   </span>
                 </div>
 
@@ -479,7 +477,7 @@ export default function BookingCategory() {
                           <div className="flex items-start justify-between gap-3">
                             <div className="flex-1">
                               <h4 className="font-label-lg text-label-lg font-bold text-on-surface leading-snug">
-                                {service.name}
+                                {tr(service.name)}
                               </h4>
                               <div className="flex items-center gap-2 mt-1">
                                 <span className="flex items-center gap-0.5 text-xs font-bold text-on-surface bg-surface-container-low px-2 py-0.5 rounded">
@@ -488,7 +486,7 @@ export default function BookingCategory() {
                                 </span>
                                 <span className="text-xs text-on-surface-variant flex items-center gap-0.5">
                                   <span className="material-symbols-outlined text-[14px]">schedule</span>
-                                  {service.durationMins} mins
+                                  {service.durationMins} {tr("mins")}
                                 </span>
                               </div>
                             </div>
@@ -496,7 +494,7 @@ export default function BookingCategory() {
                               {getServiceImage(service.id, service.name, category.id) ? (
                                 <img
                                   src={getServiceImage(service.id, service.name, category.id)}
-                                  alt={service.name}
+                                  alt={tr(service.name)}
                                   className="w-full h-full object-cover"
                                   loading="lazy"
                                 />
@@ -510,7 +508,7 @@ export default function BookingCategory() {
 
                           {service.desc && (
                             <p className="font-body-md text-[13px] text-on-surface-variant mt-2.5 line-clamp-2 leading-relaxed">
-                              {service.desc}
+                              {tr(service.desc)}
                             </p>
                           )}
                         </div>
@@ -518,7 +516,7 @@ export default function BookingCategory() {
                         {/* Price & Action */}
                         <div className="flex items-center justify-between pt-4 mt-3 border-t border-outline-variant/50">
                           <div>
-                            <span className="text-xs text-on-surface-variant font-medium block">Service Fee</span>
+                            <span className="text-xs text-on-surface-variant font-medium block">{tr("Service Fee")}</span>
                             <span className="text-lg font-black text-on-surface">
                               ₹{service.price}
                             </span>
@@ -547,7 +545,7 @@ export default function BookingCategory() {
                               className="px-5 py-2 rounded-xl bg-brand-purple text-white font-bold text-sm hover:bg-brand-purple-dark transition-all shadow-md shadow-brand-purple/20 flex items-center gap-1"
                             >
                               <span className="material-symbols-outlined text-[16px]">add</span>
-                              Add
+                              {tr("Add")}
                             </button>
                           )}
                         </div>
@@ -556,9 +554,9 @@ export default function BookingCategory() {
                   })}
                 </div>
               </div>
-            ))}
-          </div>
-        )}
+            ))
+          )}
+        </div>
 
         {/* ── Custom Service Request Box ── */}
         <div className="bg-gradient-to-br from-white via-surface-container-lowest to-surface-container-low rounded-2xl border-2 border-dashed border-brand-purple/40 p-5 md:p-6 shadow-sm">
