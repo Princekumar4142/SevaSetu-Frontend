@@ -443,7 +443,7 @@ export default function LandingHero() {
                   <button
                     key={cat.id}
                     type="button"
-                    onClick={() => navigate(`/customer/category/${cat.id}`)}
+                    onClick={() => navigate(`/customer/services/${cat.id}`)}
                     className={`group flex flex-col items-center bg-gradient-to-b ${cat.bg} border border-slate-200/80 ${cat.border} rounded-2xl overflow-hidden hover:shadow-lg ${cat.shadow} hover:-translate-y-1 transition-all duration-300 text-center cursor-pointer`}
                   >
                     {/* Image */}

@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Navigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import {
   AGRI_MECHANIZATION_SERVICES,
@@ -147,13 +147,8 @@ export default function CategoryServicesPage() {
   const cat = CATEGORY_CONFIG[categoryId];
 
   if (!cat) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 bg-slate-50">
-        <span className="text-5xl">🔍</span>
-        <h2 className="text-xl font-bold text-slate-700">Category not found</h2>
-        <button onClick={() => navigate("/")} className="text-indigo-600 font-semibold hover:underline">← Go Home</button>
-      </div>
-    );
+    // Automatically redirect to full booking & ordering catalog
+    return <Navigate to={`/customer/services/${categoryId || "electricians"}`} replace />;
   }
 
   return (
