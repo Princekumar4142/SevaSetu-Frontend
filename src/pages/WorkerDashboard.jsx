@@ -298,16 +298,136 @@ export default function WorkerDashboard() {
         </div>
       </div>
 
-      {/* Fair Work Allocation notice */}
-      <div className="bg-gradient-to-r from-indigo-50 via-purple-50/50 to-indigo-50 border border-indigo-200/80 rounded-2xl p-4 flex items-start gap-3">
-        <div className="w-9 h-9 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0">
-          <span className="material-symbols-outlined text-[20px]">handshake</span>
+      {/* ── Cooperative Digital Worker ID & Social Security Card ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Digital ID Card */}
+        <div className="lg:col-span-7 bg-gradient-to-br from-emerald-800 via-teal-900 to-slate-900 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
+          {/* Subtle watermark background */}
+          <div className="absolute right-0 bottom-0 opacity-10 pointer-events-none transform translate-x-8 translate-y-8">
+            <span className="material-symbols-outlined text-[160px]">diversity_3</span>
+          </div>
+
+          <div className="flex items-center justify-between pb-4 border-b border-white/15">
+            <div className="flex items-center gap-2.5">
+              <span className="w-8 h-8 rounded-xl bg-emerald-500/30 border border-emerald-400/50 flex items-center justify-center text-emerald-300">
+                <span className="material-symbols-outlined text-[18px]">badge</span>
+              </span>
+              <div>
+                <h4 className="text-xs font-black uppercase tracking-wider text-emerald-300">
+                  सहकारी श्रमिक पहचान पत्र · Digital Worker ID
+                </h4>
+                <p className="text-[10px] text-white/70">Labour Cooperative Federation of India</p>
+              </div>
+            </div>
+            <span className="text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2.5 py-0.5 rounded-full">
+              Verified Member
+            </span>
+          </div>
+
+          <div className="mt-5 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5">
+            <div className="space-y-3 flex-1 text-center sm:text-left">
+              <div>
+                <span className="text-[10px] font-bold uppercase text-white/50 block">Worker Name</span>
+                <span className="text-lg font-black text-white">{worker?.user?.name || "Cooperative Partner"}</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 text-left">
+                <div>
+                  <span className="text-[10px] font-bold uppercase text-white/50 block">Member ID</span>
+                  <span className="text-xs font-mono font-bold text-emerald-300">
+                    COOP-BR-{worker?._id?.slice(-6).toUpperCase() || "845438"}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-[10px] font-bold uppercase text-white/50 block">Skill Certification</span>
+                  <span className="text-xs font-bold text-white">Skill India / PMKVY</span>
+                </div>
+              </div>
+              <div>
+                <span className="text-[10px] font-bold uppercase text-white/50 block">Affiliated Cooperative</span>
+                <span className="text-xs font-semibold text-white/90">
+                  Bettiah Primary Agricultural Credit Society (PACS)
+                </span>
+              </div>
+            </div>
+
+            {/* QR Code Simulation */}
+            <div className="bg-white p-2.5 rounded-2xl shadow-md text-center shrink-0">
+              <div className="w-24 h-24 bg-slate-900 rounded-lg flex flex-col items-center justify-center text-white p-1 relative overflow-hidden">
+                {/* QR pattern graphic simulation */}
+                <div className="grid grid-cols-4 gap-1 w-full h-full p-1 opacity-90">
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-emerald-400 rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-slate-900 rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-emerald-400 rounded-xs" />
+                  <div className="bg-emerald-400 rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-slate-900 rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-emerald-400 rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                  <div className="bg-white rounded-xs" />
+                </div>
+              </div>
+              <span className="text-[9px] font-bold text-slate-600 block mt-1">Scan to Verify</span>
+            </div>
+          </div>
         </div>
-        <div>
-          <h4 className="text-xs font-bold text-indigo-950 mb-0.5">Fair Work Allocation</h4>
-          <p className="text-xs text-indigo-900/80 leading-relaxed">
-            Job matching and the fair-allocation engine arrive in Phase 2. Your account and cooperative membership are already set up and ready.
-          </p>
+
+        {/* Social Security & Insurance Card */}
+        <div className="lg:col-span-5 bg-white border border-slate-200/90 rounded-3xl p-6 shadow-sm flex flex-col justify-between space-y-4">
+          <div>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-emerald-600 text-xl">health_and_safety</span>
+                <h4 className="text-sm font-black text-slate-900 uppercase tracking-wide">
+                  Social Security &amp; Welfare
+                </h4>
+              </div>
+              <span className="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                Active Cover
+              </span>
+            </div>
+
+            <div className="space-y-2.5">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                <div>
+                  <h5 className="text-xs font-bold text-slate-900">PMSBY Accidental Insurance</h5>
+                  <p className="text-[10px] text-slate-500">Pradhan Mantri Suraksha Bima Yojana</p>
+                </div>
+                <span className="text-xs font-black text-emerald-700">₹2,00,000 Cover</span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                <div>
+                  <h5 className="text-xs font-bold text-slate-900">Cooperative Welfare Fund</h5>
+                  <p className="text-[10px] text-slate-500">Emergency medical &amp; children scholarship</p>
+                </div>
+                <span className="text-xs font-black text-indigo-700">Active Claimable</span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                <div>
+                  <h5 className="text-xs font-bold text-slate-900">On-Duty Emergency SOS</h5>
+                  <p className="text-[10px] text-slate-500">24/7 Cooperative rapid safety network</p>
+                </div>
+                <span className="material-symbols-outlined text-rose-600 text-[18px]">e911_emergency</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => alert("Emergency assistance request sent to your local Cooperative Society Admin.")}
+            className="w-full py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px]">emergency</span>
+            On-Duty Emergency Accident SOS
+          </button>
         </div>
       </div>
     </div>

@@ -1,6 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import {
+  AGRI_MECHANIZATION_SERVICES,
+  FOODTECH_PROCESSING_SERVICES,
+  RURAL_INFRASTRUCTURE_SERVICES,
+  DAIRY_LIVESTOCK_SERVICES,
+  RURAL_EMERGENCY_SERVICES,
+  INSTITUTIONAL_BULK_SERVICES,
   PERSONAL_SERVICES,
   HOME_SERVICES,
   TRENDING_SERVICES,
@@ -11,6 +17,67 @@ import {
 import { SERVICE_IMAGES } from "../constants/serviceImages";
 
 const CATEGORY_CONFIG = {
+  "agri-mechanization": {
+    id: "agri-mechanization",
+    label: "Agri & Farm Mechanization",
+    emoji: "🚜",
+    gradient: "from-emerald-700 to-green-600",
+    lightBg: "bg-emerald-50",
+    border: "border-emerald-200",
+    textColor: "text-emerald-700",
+    items: AGRI_MECHANIZATION_SERVICES,
+  },
+  "foodtech-processing": {
+    id: "foodtech-processing",
+    label: "FoodTech & Agro-Processing",
+    emoji: "🌾",
+    gradient: "from-amber-600 to-yellow-600",
+    lightBg: "bg-amber-50",
+    border: "border-amber-200",
+    textColor: "text-amber-700",
+    items: FOODTECH_PROCESSING_SERVICES,
+  },
+  "rural-infrastructure": {
+    id: "rural-infrastructure",
+    label: "Rural & Panchayat Infrastructure",
+    emoji: "🏡",
+    gradient: "from-sky-700 to-blue-600",
+    lightBg: "bg-sky-50",
+    border: "border-sky-200",
+    textColor: "text-sky-700",
+    items: RURAL_INFRASTRUCTURE_SERVICES,
+  },
+  "dairy-livestock": {
+    id: "dairy-livestock",
+    label: "Dairy, Livestock & Paravet",
+    emoji: "🐄",
+    gradient: "from-teal-700 to-emerald-600",
+    lightBg: "bg-teal-50",
+    border: "border-teal-200",
+    textColor: "text-teal-700",
+    items: DAIRY_LIVESTOCK_SERVICES,
+  },
+  "rural-emergency": {
+    id: "rural-emergency",
+    label: "Tatkal Farm Breakdown (45-Min)",
+    emoji: "⚡",
+    gradient: "from-rose-600 to-red-600",
+    lightBg: "bg-rose-50",
+    border: "border-rose-200",
+    textColor: "text-rose-700",
+    items: RURAL_EMERGENCY_SERVICES,
+  },
+  "institutional-bulk": {
+    id: "institutional-bulk",
+    label: "FPO & Institutional Bulk Squads",
+    emoji: "🏢",
+    gradient: "from-indigo-700 to-violet-600",
+    lightBg: "bg-indigo-50",
+    border: "border-indigo-200",
+    textColor: "text-indigo-700",
+    items: INSTITUTIONAL_BULK_SERVICES,
+  },
+
   personal: {
     id: "personal",
     label: "Personal Services",

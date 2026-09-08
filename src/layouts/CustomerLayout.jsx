@@ -8,6 +8,7 @@ import Logo from "../components/Logo";
 import AddressModal from "../components/AddressModal";
 import Footer from "../components/Footer";
 import Avatar from "../components/Avatar";
+import LanguageSelector from "../components/LanguageSelector";
 
 const PUBLIC_NAV_LINKS = [
   { label: "Services", href: "/customer/services" },
@@ -94,6 +95,9 @@ export default function CustomerLayout() {
               ))}
             </nav>
 
+            {/* Global Language Toggle */}
+            <LanguageSelector />
+
             {isAuthenticated ? (
               <div className="flex items-center gap-sm">
                 <Link
@@ -138,6 +142,10 @@ export default function CustomerLayout() {
           <Logo size={40} />
           <span className="font-label-md text-label-md font-bold text-primary">SevaSetu</span>
         </Link>
+
+        <div className="flex items-center gap-2">
+          <LanguageSelector />
+        </div>
 
         {isAuthenticated ? (
           <div className="flex items-center gap-2 min-w-0">

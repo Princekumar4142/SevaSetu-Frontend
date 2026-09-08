@@ -112,12 +112,27 @@ export default function BookingSlot() {
     }
   };
 
+  const [isEmergency, setIsEmergency] = useState(false);
+
+  const handleToggleEmergency = () => {
+    const next = !isEmergency;
+    setIsEmergency(next);
+    if (next) {
+      setSelectedTime("Within 45 Mins (Tatkal)");
+    } else {
+      setSelectedTime(TIME_SLOTS[1].time);
+    }
+  };
+
   const isCurrentSelectionPast = selectedDate?.isToday && (!selectedTime || getSlotMinutes(selectedTime) <= currentMinutes);
   const canProceed = Boolean(selectedTime) && !isCurrentSelectionPast;
 
   const handleProceed = () => {
-    if (!canProceed) return;
-    dispatch(setSlot({ date: selectedDate.fullDate, time: selectedTime }));
+    if (!isEmergency && !canProceed) return;
+    const slotData = isEmergency
+      ? { date: "Today (Tatkal Emergency)", time: "Within 45 Mins (Priority Dispatch)", isEmergency: true }
+      : { date: selectedDate.fullDate, time: selectedTime, isEmergency: false };
+    dispatch(setSlot(slotData));
     if (activeCategory) dispatch(setCategory(activeCategory));
     navigate("/customer/checkout/payment");
   };
@@ -179,6 +194,43 @@ export default function BookingSlot() {
           city={address?.city || ""}
           category={activeCategory}
         />
+
+        {/* ── Tatkal Farm Emergency Dispatch Card ── */}
+        <div
+          onClick={handleToggleEmergency}
+          className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-center justify-between gap-4 ${
+            isEmergency
+              ? "bg-gradient-to-r from-red-50 to-rose-50 border-rose-500 shadow-md shadow-rose-100"
+              : "bg-white border-slate-200 hover:border-rose-300"
+          }`}
+        >
+          <div className="flex items-center gap-3">
+            <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white ${isEmergency ? "bg-rose-600 animate-pulse" : "bg-slate-400"}`}>
+              <span className="material-symbols-outlined text-[22px]">electric_bolt</span>
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-black text-slate-900">
+                  ⚡ 45-Min Tatkal Farm Emergency
+                </h3>
+                <span className="text-[10px] font-black bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">
+                  Priority Dispatch
+                </span>
+              </div>
+              <p className="text-xs text-slate-600 mt-0.5">
+                Urgent tube-well motor burnout, electrical starter fault, or paravet emergency in your village.
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0">
+            <input
+              type="checkbox"
+              checked={isEmergency}
+              onChange={handleToggleEmergency}
+              className="w-5 h-5 text-rose-600 rounded focus:ring-rose-500 cursor-pointer"
+            />
+          </div>
+        </div>
 
         {/* Date Selector */}
         <div className="bg-white border border-outline-variant/80 rounded-2xl p-5 shadow-sm space-y-3">

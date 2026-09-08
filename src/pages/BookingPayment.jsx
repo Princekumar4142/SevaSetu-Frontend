@@ -359,6 +359,43 @@ export default function BookingPayment() {
           </div>
         </div>
 
+        {/* Cooperative Fair Wage & Social Security Breakdown Card */}
+        <div className="bg-gradient-to-br from-emerald-50 via-teal-50/50 to-white border border-emerald-200 rounded-2xl p-4 shadow-sm space-y-3">
+          <div className="flex items-center justify-between pb-2 border-b border-emerald-100">
+            <div className="flex items-center gap-2">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-xs font-black text-emerald-950 uppercase tracking-wider">
+                Cooperative Fair Wage Transparency
+              </span>
+            </div>
+            <span className="text-[10px] font-black bg-emerald-600 text-white px-2.5 py-0.5 rounded-full">
+              0% Private Commission
+            </span>
+          </div>
+
+          <p className="text-xs text-emerald-900 leading-relaxed">
+            Unlike private aggregator apps taking a 25%–35% cut, <strong>100% of your payment</strong> directly empowers our cooperative worker partner and their community social security fund.
+          </p>
+
+          <div className="grid grid-cols-3 gap-2 pt-1 text-center">
+            <div className="bg-white/90 rounded-xl p-2 border border-emerald-100 shadow-xs">
+              <span className="block text-[10px] font-bold text-slate-500 uppercase">Worker Direct</span>
+              <span className="text-sm font-black text-emerald-700">₹{Math.round(payable * 0.90)}</span>
+              <span className="block text-[9px] font-semibold text-emerald-600">90% Fair Wage</span>
+            </div>
+            <div className="bg-white/90 rounded-xl p-2 border border-emerald-100 shadow-xs">
+              <span className="block text-[10px] font-bold text-slate-500 uppercase">Welfare &amp; PMSBY</span>
+              <span className="text-sm font-black text-teal-700">₹{Math.round(payable * 0.05)}</span>
+              <span className="block text-[9px] font-semibold text-teal-600">5% Micro-Insurance</span>
+            </div>
+            <div className="bg-white/90 rounded-xl p-2 border border-emerald-100 shadow-xs">
+              <span className="block text-[10px] font-bold text-slate-500 uppercase">Co-op Society</span>
+              <span className="text-sm font-black text-slate-700">₹{Math.round(payable * 0.05)}</span>
+              <span className="block text-[9px] font-semibold text-slate-600">5% PACS Ops</span>
+            </div>
+          </div>
+        </div>
+
         {/* Safety & Trust guarantee */}
         <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-medium">
           <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified</span>

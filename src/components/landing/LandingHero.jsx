@@ -10,6 +10,13 @@ import healthImg from "../../assets/services/health-wellness.jpg";
 import eventImg from "../../assets/services/event-services.jpg";
 import workflowImg from "../../assets/sevasetu_workflow.jpg";
 
+import agriMechanizationImg from "../../assets/services/agri-mechanization.jpg";
+import foodtechProcessingImg from "../../assets/services/foodtech-processing.jpg";
+import ruralInfrastructureImg from "../../assets/services/rural-infrastructure.jpg";
+import dairyLivestockImg from "../../assets/services/dairy-livestock.jpg";
+import ruralEmergencyImg from "../../assets/services/rural-emergency.jpg";
+import institutionalBulkImg from "../../assets/services/institutional-bulk.jpg";
+
 /* ── 3D-Styled Vector Icons (Rich gradients, bevels, depth & specular glints) ── */
 
 function Icon3DAC() {
@@ -258,52 +265,52 @@ function Icon3DPainting() {
 }
 
 const ROOT_CATEGORIES = [
-  { id: "personal",     label: "Personal Services",    emoji: "✨", image: personalImg,     bg: "from-pink-50 to-rose-50",     border: "hover:border-pink-400",    shadow: "hover:shadow-pink-100" },
-  { id: "home",         label: "Home Services",         emoji: "🏠", image: homeImg,         bg: "from-blue-50 to-indigo-50",   border: "hover:border-blue-400",    shadow: "hover:shadow-blue-100" },
-  { id: "trending",     label: "Trending",              emoji: "🔥", image: trendingImg,     bg: "from-orange-50 to-amber-50",  border: "hover:border-orange-400",  shadow: "hover:shadow-orange-100" },
-  { id: "professional", label: "Professional Services", emoji: "💼", image: professionalImg, bg: "from-violet-50 to-purple-50", border: "hover:border-violet-400",  shadow: "hover:shadow-violet-100" },
-  { id: "health",       label: "Health & Wellness",     emoji: "🏥", image: healthImg,       bg: "from-emerald-50 to-teal-50", border: "hover:border-emerald-400", shadow: "hover:shadow-emerald-100" },
-  { id: "events",       label: "Event Services",        emoji: "🎉", image: eventImg,        bg: "from-fuchsia-50 to-pink-50", border: "hover:border-fuchsia-400", shadow: "hover:shadow-fuchsia-100" },
+  { id: "agri-mechanization",   label: "Agri & Farm Mechanization",  emoji: "🚜", image: agriMechanizationImg,   bg: "from-emerald-50 to-green-50",   border: "hover:border-emerald-500",  shadow: "hover:shadow-emerald-100" },
+  { id: "foodtech-processing",  label: "FoodTech & Agro-Processing", emoji: "🌾", image: foodtechProcessingImg,  bg: "from-amber-50 to-yellow-50",   border: "hover:border-amber-500",    shadow: "hover:shadow-amber-100" },
+  { id: "rural-infrastructure", label: "Rural & Panchayat Infra",    emoji: "🏡", image: ruralInfrastructureImg, bg: "from-sky-50 to-blue-50",       border: "hover:border-sky-500",      shadow: "hover:shadow-sky-100" },
+  { id: "dairy-livestock",      label: "Dairy & Animal Husbandry",   emoji: "🐄", image: dairyLivestockImg,      bg: "from-teal-50 to-emerald-50",   border: "hover:border-teal-500",     shadow: "hover:shadow-teal-100" },
+  { id: "rural-emergency",      label: "Tatkal Farm Breakdown",      emoji: "⚡", image: ruralEmergencyImg,      bg: "from-rose-50 to-red-50",       border: "hover:border-rose-500",     shadow: "hover:shadow-rose-100" },
+  { id: "institutional-bulk",   label: "FPO & Bulk Squads",          emoji: "🏢", image: institutionalBulkImg,   bg: "from-indigo-50 to-violet-50",  border: "hover:border-indigo-500",   shadow: "hover:shadow-indigo-100" },
 ];
 
 const POPULAR_TAGS = [
-  { label: "Split AC Service", id: "ac-repair" },
-  { label: "Tap / Mixer Fix", id: "electrical-plumbing" },
-  { label: "Switchboard Wiring", id: "electrical-plumbing" },
-  { label: "Bathroom Scrubbing", id: "cleaning-pest-1" },
-  { label: "Salon at Home", id: "salon-women" },
+  { label: "Tractor Operator", id: "agri-mechanization" },
+  { label: "Solar Pump Repair", id: "agri-mechanization" },
+  { label: "Cold Storage Tech", id: "foodtech-processing" },
+  { label: "Paravet Cattle Visit", id: "dairy-livestock" },
+  { label: "Panchayat Drain Fix", id: "rural-infrastructure" },
 ];
 
 const POPULAR_BOOKINGS = [
   {
-    id: "ac-repair",
-    title: "Split AC Deep Foam Cleaning",
-    rating: "4.91",
-    reviews: "32k",
-    price: "₹249",
-    originalPrice: "₹349",
-    time: "45 mins",
-    icon: "ac_unit",
-  },
-  {
-    id: "cleaning-pest-1",
-    title: "Bathroom Deep Scrubbing",
-    rating: "4.88",
-    reviews: "19k",
-    price: "₹249",
-    originalPrice: "₹299",
-    time: "60 mins",
-    icon: "cleaning_services",
-  },
-  {
-    id: "electrical-plumbing",
-    title: "Switchboard & Wiring Repair",
+    id: "agri-mechanization",
+    title: "Certified Tractor Sowing Operator",
     rating: "4.94",
-    reviews: "41k",
-    price: "₹149",
-    originalPrice: "₹199",
-    time: "30 mins",
-    icon: "bolt",
+    reviews: "18k",
+    price: "₹799",
+    originalPrice: "₹999",
+    time: "Full Day",
+    icon: "agriculture",
+  },
+  {
+    id: "agri-mechanization",
+    title: "Solar Submersible Pump Servicing",
+    rating: "4.96",
+    reviews: "21k",
+    price: "₹499",
+    originalPrice: "₹699",
+    time: "90 mins",
+    icon: "solar_power",
+  },
+  {
+    id: "foodtech-processing",
+    title: "Cold Storage Ammonia Chiller Tech",
+    rating: "4.93",
+    reviews: "11k",
+    price: "₹699",
+    originalPrice: "₹899",
+    time: "120 mins",
+    icon: "ac_unit",
   },
 ];
 
@@ -323,14 +330,14 @@ export default function LandingHero() {
     if (q) {
       navigate(`/customer/services/${encodeURIComponent(q)}`);
     } else {
-      navigate("/customer/services/electrical-plumbing");
+      navigate("/customer/services/agri-mechanization");
     }
   };
 
   return (
-    <section className="relative bg-gradient-to-b from-indigo-50/60 via-white to-slate-50 py-10 sm:py-14 lg:py-16 border-b border-slate-200/80 overflow-hidden">
+    <section className="relative bg-gradient-to-b from-emerald-50/40 via-white to-slate-50 py-10 sm:py-14 lg:py-16 border-b border-slate-200/80 overflow-hidden">
       {/* Soft background ambient light */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-indigo-100/40 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-10 w-80 h-80 bg-amber-100/30 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12">
@@ -340,10 +347,10 @@ export default function LandingHero() {
           <div className="lg:col-span-7 space-y-6">
 
             {/* Trust Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-indigo-100 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-emerald-200/80 shadow-sm">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold text-indigo-900 tracking-wide">
-                Cooperative-Owned Professionals · 0% Worker Commission
+              <span className="text-xs font-bold text-emerald-900 tracking-wide">
+                Labour Cooperative Federation · Agriculture, FoodTech & Rural Development
               </span>
             </div>
 
@@ -351,26 +358,26 @@ export default function LandingHero() {
             <div>
               {isAuthenticated ? (
                 <div className="space-y-1">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-600">
-                    Welcome Back
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                    Welcome Back · Cooperative Member Portal
                   </span>
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-                    Hello, <span className="text-indigo-600">{firstName}</span>.
+                    Hello, <span className="text-emerald-700">{firstName}</span>.
                   </h1>
                   <p className="text-sm sm:text-base text-slate-600 max-w-xl pt-1">
-                    What service can our verified professionals take care of for you today?
+                    Book verified cooperative agri-technicians, farm machinery operators, and paravets for your fields & community.
                   </p>
                 </div>
               ) : (
                 <div className="space-y-1">
                   <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-                    Expert Home Services, <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-violet-600">
-                      Right At Your Doorstep.
+                    Cooperative Services for <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-teal-700">
+                      Agriculture & Rural Bharat.
                     </span>
                   </h1>
                   <p className="text-sm sm:text-base text-slate-600 max-w-xl pt-1 leading-relaxed">
-                    Book verified local cooperative workers for repair, cleaning, salon, and plumbing with standard fixed pricing.
+                    Connecting Labour Cooperative Federations, PACS & FPOs with verified machinery operators, foodtech processors, and rural technicians with 100% fair living wages.
                   </p>
                 </div>
               )}

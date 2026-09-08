@@ -1,18 +1,21 @@
 import { useState } from "react";
 import Button from "../components/Button";
+import AIDemandForecasting from "../components/ai/AIDemandForecasting";
 
 const DEMAND_FORECASTS = [
-  { category: "Deep Home Cleaning & Painting", surgeExpected: "+64%", peakDates: "Sept 15 - Oct 25", recommendedWorkers: 180, currentSupply: 142, alert: "Supply Shortage Expected" },
-  { category: "Salon & Personal Care", surgeExpected: "+42%", peakDates: "Weekend Evenings", recommendedWorkers: 110, currentSupply: 115, alert: "Balanced" },
-  { category: "Appliance & AC Winter Overhaul", surgeExpected: "+28%", peakDates: "Oct 01 - Nov 15", recommendedWorkers: 85, currentSupply: 90, alert: "Balanced" },
-  { category: "Electrician & Smart Switch", surgeExpected: "+19%", peakDates: "Mon - Thu", recommendedWorkers: 60, currentSupply: 58, alert: "Balanced" },
+  { category: "🌾 Kharif Harvesting & Combine Operators", surgeExpected: "+85%", peakDates: "Oct 10 - Nov 25", recommendedWorkers: 240, currentSupply: 180, alert: "Supply Shortage Expected" },
+  { category: "🚜 Rabi Sowing & Tractor Mechanics", surgeExpected: "+65%", peakDates: "Nov 01 - Dec 15", recommendedWorkers: 190, currentSupply: 175, alert: "Balanced" },
+  { category: "⚡ Solar Pump & Tube-Well Rewinding", surgeExpected: "+72%", peakDates: "Immediate / Tatkal", recommendedWorkers: 120, currentSupply: 95, alert: "High Tatkal Demand" },
+  { category: "🐄 Paravet & Livestock Health Sakhis", surgeExpected: "+38%", peakDates: "Ongoing Seasonal", recommendedWorkers: 110, currentSupply: 108, alert: "Optimal" },
 ];
 
 export default function FederationAnalytics() {
   const [timeframe, setTimeframe] = useState("30D");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* AI Crop & Rural Demand Forecasting Component */}
+      <AIDemandForecasting />
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>

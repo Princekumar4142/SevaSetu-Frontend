@@ -1,9 +1,54 @@
 /**
- * Comprehensive Catalog Data for all 30+ service categories across SevaSetu AI.
- * Every service category has its dedicated services, transparent pricing, durations,
- * and instant cart-booking capabilities.
+ * Comprehensive Catalog Data for all service categories across SevaSetu AI.
+ * Tailored for Agriculture, FoodTech & Rural Development Cooperatives,
+ * while retaining household and professional services under Extra Features.
  */
 
+// ── Primary Theme: Agriculture, FoodTech & Rural Development ───────────────
+export const AGRI_MECHANIZATION_SERVICES = [
+  { id: "tractor-operator", label: "Tractor & Harvester Operator", icon: "agriculture", badge: "POPULAR" },
+  { id: "solar-pump-repair", label: "Solar Pump & Tube-Well Tech", icon: "solar_power", badge: "TATKAL" },
+  { id: "agri-drone-spray", label: "Agri-Drone Sprayer (Nano Urea/Pesticide)", icon: "flight", badge: "AI TECH" },
+  { id: "soil-testing-compost", label: "Soil Testing & Bio-Compost Helper", icon: "compost" },
+  { id: "drip-irrigation-fix", label: "Drip & Micro-Irrigation Technician", icon: "water_drop" },
+];
+
+export const FOODTECH_PROCESSING_SERVICES = [
+  { id: "cold-storage-tech", label: "Cold Storage Chiller Technician", icon: "ac_unit", badge: "URGENT" },
+  { id: "flour-oil-mill-op", label: "Atta, Dal & Oil Mill Operator", icon: "factory" },
+  { id: "grain-sorting-grading", label: "Grain Sorter & Seed Grader", icon: "filter_alt", badge: "CO-OP" },
+  { id: "agro-packaging-labor", label: "FPO Packaging & Quality Inspector", icon: "inventory_2" },
+  { id: "jaggery-spice-proc", label: "Jaggery & Spice Processing Expert", icon: "local_dining" },
+];
+
+export const RURAL_INFRASTRUCTURE_SERVICES = [
+  { id: "panchayat-sanitation", label: "Gram Panchayat Cleanliness Drive", icon: "cleaning_services", badge: "COMMUNITY" },
+  { id: "rural-solar-rooftop", label: "Rural Solar Rooftop Installation", icon: "wb_sunny" },
+  { id: "water-pipeline-repair", label: "Piped Drinking Water & Handpump Fix", icon: "plumbing" },
+  { id: "rural-mason-biogas", label: "Rural Mason & Gobar Gas / Bio-digester", icon: "foundation" },
+  { id: "rural-electrician", label: "Farm & Village Electrification", icon: "bolt" },
+];
+
+export const DAIRY_LIVESTOCK_SERVICES = [
+  { id: "paravet-health-check", label: "Paravet / Pashu Sakhi (Health & AI)", icon: "pets", badge: "CERTIFIED" },
+  { id: "dairy-farm-helper", label: "Cooperative Dairy Milking & Caretaker", icon: "water_damage" },
+  { id: "poultry-goat-assistant", label: "Poultry & Goat Farm Assistant", icon: "egg" },
+  { id: "cattle-feed-silage", label: "Silage Making & Fodder Specialist", icon: "grass" },
+];
+
+export const RURAL_EMERGENCY_SERVICES = [
+  { id: "emergency-motor-burnout", label: "Burnt Tube-Well Motor (45-Min Tatkal)", icon: "electric_bolt", badge: "EMERGENCY" },
+  { id: "emergency-water-burst", label: "Farm Irrigation Mainline Burst", icon: "emergency", badge: "45 MIN" },
+  { id: "emergency-paravet", label: "Urgent Livestock Medical Care", icon: "medical_services", badge: "CRITICAL" },
+];
+
+export const INSTITUTIONAL_BULK_SERVICES = [
+  { id: "fpo-harvest-team", label: "FPO Seasonal Harvest Crew (5-15 Workers)", icon: "groups", badge: "BULK B2B" },
+  { id: "mandi-loading-crew", label: "Mandi Grain Loading & Storage Team", icon: "warehouse", badge: "CONTRACT" },
+  { id: "panchayat-drainage-gang", label: "Panchayat Desilting & Drainage Squad", icon: "engineering", badge: "PANCHAYAT" },
+];
+
+// ── Some Extra Features: Additional Household & Urban Services ─────────────
 export const PERSONAL_SERVICES = [
   { id: "salon-women", label: "Salon for Women", icon: "self_care" },
   { id: "spa-women", label: "Spa for Women", icon: "spa" },
@@ -54,6 +99,473 @@ export const EVENT_SERVICES = [
 ];
 
 export const CATEGORIES = {
+  // ── 1. Agriculture & Farm Mechanization ────────────────────────────────
+  "agri-mechanization": {
+    id: "agri-mechanization",
+    name: "Agri & Farm Mechanization",
+    tag: "Certified Cooperative Operators & Mechanics",
+    rating: 4.93,
+    ratingCount: "42K",
+    categoryType: "Agriculture & Mechanization",
+    icon: "agriculture",
+    chips: [
+      { id: "tractor", label: "Tractor & Harvester", icon: "agriculture" },
+      { id: "solar-pump", label: "Solar Pump & Irrigation", icon: "solar_power" },
+      { id: "drone", label: "Agri-Drone Sprayer", icon: "flight" },
+      { id: "soil-health", label: "Soil & Compost", icon: "compost" },
+    ],
+    sections: [
+      {
+        id: "tractor-machinery",
+        title: "Tractor & Machinery Operations",
+        services: [
+          {
+            id: "am-1",
+            name: "Certified Tractor Operator (Daily / Sowing & Tillage)",
+            icon: "agriculture",
+            rating: 4.94,
+            ratingCount: "18k",
+            durationMins: 480,
+            price: 799,
+            originalPrice: 999,
+            desc: "Experienced cooperative tractor driver for rotavator, disc plough, and sowing operations with verified license",
+          },
+          {
+            id: "am-2",
+            name: "Combine Harvester Operation & Field Tech",
+            icon: "agriculture",
+            rating: 4.91,
+            ratingCount: "12k",
+            durationMins: 480,
+            price: 999,
+            originalPrice: 1299,
+            desc: "Expert harvester operator for wheat, paddy, and mustard with crop residue management check",
+          },
+          {
+            id: "am-3",
+            name: "Laser Land Leveller Operation & Calibrate",
+            icon: "construction",
+            rating: 4.88,
+            ratingCount: "6k",
+            durationMins: 360,
+            price: 649,
+            desc: "Precision laser guided land levelling operator to save up to 30% irrigation water",
+          },
+        ],
+      },
+      {
+        id: "solar-irrigation",
+        title: "Solar Pump & Irrigation Technology",
+        services: [
+          {
+            id: "am-4",
+            name: "Solar Submersible Pump Servicing & Controller Diagnostic",
+            icon: "solar_power",
+            rating: 4.96,
+            ratingCount: "21k",
+            durationMins: 90,
+            price: 499,
+            originalPrice: 699,
+            desc: "Complete testing of PM-KUSUM solar panels, VFD inverter, MPPT controller, and pump motor",
+          },
+          {
+            id: "am-5",
+            name: "Drip & Sprinkler Micro-Irrigation Emitter Flush & Fix",
+            icon: "water_drop",
+            rating: 4.85,
+            ratingCount: "9k",
+            durationMins: 120,
+            price: 399,
+            desc: "De-clogging drippers, acid flush check, lateral line joints repair, and pressure filter cleaning",
+          },
+        ],
+      },
+      {
+        id: "drone-soil",
+        title: "Smart Agriculture & Agri-Drones",
+        services: [
+          {
+            id: "am-6",
+            name: "Agri-Drone Nano Urea / Bio-Pesticide Spray (Per Acre)",
+            icon: "flight",
+            rating: 4.98,
+            ratingCount: "14k",
+            durationMins: 25,
+            price: 299,
+            originalPrice: 399,
+            desc: "DGCA-certified cooperative drone pilot for ultra-fast, uniform 1-acre liquid fertilizer/pest spray",
+          },
+          {
+            id: "am-7",
+            name: "Soil Sample Collection & Digital Soil Health Card",
+            icon: "compost",
+            rating: 4.89,
+            ratingCount: "8k",
+            durationMins: 45,
+            price: 199,
+            desc: "Scientific zig-zag field soil core sampling, NPK/pH parameter testing through affiliated cooperative lab",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ── 2. FoodTech, Agro-Processing & Storage ──────────────────────────────
+  "foodtech-processing": {
+    id: "foodtech-processing",
+    name: "FoodTech, Agro-Processing & Storage",
+    tag: "Trained FoodTech & Warehouse Cooperative Technicians",
+    rating: 4.91,
+    ratingCount: "28K",
+    categoryType: "FoodTech & Processing",
+    icon: "factory",
+    chips: [
+      { id: "cold-chain", label: "Cold Storage", icon: "ac_unit" },
+      { id: "milling", label: "Milling & Expeller", icon: "factory" },
+      { id: "grading", label: "Grain Sorter", icon: "filter_alt" },
+      { id: "packaging", label: "FPO Packaging", icon: "inventory_2" },
+    ],
+    sections: [
+      {
+        id: "cold-storage",
+        title: "Cold Chain & Warehouse Maintenance",
+        services: [
+          {
+            id: "fp-1",
+            name: "Cold Storage Ammonia / Freon Chiller Plant Technician",
+            icon: "ac_unit",
+            rating: 4.93,
+            ratingCount: "11k",
+            durationMins: 120,
+            price: 699,
+            originalPrice: 899,
+            desc: "Comprehensive compressor pressure, condenser coil, refrigerant level, and defrost thermostat tune-up",
+          },
+          {
+            id: "fp-2",
+            name: "Grain Warehouse Aeration & Moisture Testing",
+            icon: "warehouse",
+            rating: 4.87,
+            ratingCount: "7k",
+            durationMins: 90,
+            price: 449,
+            desc: "Moisture meter testing for wheat/paddy stacks, exhaust ventilation audit, and mold prevention protocol",
+          },
+        ],
+      },
+      {
+        id: "milling-processing",
+        title: "Agro-Processing & Value Addition",
+        services: [
+          {
+            id: "fp-3",
+            name: "Commercial Flour & Dal Mill Mechanic & Stone Dressing",
+            icon: "factory",
+            rating: 4.9,
+            ratingCount: "9k",
+            durationMins: 150,
+            price: 549,
+            desc: "Emery stone balance redressal, V-belt alignment, sieve mesh replacement for rural processing units",
+          },
+          {
+            id: "fp-4",
+            name: "Cold-Pressed Oil Expeller (Kachi Ghani) Setup & Tuning",
+            icon: "local_dining",
+            rating: 4.92,
+            ratingCount: "6k",
+            durationMins: 120,
+            price: 599,
+            desc: "Worm shaft clearance calibration, seed pre-conditioning check for maximum oil recovery yield",
+          },
+          {
+            id: "fp-5",
+            name: "Electronic Grain Sorter & Seed Grading Technician",
+            icon: "filter_alt",
+            rating: 4.95,
+            ratingCount: "8k",
+            durationMins: 90,
+            price: 499,
+            desc: "Optical camera sensor cleaning, air ejector calibration, and foreign matter seed separation check",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ── 3. Rural Infrastructure & Panchayat Services ────────────────────────
+  "rural-infrastructure": {
+    id: "rural-infrastructure",
+    name: "Rural Infrastructure & Community Maintenance",
+    tag: "Panchayat & Rural Development Cooperative Workforce",
+    rating: 4.89,
+    ratingCount: "36K",
+    categoryType: "Rural Infrastructure",
+    icon: "foundation",
+    chips: [
+      { id: "sanitation", label: "Panchayat Sanitation", icon: "cleaning_services" },
+      { id: "solar-rooftop", label: "Solar Rooftop", icon: "wb_sunny" },
+      { id: "water-pipe", label: "Drinking Water Pipe", icon: "plumbing" },
+      { id: "biogas", label: "Biogas & Mason", icon: "foundation" },
+    ],
+    sections: [
+      {
+        id: "panchayat-water",
+        title: "Gram Panchayat Sanitation & Drinking Water",
+        services: [
+          {
+            id: "ri-1",
+            name: "Panchayat Community Drain Desilting & Lime Bleaching",
+            icon: "cleaning_services",
+            rating: 4.91,
+            ratingCount: "16k",
+            durationMins: 240,
+            price: 599,
+            desc: "Deep drain sludge clearance, mosquito larva spray, and eco-friendly bleaching powder sanitization",
+          },
+          {
+            id: "ri-2",
+            name: "Village Piped Water Supply (Jal Jeevan) Pipe Leak Repair",
+            icon: "plumbing",
+            rating: 4.88,
+            ratingCount: "14k",
+            durationMins: 90,
+            price: 349,
+            desc: "HDPE/GI pipeline underground leak detection, electrofusion coupler jointing, and tap standpost fix",
+          },
+          {
+            id: "ri-3",
+            name: "India Mark II Handpump Cylinder & Washer Overhaul",
+            icon: "water_drop",
+            rating: 4.86,
+            ratingCount: "12k",
+            durationMins: 120,
+            price: 399,
+            desc: "Extraction of riser pipe, replacement of leather bucket washer, check valve, and chain repair",
+          },
+        ],
+      },
+      {
+        id: "rural-energy",
+        title: "Rural Energy & Sustainable Masons",
+        services: [
+          {
+            id: "ri-4",
+            name: "Village Rooftop Solar Panel Cleaning & Inverter Rewiring",
+            icon: "wb_sunny",
+            rating: 4.94,
+            ratingCount: "19k",
+            durationMins: 60,
+            price: 299,
+            desc: "De-ionized water soft sponge panel de-dusting, MC4 connector tightening, earthing continuity test",
+          },
+          {
+            id: "ri-5",
+            name: "Rural Mason & Biogas (Gobar Gas) Dome Plaster & Seal",
+            icon: "foundation",
+            rating: 4.92,
+            ratingCount: "8k",
+            durationMins: 180,
+            price: 549,
+            desc: "Gas leakage crack sealing with waterproof slurry, slurry mixer blade greasing, burner nozzle clean",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ── 4. Dairy, Livestock & Paravet Services ──────────────────────────────
+  "dairy-livestock": {
+    id: "dairy-livestock",
+    name: "Dairy, Livestock & Paravet Services",
+    tag: "Certified Paravet Technicians & Pashu Sakhis",
+    rating: 4.95,
+    ratingCount: "51K",
+    categoryType: "Animal Husbandry",
+    icon: "pets",
+    chips: [
+      { id: "health-check", label: "Paravet Health Check", icon: "pets" },
+      { id: "milking-tech", label: "Milking Tech", icon: "water_damage" },
+      { id: "poultry-goat", label: "Poultry & Goat", icon: "egg" },
+      { id: "fodder", label: "Silage & Feed", icon: "grass" },
+    ],
+    sections: [
+      {
+        id: "paravet-health",
+        title: "Livestock Health & Paravet Support",
+        services: [
+          {
+            id: "dl-1",
+            name: "Cooperative Paravet Cattle Routine Health Checkup",
+            icon: "pets",
+            rating: 4.96,
+            ratingCount: "25k",
+            durationMins: 45,
+            price: 249,
+            originalPrice: 349,
+            desc: "Vitals check, deworming dosage administration, ear tag verification, and clinical diet chart",
+          },
+          {
+            id: "dl-2",
+            name: "Artificial Insemination (AI) Support & Breed Record",
+            icon: "biotech",
+            rating: 4.94,
+            ratingCount: "18k",
+            durationMins: 35,
+            price: 299,
+            desc: "Liquid nitrogen cryo-straw handling, hygienic high-conception AI service with cooperative dairy log",
+          },
+          {
+            id: "dl-3",
+            name: "Mastitis Screening & Udder Hygiene Protocol",
+            icon: "medical_services",
+            rating: 4.91,
+            ratingCount: "11k",
+            durationMins: 30,
+            price: 199,
+            desc: "California Mastitis Test (CMT) strip screening, teat dip antiseptic treatment, and milking hygiene training",
+          },
+        ],
+      },
+      {
+        id: "dairy-machines",
+        title: "Dairy Farm Mechanization & Fodder",
+        services: [
+          {
+            id: "dl-4",
+            name: "Pulsator & Milking Machine Servicing & Sanitization",
+            icon: "precision_manufacturing",
+            rating: 4.93,
+            ratingCount: "9k",
+            durationMins: 60,
+            price: 349,
+            desc: "Vacuum regulator calibration, teat cup silicone liner inspection, and food-grade alkaline wash",
+          },
+          {
+            id: "dl-5",
+            name: "Chaff Cutter Blade Sharpening & Silage Bunker Packing",
+            icon: "grass",
+            rating: 4.88,
+            ratingCount: "7k",
+            durationMins: 90,
+            price: 299,
+            desc: "Rotary blade edge grinding, inoculation spray, and anaerobic poly-tarpaulin bunker sealing",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ── 5. Emergency Farm & Rural Breakdown (Tatkal 45 Min) ─────────────────
+  "rural-emergency": {
+    id: "rural-emergency",
+    name: "Emergency Farm & Rural Breakdown",
+    tag: "45-Minute Guaranteed Priority Cooperative Dispatch",
+    rating: 4.98,
+    ratingCount: "19K",
+    categoryType: "Emergency / Tatkal",
+    icon: "emergency",
+    chips: [
+      { id: "motor-burn", label: "Tube-Well Motor", icon: "electric_bolt" },
+      { id: "pipe-burst", label: "Mainline Burst", icon: "emergency" },
+      { id: "vet-sos", label: "Urgent Paravet", icon: "medical_services" },
+    ],
+    sections: [
+      {
+        id: "emergency-farm",
+        title: "Critical Agricultural Breakdown Response",
+        services: [
+          {
+            id: "re-1",
+            name: "Burnt Submersible / Tube-Well Motor Emergency Dispatch",
+            icon: "electric_bolt",
+            rating: 4.99,
+            ratingCount: "12k",
+            durationMins: 60,
+            price: 599,
+            originalPrice: 799,
+            desc: "Instant 45-minute on-site technician response for burnt starter coils, phase failure relay, or motor short",
+          },
+          {
+            id: "re-2",
+            name: "Farm Irrigation Mainline High-Pressure Burst Clamp",
+            icon: "emergency",
+            rating: 4.97,
+            ratingCount: "8k",
+            durationMins: 45,
+            price: 499,
+            desc: "Immediate water pump shutoff assistance, split collar repair clamp fitting to save flooded standing crops",
+          },
+          {
+            id: "re-3",
+            name: "Emergency Paravet Urgent Care Visit (Bloat / Calving)",
+            icon: "medical_services",
+            rating: 4.98,
+            ratingCount: "14k",
+            durationMins: 45,
+            price: 449,
+            desc: "Rapid emergency visit for acute tympany (bloat), dystocia (difficult calving) first-aid with veterinary helpline",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ── 6. FPO & Institutional Bulk Booking ─────────────────────────────────
+  "institutional-bulk": {
+    id: "institutional-bulk",
+    name: "FPO & Institutional Bulk Booking",
+    tag: "Cooperative Workforce Squads for FPOs & Panchayats",
+    rating: 4.94,
+    ratingCount: "14K",
+    categoryType: "Institutional B2B",
+    icon: "groups",
+    chips: [
+      { id: "harvest-crew", label: "Harvest Crew", icon: "groups" },
+      { id: "mandi-loading", label: "Mandi Loading", icon: "warehouse" },
+      { id: "panchayat-squad", label: "Panchayat Squad", icon: "foundation" },
+    ],
+    sections: [
+      {
+        id: "bulk-contracts",
+        title: "Cooperative Labor Squads & Contracts",
+        services: [
+          {
+            id: "ib-1",
+            name: "FPO Seasonal Harvest Crew (Squad of 5 Skilled Workers / Day)",
+            icon: "groups",
+            rating: 4.96,
+            ratingCount: "7k",
+            durationMins: 480,
+            price: 2499,
+            originalPrice: 2999,
+            desc: "Pre-screened cooperative harvester team for cutting, bundle tying, threshing with full insurance coverage",
+          },
+          {
+            id: "ib-2",
+            name: "Mandi Grain Bagging, Weighing & Stacking Crew (5 Workers)",
+            icon: "warehouse",
+            rating: 4.92,
+            ratingCount: "9k",
+            durationMins: 480,
+            price: 2299,
+            desc: "Standard 50kg gunny bag filling, stitching, electronic weighment, and truck loading cooperative labor",
+          },
+          {
+            id: "ib-3",
+            name: "Gram Panchayat Cleanliness Drive Squad (4 Workers + Equipment)",
+            icon: "engineering",
+            rating: 4.94,
+            ratingCount: "5k",
+            durationMins: 480,
+            price: 1999,
+            desc: "Full day village public sanitation drive including community ponds cleaning, fogging, and waste segregation",
+          },
+        ],
+      },
+    ],
+  },
+
+  // ── Existing Urban & Household Services (Retained under Extra Features) ──
   // 1. Women's Salon
   "salon-women": {
     id: "salon-women",
@@ -1205,7 +1717,27 @@ export function getCategoryDetails(categoryId) {
     if (clean.includes(key) || key.includes(clean)) return cat;
   }
 
-  // 5. Keyword Matching
+  // 5. Keyword Matching — Agriculture, FoodTech & Rural Priority
+  if (clean.includes("tractor") || clean.includes("harvest") || clean.includes("drone") || clean.includes("agri") || clean.includes("farm") || clean.includes("kisan") || clean.includes("soil") || clean.includes("compost") || clean.includes("sow") || clean.includes("rotavator") || clean.includes("irrigation")) {
+    return CATEGORIES["agri-mechanization"];
+  }
+  if (clean.includes("cold") || clean.includes("chiller") || clean.includes("mill") || clean.includes("atta") || clean.includes("flour") || clean.includes("grain") || clean.includes("seed") || clean.includes("foodtech") || clean.includes("processing") || clean.includes("expeller")) {
+    return CATEGORIES["foodtech-processing"];
+  }
+  if (clean.includes("panchayat") || clean.includes("drainage") || clean.includes("sanitation") || clean.includes("handpump") || clean.includes("biogas") || clean.includes("gobar") || clean.includes("jal jeevan") || clean.includes("rural") || clean.includes("rooftop")) {
+    return CATEGORIES["rural-infrastructure"];
+  }
+  if (clean.includes("paravet") || clean.includes("pashu") || clean.includes("cow") || clean.includes("cattle") || clean.includes("dairy") || clean.includes("milking") || clean.includes("vet") || clean.includes("livestock") || clean.includes("goat") || clean.includes("poultry") || clean.includes("fodder")) {
+    return CATEGORIES["dairy-livestock"];
+  }
+  if (clean.includes("emergency") || clean.includes("tatkal") || clean.includes("burnout") || clean.includes("burst") || clean.includes("breakdown") || clean.includes("urgent")) {
+    return CATEGORIES["rural-emergency"];
+  }
+  if (clean.includes("fpo") || clean.includes("bulk") || clean.includes("mandi") || clean.includes("crew") || clean.includes("squad") || clean.includes("contract")) {
+    return CATEGORIES["institutional-bulk"];
+  }
+
+  // General Urban & Household Services
   if (clean.includes("plumb") || clean.includes("electric") || clean.includes("pipe") || clean.includes("water") || clean.includes("switch") || clean.includes("fan")) {
     return CATEGORIES["electrical-plumbing"];
   }

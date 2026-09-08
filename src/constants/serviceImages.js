@@ -14,8 +14,28 @@ import djMusicImg from "../assets/services/dj-music.jpg";
 import shoppingAssistantImg from "../assets/services/shopping-assistant.jpg";
 import cityGuideImg from "../assets/services/city-guide.jpg";
 import salonMenImg from "../assets/services/salon-men.jpg";
+import agriMechanizationImg from "../assets/services/agri-mechanization.jpg";
+import foodtechProcessingImg from "../assets/services/foodtech-processing.jpg";
+import ruralInfrastructureImg from "../assets/services/rural-infrastructure.jpg";
+import dairyLivestockImg from "../assets/services/dairy-livestock.jpg";
+import ruralEmergencyImg from "../assets/services/rural-emergency.jpg";
+import institutionalBulkImg from "../assets/services/institutional-bulk.jpg";
 
 export const SERVICE_IMAGES = {
+  // Agriculture, FoodTech & Rural Development
+  "agri-mechanization": agriMechanizationImg,
+  "foodtech-processing": foodtechProcessingImg,
+  "rural-infrastructure": ruralInfrastructureImg,
+  "dairy-livestock": dairyLivestockImg,
+  "rural-emergency": ruralEmergencyImg,
+  "institutional-bulk": institutionalBulkImg,
+  "tractor-harvester": agriMechanizationImg,
+  "solar-pump": ruralEmergencyImg,
+  "agri-drone": agriMechanizationImg,
+  "cold-storage": foodtechProcessingImg,
+  "paravet-dairy": dairyLivestockImg,
+  "panchayat-sanitation": ruralInfrastructureImg,
+
   // 1. Personal & Grooming
   "salon-women": salonWomenImg,
   "salon-classic": salonWomenImg,
