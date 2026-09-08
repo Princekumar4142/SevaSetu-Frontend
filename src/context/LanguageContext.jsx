@@ -285,26 +285,135 @@ export function t(keyOrPhrase, langCode) {
     return TRANSLATIONS[keyOrPhrase][langCode];
   }
 
-  // 2. Direct PHRASE_TRANSLATIONS exact string lookup
   const trimmed = keyOrPhrase.trim();
+  if (!trimmed) return keyOrPhrase;
+
+  // 2. Direct PHRASE_TRANSLATIONS exact string lookup
   if (PHRASE_TRANSLATIONS[trimmed]?.[langCode]) {
     return PHRASE_TRANSLATIONS[trimmed][langCode];
   }
 
-  // 3. Fallback to Hindi if target language is regional but doesn't have translation yet
+  // 3. Case-insensitive lookup for target langCode first
+  const lower = trimmed.toLowerCase();
+  for (const [k, map] of Object.entries(PHRASE_TRANSLATIONS)) {
+    if (k.toLowerCase() === lower) {
+      if (map[langCode]) return map[langCode];
+    }
+  }
+
+  // 4. Fallback to Hindi if target language is regional but doesn't have translation yet
   if (PHRASE_TRANSLATIONS[trimmed]?.["hi"]) {
     return PHRASE_TRANSLATIONS[trimmed]["hi"];
   }
 
-  // 4. Case-insensitive lookup in PHRASE_TRANSLATIONS
-  const lower = trimmed.toLowerCase();
+  // 5. Case-insensitive fallback to Hindi
   for (const [k, map] of Object.entries(PHRASE_TRANSLATIONS)) {
-    if (k.toLowerCase() === lower) {
-      return map[langCode] || map["hi"] || keyOrPhrase;
+    if (k.toLowerCase() === lower && map["hi"]) {
+      return map["hi"];
     }
   }
 
   return keyOrPhrase;
+}
+
+// ── Smart Segment & Pattern Text Translator ──────────────────────────────────
+export function translateText(text, langCode = "hi") {
+  if (!text || typeof text !== "string") return text;
+  const trimmed = text.trim();
+  if (!trimmed || trimmed.length < 2) return text;
+  if (/^[\d\s.,:;!?₹$%#@&*()_+=\-\\/|<>]+$/.test(trimmed)) return text;
+
+  if (langCode === "en") {
+    if (TRANSLATIONS[trimmed]?.["en"]) return TRANSLATIONS[trimmed]["en"];
+    return text;
+  }
+
+  // 1. Direct translation
+  const direct = t(trimmed, langCode);
+  if (direct && direct !== trimmed) {
+    return text.replace(trimmed, direct);
+  }
+
+  // 2. Delimiter splitting: " • ", " · ", " | ", " - "
+  const delimiters = [" • ", " · ", " | ", " - "];
+  for (const delim of delimiters) {
+    if (trimmed.includes(delim)) {
+      const parts = trimmed.split(delim);
+      const translatedParts = parts.map((p) => {
+        const pTrim = p.trim();
+        const transP = t(pTrim, langCode);
+        return transP !== pTrim ? transP : p;
+      });
+      if (translatedParts.some((tp, idx) => tp !== parts[idx])) {
+        return text.replace(trimmed, translatedParts.join(delim));
+      }
+    }
+  }
+
+  // 3. Pattern: "Title (count)" e.g. "Available Verified Workers (4)"
+  const countPattern = /^(.+?)\s*\((\d+.*?)\)$/;
+  const countMatch = trimmed.match(countPattern);
+  if (countMatch) {
+    const base = countMatch[1].trim();
+    const count = countMatch[2].trim();
+    const transBase = t(base, langCode);
+    if (transBase && transBase !== base) {
+      return text.replace(trimmed, `${transBase} (${count})`);
+    }
+  }
+
+  // 4. Pattern: "{count} Active in Your Area"
+  const prefixCount = /^(\d+)\s+(.+)$/;
+  const prefixMatch = trimmed.match(prefixCount);
+  if (prefixMatch) {
+    const count = prefixMatch[1];
+    const rest = prefixMatch[2].trim();
+    const transRest = t(rest, langCode);
+    if (transRest && transRest !== rest) {
+      return text.replace(trimmed, `${count} ${transRest}`);
+    }
+  }
+
+  // 5. Pattern: "{count}+ yrs exp"
+  const expMatch = trimmed.match(/^(\d+\+?\s*)(yrs exp|years exp|years experience)$/i);
+  if (expMatch) {
+    const count = expMatch[1];
+    const transExp = t("yrs exp", langCode);
+    return text.replace(trimmed, `${count}${transExp}`);
+  }
+
+  // 6. Pattern: "{count} mins" / "{count} Services"
+  const minsMatch = trimmed.match(/^(\d+)\s*(mins|minutes|services)$/i);
+  if (minsMatch) {
+    const num = minsMatch[1];
+    const unit = minsMatch[2].toLowerCase();
+    const transUnit = t(unit === "services" ? "Services" : "mins", langCode);
+    return text.replace(trimmed, `${num} ${transUnit}`);
+  }
+
+  // 7. Pattern: "Search in {name}..."
+  const searchMatch = trimmed.match(/^Search in\s+(.+?)(\.{0,3})$/i);
+  if (searchMatch) {
+    const target = searchMatch[1].trim();
+    const transTarget = t(target, langCode);
+    if (langCode === "hi") {
+      return `${transTarget} में खोजें...`;
+    } else if (langCode === "bn") {
+      return `${transTarget}-এ অনুসন্ধান করুন...`;
+    } else if (langCode === "mr") {
+      return `${transTarget} मध्ये शोधा...`;
+    } else if (langCode === "gu") {
+      return `${transTarget}માં શોધો...`;
+    } else if (langCode === "ta") {
+      return `${transTarget} இல் தேடுங்கள்...`;
+    } else if (langCode === "te") {
+      return `${transTarget}లో వెతకండి...`;
+    } else if (langCode === "kn") {
+      return `${transTarget}ನಲ್ಲಿ ಹುಡುಕಿ...`;
+    }
+  }
+
+  return text;
 }
 
 // ── Context ───────────────────────────────────────────────────────────────────
@@ -323,7 +432,12 @@ export function LanguageProvider({ children }) {
   const lang = LANGUAGES.find((l) => l.code === langCode) || LANGUAGES[0];
 
   // Helper: translate a key or English text with current language
-  const tr = useCallback((keyOrPhrase) => t(keyOrPhrase, langCode), [langCode]);
+  const tr = useCallback((keyOrPhrase) => {
+    if (!keyOrPhrase) return keyOrPhrase;
+    const direct = t(keyOrPhrase, langCode);
+    if (direct !== keyOrPhrase) return direct;
+    return translateText(keyOrPhrase, langCode);
+  }, [langCode]);
 
   // Update HTML lang attribute
   useEffect(() => {
@@ -331,44 +445,97 @@ export function LanguageProvider({ children }) {
   }, [lang]);
 
   // ── Universal DOM-Level Text Replacement & Observer Fallback ──────────────
-  // This automatically translates any text nodes in the DOM whose text matches
-  // a known phrase in PHRASE_TRANSLATIONS, ensuring 100% full-site translation!
   const isTranslatingRef = useRef(false);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
 
     const translateNode = (node) => {
+      // 1. Text nodes
       if (node.nodeType === Node.TEXT_NODE) {
-        const text = node.nodeValue;
-        if (!text) return;
-        const trimmed = text.trim();
+        const currentVal = node.nodeValue;
+        if (!currentVal) return;
+
+        // Permanent baseline source
+        if (node._originalText === undefined) {
+          node._originalText = currentVal;
+        }
+
+        const originalText = node._originalText;
+        const trimmed = originalText.trim();
         if (trimmed.length < 2) return;
 
+        // Skip numeric-only or single punctuation text
+        if (/^[\d\s.,:;!?₹$%#@&*()_+=\-\\/|<>]+$/.test(trimmed)) return;
+
         if (langCode === "en") {
-          if (node._originalText !== undefined) {
-            node.nodeValue = node._originalText;
-            delete node._originalText;
+          if (node.nodeValue !== originalText) {
+            node.nodeValue = originalText;
           }
           return;
         }
 
-        // Look for translation in PHRASE_TRANSLATIONS
-        const translated = PHRASE_TRANSLATIONS[trimmed]?.[langCode] || PHRASE_TRANSLATIONS[trimmed]?.["hi"];
-        if (translated && translated !== trimmed) {
-          if (node._originalText === undefined) {
-            node._originalText = text;
+        const translated = translateText(originalText, langCode);
+        if (translated && translated !== originalText) {
+          if (node.nodeValue !== translated) {
+            node.nodeValue = translated;
           }
-          node.nodeValue = text.replace(trimmed, translated);
+        } else if (node.nodeValue !== originalText) {
+          node.nodeValue = originalText;
         }
-      } else if (node.nodeType === Node.ELEMENT_NODE) {
-        // Skip script, style, code, pre, input, textarea
+      }
+      // 2. Element nodes
+      else if (node.nodeType === Node.ELEMENT_NODE) {
         const tag = node.tagName.toLowerCase();
-        if (tag === "script" || tag === "style" || tag === "input" || tag === "textarea" || tag === "pre" || tag === "code") {
+
+        // Skip script, style, code, pre tags
+        if (tag === "script" || tag === "style" || tag === "pre" || tag === "code") {
           return;
         }
-        for (let i = 0; i < node.childNodes.length; i++) {
-          translateNode(node.childNodes[i]);
+
+        // Never translate Material Icons or icon fonts!
+        const className = (typeof node.className === "string" ? node.className : "");
+        if (
+          className.includes("material-symbols") ||
+          className.includes("material-icons") ||
+          node.hasAttribute("data-no-translate")
+        ) {
+          return;
+        }
+
+        // Translate placeholder on inputs & textareas
+        if (tag === "input" || tag === "textarea") {
+          const ph = node.getAttribute("placeholder");
+          if (ph) {
+            if (node._origPlaceholder === undefined) {
+              node._origPlaceholder = ph;
+            }
+            if (langCode === "en") {
+              node.setAttribute("placeholder", node._origPlaceholder);
+            } else {
+              const transPh = translateText(node._origPlaceholder, langCode);
+              node.setAttribute("placeholder", transPh || node._origPlaceholder);
+            }
+          }
+          return; // Do not traverse input children
+        }
+
+        // Translate title / aria-label attribute if present
+        const title = node.getAttribute("title");
+        if (title && title.length > 2) {
+          if (node._origTitle === undefined) node._origTitle = title;
+          if (langCode === "en") {
+            node.setAttribute("title", node._origTitle);
+          } else {
+            const transTitle = translateText(node._origTitle, langCode);
+            node.setAttribute("title", transTitle || node._origTitle);
+          }
+        }
+
+        // Traverse children
+        const children = node.childNodes;
+        for (let i = 0; i < children.length; i++) {
+          translateNode(children[i]);
         }
       }
     };
@@ -391,7 +558,7 @@ export function LanguageProvider({ children }) {
 
     // Observe future DOM changes (route navigations, dynamic modals, tabs)
     const observer = new MutationObserver(() => {
-      if (!isTranslatingRef.current && langCode !== "en") {
+      if (!isTranslatingRef.current) {
         runTranslation();
       }
     });
@@ -401,7 +568,7 @@ export function LanguageProvider({ children }) {
       observer.observe(rootEl, {
         childList: true,
         subtree: true,
-        characterData: true,
+        characterData: false, // Don't trigger on text mutation to prevent loops
       });
     }
 

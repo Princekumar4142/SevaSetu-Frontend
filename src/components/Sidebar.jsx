@@ -4,6 +4,7 @@ import { logout } from "../store/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 import Avatar from "./Avatar";
 import Logo from "./Logo";
+import LanguageSelector from "./LanguageSelector";
 
 /**
  * Shared sidebar shell used by every dashboard layout. Pass `navItems` and
@@ -90,6 +91,9 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
             Emergency SOS
           </button>
         )}
+        <div className="px-1 py-0.5">
+          <LanguageSelector />
+        </div>
         <button
           onClick={() => {
             handleLogout();

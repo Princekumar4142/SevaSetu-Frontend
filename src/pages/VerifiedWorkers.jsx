@@ -1,11 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import shoppingAssistantImg from "../assets/services/shopping-assistant.jpg";
 import cityGuideImg from "../assets/services/city-guide.jpg";
 
 export default function VerifiedWorkers() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const { tr } = useLanguage();
 
   return (
     <div className="min-h-screen bg-slate-50 pb-20">

@@ -14,6 +14,7 @@ import {
 } from "../constants/bookingCatalog";
 
 import LandingHero from "../components/landing/LandingHero";
+import HomeVoiceAssistantCard from "../components/HomeVoiceAssistantCard";
 import HowItWorks from "../components/landing/HowItWorks";
 import JoinAsWorker from "../components/landing/JoinAsWorker";
 
@@ -58,6 +59,11 @@ export default function BookingHome() {
           SECTION 1: Hero
        ═══════════════════════════════════════════════════════ */}
       <LandingHero />
+
+      {/* ═══════════════════════════════════════════════════════
+          AI VOICE ASSISTANT ORDERING CARD (HOME SCREEN)
+       ═══════════════════════════════════════════════════════ */}
+      <HomeVoiceAssistantCard />
 
       {/* ═══════════════════════════════════════════════════════
           EMERGENCY / TATKAL RURAL BANNER

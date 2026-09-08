@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import Badge from "../components/Badge";
 import { LoadingState, EmptyState } from "../components/Feedback";
 import { useSocket } from "../context/SocketContext";
+import { useLanguage } from "../context/LanguageContext";
 
 const MOCK_CUSTOMER_BOOKINGS = [
   {
@@ -65,6 +66,7 @@ const STATUS_CONFIG = {
 export default function CustomerBookings() {
   const navigate = useNavigate();
   const { socket } = useSocket();
+  const { tr } = useLanguage();
   const [activeTab, setActiveTab] = useState("ACTIVE");
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);

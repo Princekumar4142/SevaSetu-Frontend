@@ -404,6 +404,20 @@ export default function LandingHero() {
                   placeholder={tr("Search for services...")}
                   className="min-w-0 w-full flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 text-sm sm:text-base placeholder:text-slate-400 bg-transparent font-medium"
                 />
+
+                {/* Voice Booking Trigger Button */}
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent("open-voice-assistant"))}
+                  className="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white px-2.5 sm:px-3.5 py-2 sm:py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all shadow-md shadow-emerald-600/20 hover:shadow-emerald-600/30 flex items-center gap-1.5 shrink-0 mr-1.5 group active:scale-95 cursor-pointer"
+                  title={tr("Voice Booking")}
+                >
+                  <span className="material-symbols-outlined text-[18px] text-amber-300 group-hover:scale-110 transition-transform">
+                    mic
+                  </span>
+                  <span className="hidden sm:inline font-bold">{tr("Voice Booking")}</span>
+                </button>
+
                 <button
                   type="submit"
                   className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1 shrink-0"

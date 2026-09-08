@@ -6,6 +6,7 @@ import AppRoutes from "./routes/AppRoutes";
 import ScrollToTop from "./components/ScrollToTop";
 import { SocketProvider } from "./context/SocketContext";
 import IncomingOrderModal from "./components/IncomingOrderModal";
+import GlobalVoiceAssistant from "./components/GlobalVoiceAssistant";
 
 export default function App() {
   const { dispatch, token, currentUser } = useAuth();
@@ -24,6 +25,7 @@ export default function App() {
         <ScrollToTop />
         <AppRoutes />
         <IncomingOrderModal />
+        <GlobalVoiceAssistant />
       </SocketProvider>
     </BrowserRouter>
   );
