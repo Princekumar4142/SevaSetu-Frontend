@@ -451,7 +451,7 @@ export default function LandingHero() {
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
                   <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
-                    How SevaSetu Works & Empowers
+                    How SevaSetu Agri-Coop Works
                   </span>
                 </div>
                 <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
@@ -463,7 +463,7 @@ export default function LandingHero() {
               <div className="rounded-xl overflow-hidden border border-slate-200/80 bg-slate-50 shadow-inner group/img">
                 <img
                   src={workflowImg}
-                  alt="SevaSetu Complete 4-Step Workflow: 1. Book on App, 2. Verified Technician Arrival, 3. Quality 5-Star Service, 4. Instant Earnings"
+                  alt="SevaSetu Rural Cooperative 4-Step Workflow: 1. Book Farm Service, 2. Verified Co-op Arrival, 3. 5-Star Field Service, 4. Direct Worker Earnings"
                   className="w-full h-auto object-cover transition-transform duration-500 group-hover/img:scale-[1.02]"
                   loading="lazy"
                 />
@@ -472,36 +472,36 @@ export default function LandingHero() {
               {/* 4 Connected Step Sequence with Arrow Indicators (1 → 2 → 3 → 4) */}
               <div className="mt-3 space-y-2">
                 <div className="flex items-center justify-between px-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                  <span>Step-by-Step Flow</span>
+                  <span>Farm-to-Doorstep Flow</span>
                   <span>1 → 2 → 3 → 4</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
-                    <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">1</span>
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">1</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Book a Service</h5>
-                      <p className="text-[10px] text-slate-500 truncate">Select &amp; book in 2 mins</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Book Farm Service</h5>
+                      <p className="text-[10px] text-slate-500 truncate">Tractor, pump &amp; tech in 2 mins</p>
                     </div>
                   </div>
 
                   <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
-                    <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">2</span>
+                    <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">2</span>
                     <div className="min-w-0">
                       <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Verified Arrival</h5>
-                      <p className="text-[10px] text-slate-500 truncate">Partner reaches doorstep</p>
+                      <p className="text-[10px] text-slate-500 truncate">PACS &amp; certified technician</p>
                     </div>
                   </div>
 
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-amber-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">3</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">5-Star Service</h5>
-                      <p className="text-[10px] text-slate-500 truncate">Customer smile &amp; rating</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">5-Star Field Service</h5>
+                      <p className="text-[10px] text-slate-500 truncate">Quality harvest &amp; repair output</p>
                     </div>
                   </div>
 
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-purple-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">4</span>
                     <div className="min-w-0">
                       <h5 className="text-[11px] font-bold text-slate-900 leading-tight">Direct Earnings</h5>

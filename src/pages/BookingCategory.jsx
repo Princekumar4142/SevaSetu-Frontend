@@ -8,6 +8,7 @@ import CartBar from "../components/booking/CartBar";
 import QuantityStepper from "../components/booking/QuantityStepper";
 import { EmptyState } from "../components/Feedback";
 import api from "../services/api";
+import { getServiceImage } from "../constants/serviceImages";
 
 export default function BookingCategory() {
   const { categoryId } = useParams();
@@ -491,10 +492,19 @@ export default function BookingCategory() {
                                 </span>
                               </div>
                             </div>
-                            <div className="w-10 h-10 rounded-xl bg-brand-purple-light/70 text-brand-purple flex items-center justify-center shrink-0">
-                              <span className="material-symbols-outlined text-[22px]">
-                                {service.icon || category.icon || "spa"}
-                              </span>
+                            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl overflow-hidden bg-slate-100 border border-slate-200/90 shadow-sm shrink-0 flex items-center justify-center">
+                              {getServiceImage(service.id, service.name, category.id) ? (
+                                <img
+                                  src={getServiceImage(service.id, service.name, category.id)}
+                                  alt={service.name}
+                                  className="w-full h-full object-cover"
+                                  loading="lazy"
+                                />
+                              ) : (
+                                <span className="material-symbols-outlined text-[24px] text-brand-purple">
+                                  {service.icon || category.icon || "agriculture"}
+                                </span>
+                              )}
                             </div>
                           </div>
 

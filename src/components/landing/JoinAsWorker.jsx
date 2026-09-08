@@ -1,96 +1,419 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import shoppingAssistantImg from "../../assets/services/shopping-assistant.jpg";
+import cityGuideImg from "../../assets/services/city-guide.jpg";
+import { SERVICE_IMAGES, getServiceImage } from "../../constants/serviceImages";
+import {
+  HOME_SERVICES,
+  PERSONAL_SERVICES,
+  TRENDING_SERVICES,
+  PROFESSIONAL_SERVICES,
+  HEALTH_WELLNESS_SERVICES,
+  EVENT_SERVICES,
+} from "../../constants/bookingCatalog";
 
-const BENEFITS = [
-  { icon: "trending_up", text: "Earn ₹25,000 – ₹50,000/month" },
-  { icon: "school", text: "Free skill training programs" },
-  { icon: "health_and_safety", text: "Insurance & health benefits" },
-  { icon: "diversity_3", text: "Join a worker cooperative" },
-  { icon: "calendar_month", text: "Flexible working hours" },
-  { icon: "verified", text: "Verified badge on your profile" },
+const WORKER_BENEFITS = [
+  { icon: "trending_up", text: "Guaranteed Fair Payout: ₹25k – ₹50k/mo" },
+  { icon: "school", text: "Free Skill & Agri-Tech Certification" },
+  { icon: "health_and_safety", text: "Accidental Insurance & Health Cover" },
+  { icon: "diversity_3", text: "Cooperative Ownership & Dividend Share" },
+  { icon: "calendar_month", text: "Flexible Gigs & Local Work Shifts" },
+  { icon: "verified", text: "Federation & PACS Verified Worker Badge" },
+];
+
+const EXTRA_SERVICE_TABS = [
+  { id: "home", label: "🏠 Home & Maintenance", items: HOME_SERVICES },
+  { id: "personal", label: "✨ Salon & Personal Care", items: PERSONAL_SERVICES },
+  { id: "professional", label: "💼 CA, Tax & Legal", items: PROFESSIONAL_SERVICES },
+  { id: "health", label: "🏥 Health & Elder Care", items: HEALTH_WELLNESS_SERVICES },
+  { id: "events", label: "🎉 Events & Sound", items: EVENT_SERVICES },
+  { id: "trending", label: "🔥 Trending Gigs", items: TRENDING_SERVICES },
 ];
 
 export default function JoinAsWorker() {
   const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   const { ref, isRevealed } = useScrollReveal();
+  const [activeTab, setActiveTab] = useState("home");
+  const [imgErrors, setImgErrors] = useState({});
+
+  const handleServiceClick = (service) => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return;
+    }
+    if (service && service.id) {
+      navigate(`/customer/services/${service.id}`);
+    } else {
+      navigate("/customer");
+    }
+  };
+
+  const currentTabObj = EXTRA_SERVICE_TABS.find((t) => t.id === activeTab) || EXTRA_SERVICE_TABS[0];
 
   return (
-    <section className="py-20 md:py-28 gradient-mesh relative overflow-hidden">
-      <div ref={ref} className="max-w-screen-xl mx-auto px-[16px] md:px-[64px]">
-        <div className="flex flex-col md:flex-row items-center gap-12 md:gap-20">
-          {/* Left — Content */}
-          <div className={`flex-1 ${isRevealed ? "animate-fade-in-left" : "opacity-0"}`}>
-            <span className="inline-block px-4 py-1.5 rounded-full bg-brand-success/10 text-brand-success text-xs font-bold uppercase tracking-widest mb-4">
-              For Professionals
-            </span>
-            <h2 className="text-3xl md:text-5xl font-black text-on-surface mb-4">
-              Join India's Largest<br /><span className="text-gradient">Worker Network</span>
-            </h2>
-            <p className="text-on-surface-variant text-base md:text-lg max-w-lg mb-8">
-              Become a SevaSetu worker and earn a fair, dignified income. We invest in your skills, provide insurance, and give you ownership through our cooperative model.
-            </p>
+    <section className="py-16 md:py-24 bg-gradient-to-b from-slate-50 via-white to-slate-100 border-t border-slate-200 relative overflow-hidden">
+      {/* Background Decorative Blob */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-100/40 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
 
-            {/* Benefits grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-              {BENEFITS.map((b) => (
-                <div key={b.text} className="flex items-center gap-3 bg-white rounded-xl px-4 py-3 border border-outline-variant/50 card-hover">
-                  <span className="w-8 h-8 rounded-lg bg-brand-success/10 flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-brand-success text-[18px] fill">{b.icon}</span>
-                  </span>
-                  <span className="text-sm font-medium text-on-surface">{b.text}</span>
+      <div ref={ref} className="max-w-screen-xl mx-auto px-[16px] md:px-[64px] relative z-10">
+
+        {/* ═══════════════════════════════════════════════════════════════════
+            PART 1: VERIFIED WORKER SERVICES & COMPANION CARE SHOWCASE
+        ═══════════════════════════════════════════════════════════════════ */}
+        <div className={`mb-16 ${isRevealed ? "animate-fade-in-up" : "opacity-0"}`}>
+          <div className="text-center max-w-3xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black uppercase tracking-wider mb-3 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse" />
+              Verified Worker Network &amp; Additional Services
+            </div>
+            <h2 className="text-2xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+              Labour Cooperative Workforce &amp; <br className="hidden sm:inline" />
+              <span className="bg-gradient-to-r from-primary via-indigo-600 to-brand-purple bg-clip-text text-transparent">
+                Specialized Support Services
+              </span>
+            </h2>
+            <p className="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
+              In addition to farm mechanization, our federation deploys verified cooperative workers for direct assisted shopping, elder accompaniment, and specialized household needs.
+            </p>
+          </div>
+
+          {/* ── The 2 Core Direct Assisted Companion Services ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+            
+            {/* Companion Service 1 */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden flex flex-col justify-between hover:border-indigo-300 transition-all group">
+              <div className="relative h-56 sm:h-64 overflow-hidden bg-slate-100">
+                <img
+                  src={shoppingAssistantImg}
+                  alt="Market and Heavy Bag Shopping Assistant"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider text-brand-purple border border-purple-100 shadow-sm flex items-center gap-1.5">
+                  <span>🛍️</span>
+                  <span>Elder &amp; Family Care</span>
                 </div>
+                <div className="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-amber-400 border border-slate-700 shadow-sm">
+                  Starting ₹149/hr
+                </div>
+              </div>
+
+              <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-amber-500 font-bold text-xs sm:text-sm flex items-center gap-0.5">
+                      ★ 4.96 (18k+ reviews)
+                    </span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-emerald-700 font-bold text-xs">100% Aadhaar Verified</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
+                    Market &amp; Heavy Bag Shopping Assistant
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                    A respectful, background-verified local companion to carry heavy vegetable or grocery bags, accompany elders gently, and assist with transport from crowded local bazaars.
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-600">
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200/60">Lifts up to 25kg+ bags</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200/60">Elder accompaniment</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200/60">Doorstep drop-in</span>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[11px] text-slate-400 font-bold uppercase block">Pricing</span>
+                    <span className="text-lg font-black text-slate-900">₹149 <span className="text-xs font-medium text-slate-500">/ hour</span></span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!isAuthenticated) navigate("/login");
+                      else navigate("/customer/services/shopping-bag-assistant");
+                    }}
+                    className="px-6 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold shadow-md shadow-indigo-600/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Book Assistant</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Companion Service 2 */}
+            <div className="bg-white rounded-3xl border border-slate-200 shadow-xl shadow-slate-200/60 overflow-hidden flex flex-col justify-between hover:border-indigo-300 transition-all group">
+              <div className="relative h-56 sm:h-64 overflow-hidden bg-slate-100">
+                <img
+                  src={cityGuideImg}
+                  alt="City Wholesale Market and Discovery Guide"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider text-emerald-700 border border-emerald-100 shadow-sm flex items-center gap-1.5">
+                  <span>🗺️</span>
+                  <span>New In City &amp; Wholesale</span>
+                </div>
+                <div className="absolute bottom-3 right-3 bg-slate-900/90 backdrop-blur-md px-3 py-1 rounded-full text-xs font-black text-amber-400 border border-slate-700 shadow-sm">
+                  Starting ₹199/hr
+                </div>
+              </div>
+
+              <div className="p-6 sm:p-7 flex-1 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <span className="text-amber-500 font-bold text-xs sm:text-sm flex items-center gap-0.5">
+                      ★ 4.94 (14k+ reviews)
+                    </span>
+                    <span className="text-slate-300">•</span>
+                    <span className="text-emerald-700 font-bold text-xs">Local Market Insider</span>
+                  </div>
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight leading-snug">
+                    City Wholesale Market &amp; Discovery Guide
+                  </h3>
+                  <p className="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">
+                    New to the city or planning bulk purchases? Hire an experienced local guide to explore wholesale textile, spice, or electronics markets and negotiate authentic prices.
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-2 text-[11px] font-semibold text-slate-600">
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200/60">Wholesale price bargaining</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200/60">Hidden market gems</span>
+                    <span className="px-2.5 py-1 rounded-lg bg-slate-100 border border-slate-200/60">Safe navigation</span>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[11px] text-slate-400 font-bold uppercase block">Pricing</span>
+                    <span className="text-lg font-black text-slate-900">₹199 <span className="text-xs font-medium text-slate-500">/ hour</span></span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!isAuthenticated) navigate("/login");
+                      else navigate("/customer/services/city-shopping-guide");
+                    }}
+                    className="px-6 py-2.5 rounded-2xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs sm:text-sm font-bold shadow-md shadow-emerald-700/20 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+                  >
+                    <span>Book Guide</span>
+                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* ── Additional Specialized Services Catalog (Tabs & Visual Grid) ── */}
+          <div className="bg-slate-50/90 rounded-3xl p-5 sm:p-8 border border-slate-200 shadow-sm">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-200">
+              <div>
+                <h3 className="text-lg sm:text-xl font-black text-slate-900 tracking-tight">
+                  Browse More Cooperative Household &amp; Urban Services
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+                  Select a category to view verified technicians and service providers
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate("/customer/workers")}
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1 shrink-0"
+              >
+                <span>View Full Worker Directory</span>
+                <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+              </button>
+            </div>
+
+            {/* Category Tabs */}
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none mb-6">
+              {EXTRA_SERVICE_TABS.map((tab) => (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-4 py-2.5 rounded-2xl text-xs font-black transition-all shrink-0 cursor-pointer ${
+                    activeTab === tab.id
+                      ? "bg-slate-900 text-white shadow-md shadow-slate-900/20 scale-105"
+                      : "bg-white hover:bg-slate-100 text-slate-700 border border-slate-200"
+                  }`}
+                >
+                  {tab.label}
+                </button>
               ))}
             </div>
 
-            <button
-              type="button"
-              onClick={() => navigate("/register/worker")}
-              className="inline-flex items-center gap-2 bg-brand-purple text-white font-bold text-base px-8 py-4 rounded-2xl hover:bg-brand-purple-dark transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-brand-purple/25 group"
-            >
-              Register as Worker
-              <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
-            </button>
-          </div>
+            {/* Services Visual Cards Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+              {currentTabObj.items.map((item) => {
+                const img = SERVICE_IMAGES[item.id] || getServiceImage(item.id, item.label);
+                const hasError = imgErrors[item.id];
 
-          {/* Right — Visual */}
-          <div className={`hidden md:block shrink-0 ${isRevealed ? "animate-fade-in-right" : "opacity-0"}`}>
-            <div className="relative">
-              {/* Main card */}
-              <div className="w-80 bg-white rounded-3xl p-8 shadow-2xl border border-outline-variant/50">
-                <div className="w-20 h-20 rounded-full bg-brand-purple/10 flex items-center justify-center mx-auto mb-6">
-                  <span className="material-symbols-outlined text-brand-purple text-[40px] fill">person_add</span>
-                </div>
-                <h3 className="text-center text-xl font-bold text-on-surface mb-2">Start Earning Today</h3>
-                <p className="text-center text-sm text-on-surface-variant mb-6">Join 10,000+ verified professionals</p>
-
-                <div className="space-y-3">
-                  {["Complete Registration", "Upload Documents", "Get Verified", "Start Working"].map((step, i) => (
-                    <div key={step} className="flex items-center gap-3">
-                      <span className="w-7 h-7 rounded-full bg-brand-purple text-white text-xs font-bold flex items-center justify-center shrink-0">
-                        {i + 1}
+                return (
+                  <div
+                    key={item.id}
+                    onClick={() => handleServiceClick(item)}
+                    className="group bg-white rounded-2xl p-3 border border-slate-200/90 hover:border-indigo-400 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center cursor-pointer relative overflow-hidden"
+                  >
+                    {item.badge && (
+                      <span className="absolute top-2 right-2 text-[9px] font-black px-2 py-0.5 rounded-full z-10 bg-indigo-600 text-white uppercase tracking-wider shadow-sm">
+                        {item.badge}
                       </span>
-                      <span className="text-sm text-on-surface">{step}</span>
+                    )}
+
+                    {/* Image / Logo Container */}
+                    <div className="w-full h-24 sm:h-28 rounded-xl overflow-hidden mb-2.5 bg-slate-100 border border-slate-200/80 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center relative shadow-inner">
+                      {img && !hasError ? (
+                        <img
+                          src={img}
+                          alt={item.label}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                          onError={() => setImgErrors((prev) => ({ ...prev, [item.id]: true }))}
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-600">
+                          <span className="material-symbols-outlined text-[32px]">{item.icon || "build"}</span>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
                     </div>
-                  ))}
-                </div>
-              </div>
 
-              {/* Floating badge */}
-              <div className="absolute -top-4 -right-4 bg-brand-success text-white rounded-2xl px-4 py-2 shadow-lg animate-float">
-                <div className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[18px] fill">verified</span>
-                  <span className="text-sm font-bold">Verified</span>
-                </div>
-              </div>
+                    <span className="text-xs sm:text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-colors line-clamp-2 leading-tight">
+                      {item.label}
+                    </span>
 
-              {/* Earnings badge */}
-              <div className="absolute -bottom-4 -left-4 bg-white rounded-2xl px-4 py-3 shadow-lg border border-outline-variant/50 animate-float" style={{ animationDelay: "1s" }}>
-                <div className="text-xs text-on-surface-variant font-semibold mb-1">This month</div>
-                <div className="text-lg font-black text-brand-success">₹32,450</div>
-              </div>
+                    <span className="text-[11px] text-indigo-600 font-bold mt-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Book Service <span className="material-symbols-outlined text-[13px]">arrow_forward</span>
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
+
+        {/* ═══════════════════════════════════════════════════════════════════
+            PART 2: WORKER REGISTRATION & FEDERATION MEMBERSHIP CTA
+        ═══════════════════════════════════════════════════════════════════ */}
+        <div className="pt-8 border-t border-slate-200/80">
+          <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
+            
+            {/* Left Content */}
+            <div className="flex-1">
+              <span className="inline-block px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-black uppercase tracking-widest mb-3">
+                For Skilled Workers &amp; Technicians
+              </span>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight mb-4">
+                Join India's Largest <br />
+                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">
+                  Labour Cooperative Network
+                </span>
+              </h2>
+              <p className="text-slate-600 text-sm sm:text-base max-w-xl mb-6 leading-relaxed">
+                Become an authorized SevaSetu worker. Earn dignified, transparent wages without private middlemen commission. Benefit from accident insurance, cooperative pension, and government skill training.
+              </p>
+
+              {/* Benefits Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+                {WORKER_BENEFITS.map((b) => (
+                  <div
+                    key={b.text}
+                    className="flex items-center gap-3 bg-white rounded-2xl px-4 py-3 border border-slate-200/80 shadow-sm hover:border-emerald-300 transition-colors"
+                  >
+                    <span className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                      <span className="material-symbols-outlined text-[18px]">{b.icon}</span>
+                    </span>
+                    <span className="text-xs sm:text-sm font-semibold text-slate-800">{b.text}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-wrap items-center gap-4">
+                <button
+                  type="button"
+                  onClick={() => navigate("/register/worker")}
+                  className="inline-flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm sm:text-base px-8 py-4 rounded-2xl transition-all duration-300 shadow-xl hover:shadow-2xl hover:shadow-slate-900/20 active:scale-95 group cursor-pointer"
+                >
+                  <span>Register as Cooperative Worker</span>
+                  <span className="material-symbols-outlined text-[20px] group-hover:translate-x-1 transition-transform">
+                    arrow_forward
+                  </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => navigate("/customer/workers")}
+                  className="inline-flex items-center gap-2 bg-white hover:bg-slate-100 text-slate-800 font-bold text-sm sm:text-base px-6 py-4 rounded-2xl border border-slate-200 transition-all cursor-pointer"
+                >
+                  <span>Browse Worker Profiles</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Right Visual Card */}
+            <div className="shrink-0 w-full max-w-sm">
+              <div className="relative">
+                {/* Main Card */}
+                <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 relative z-10">
+                  <div className="w-16 h-16 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-center mx-auto mb-4 text-emerald-700">
+                    <span className="material-symbols-outlined text-[36px]">engineering</span>
+                  </div>
+
+                  <h4 className="text-center text-lg font-black text-slate-900">Start Working Today</h4>
+                  <p className="text-center text-xs text-slate-500 mb-6">Join 15,000+ verified cooperative members</p>
+
+                  <div className="space-y-3 mb-6">
+                    {[
+                      { step: "Aadhaar / ID Verification", desc: "Digital KYC in 5 minutes" },
+                      { step: "Skill / Trade Selection", desc: "Select tractor, solar, salon, etc." },
+                      { step: "PACS & Society Approval", desc: "Certified by cooperative body" },
+                      { step: "Start Receiving Direct Bookings", desc: "Instant payout to your bank" },
+                    ].map((item, idx) => (
+                      <div key={item.step} className="flex items-start gap-3">
+                        <span className="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs font-black flex items-center justify-center shrink-0 mt-0.5">
+                          {idx + 1}
+                        </span>
+                        <div>
+                          <span className="text-xs font-bold text-slate-800 block leading-tight">{item.step}</span>
+                          <span className="text-[11px] text-slate-400">{item.desc}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Security Badge */}
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200/70 flex items-center gap-2 text-xs font-bold text-emerald-800">
+                    <span className="material-symbols-outlined text-[18px]">verified_user</span>
+                    <span>100% Commission-Free Earnings</span>
+                  </div>
+                </div>
+
+                {/* Floating Earning Badge */}
+                <div className="absolute -bottom-4 -left-4 bg-slate-900 text-white rounded-2xl px-4 py-2.5 shadow-xl border border-slate-800 z-20 flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500 text-white flex items-center justify-center font-black text-xs">
+                    ₹
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-slate-400 font-bold uppercase block">Average Monthly</span>
+                    <span className="text-sm font-black text-emerald-400">₹32,500 Direct</span>
+                  </div>
+                </div>
+
+                {/* Floating Rating Badge */}
+                <div className="absolute -top-3 -right-3 bg-amber-400 text-slate-950 rounded-2xl px-3 py-1.5 shadow-lg font-black text-xs z-20 flex items-center gap-1">
+                  <span>★</span>
+                  <span>4.94 Trust Score</span>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </section>
   );
