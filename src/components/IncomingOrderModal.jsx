@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSocket } from "../context/SocketContext";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import Avatar from "./Avatar";
 import api from "../services/api";
 
@@ -191,6 +192,7 @@ export default function IncomingOrderModal() {
   const navigate = useNavigate();
   const { socket } = useSocket();
   const { currentUser } = useAuth();
+  const { tr } = useLanguage();
   const [incomingOrder, setIncomingOrder] = useState(null);
   const [timeLeft, setTimeLeft] = useState(ACCEPT_TIMEOUT_SECS);
   const [phase, setPhase] = useState("idle"); // idle | ringing | accepted | rejected
@@ -556,7 +558,7 @@ export default function IncomingOrderModal() {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
               <span className="text-[11px] font-black uppercase tracking-widest text-amber-300">
-                {phase === "accepted" ? "BOOKING CONFIRMED" : phase === "rejected" ? "DECLINED" : "INCOMING CALL REQUEST"}
+                {phase === "accepted" ? tr("BOOKING CONFIRMED") : phase === "rejected" ? tr("DECLINED") : tr("INCOMING CALL REQUEST")}
               </span>
             </div>
             <span className="text-xs font-bold text-slate-300">#{incomingOrder.bookingNumber}</span>
@@ -564,10 +566,10 @@ export default function IncomingOrderModal() {
 
           <h2 className="text-xl font-black text-white leading-tight">
             {phase === "accepted"
-              ? "Job Accepted! Get Ready"
+              ? tr("Job Accepted! Get Ready")
               : phase === "rejected"
-              ? "Skipped Request"
-              : "New Customer Booking"}
+              ? tr("Skipped Request")
+              : tr("New Customer Booking")}
           </h2>
 
           {/* 30-Second Countdown Progress Bar */}
@@ -576,10 +578,10 @@ export default function IncomingOrderModal() {
               <div className="flex items-center justify-between text-xs font-bold">
                 <span className="text-slate-300 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[15px] animate-spin">timer</span>
-                  Response Timer
+                  {tr("Response Timer")}
                 </span>
                 <span className={urgent ? "text-amber-300 text-sm font-black animate-bounce" : "text-white font-extrabold"}>
-                  00:{timeLeft < 10 ? `0${timeLeft}` : timeLeft} sec
+                  00:{timeLeft < 10 ? `0${timeLeft}` : timeLeft} {tr("sec")}
                 </span>
               </div>
               <div className="w-full h-2.5 bg-white/20 rounded-full overflow-hidden p-0.5 border border-white/30">
@@ -607,14 +609,14 @@ export default function IncomingOrderModal() {
               </p>
             </div>
             <span className="bg-purple-100 text-purple-800 text-[10px] font-black px-2 py-0.5 rounded-full uppercase">
-              Customer
+              {tr("Customer")}
             </span>
           </div>
 
           {/* Services Items */}
           <div className="bg-slate-50 rounded-2xl p-3.5 space-y-2 border border-slate-200/80">
             <span className="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block">
-              Required Services ({incomingOrder.items?.length || 1})
+              {tr("Required Services")} ({incomingOrder.items?.length || 1})
             </span>
             {(incomingOrder.items || []).map((item, idx) => (
               <div key={idx} className="flex items-center justify-between gap-2 text-xs">
@@ -622,7 +624,7 @@ export default function IncomingOrderModal() {
                   <span className="material-symbols-outlined text-purple-700 text-[16px] shrink-0">
                     {item.icon || "handyman"}
                   </span>
-                  <span className="truncate">{item.name}</span>
+                  <span className="truncate">{tr(item.name)}</span>
                 </div>
                 <span className="font-extrabold text-slate-900 shrink-0">×{item.qty || 1}</span>
               </div>
@@ -632,9 +634,9 @@ export default function IncomingOrderModal() {
           {/* Address & Slot */}
           <div className="grid grid-cols-2 gap-2.5">
             <div className="p-3 rounded-2xl bg-indigo-50/60 border border-indigo-100 space-y-0.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 block">Address</span>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-indigo-700 block">{tr("Address")}</span>
               <p className="text-xs font-bold text-slate-900 truncate">
-                {incomingOrder.address?.line1 || incomingOrder.address?.address || "Customer Address"}
+                {incomingOrder.address?.line1 || incomingOrder.address?.address || tr("Customer Address")}
               </p>
               <p className="text-[10px] font-semibold text-slate-500 truncate">
                 {incomingOrder.address?.city || "Pune"}
@@ -642,16 +644,16 @@ export default function IncomingOrderModal() {
             </div>
 
             <div className="p-3 rounded-2xl bg-amber-50/60 border border-amber-100 space-y-0.5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-700 block">Time Slot</span>
-              <p className="text-xs font-bold text-slate-900">{incomingOrder.slot?.date || "Today"}</p>
-              <p className="text-[10px] font-semibold text-amber-700">{incomingOrder.slot?.time || "Immediate"}</p>
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-700 block">{tr("Time Slot")}</span>
+              <p className="text-xs font-bold text-slate-900">{incomingOrder.slot?.date || tr("Today")}</p>
+              <p className="text-[10px] font-semibold text-amber-700">{tr(incomingOrder.slot?.time || "Immediate")}</p>
             </div>
           </div>
 
           {/* Earnings Money Box */}
           <div className="flex items-center justify-between p-4 rounded-2xl bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-200/90 shadow-sm">
             <div>
-              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">Net Payout (Earnings)</span>
+              <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">{tr("Net Payout (Earnings)")}</span>
               <span className="text-2xl font-black text-emerald-700">₹{amount}</span>
             </div>
             <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shadow-md">
@@ -668,7 +670,7 @@ export default function IncomingOrderModal() {
                 className="flex-1 py-3.5 rounded-2xl border-2 border-slate-200 hover:border-red-400 bg-white hover:bg-red-50 text-red-600 text-xs font-black transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1"
               >
                 <span className="material-symbols-outlined text-[16px]">close</span>
-                Decline
+                {tr("Decline")}
               </button>
 
               <button
@@ -677,7 +679,7 @@ export default function IncomingOrderModal() {
                 className="flex-[2] py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:opacity-95 text-white text-sm font-black shadow-xl shadow-emerald-600/30 transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-1.5 animate-pulse"
               >
                 <span className="material-symbols-outlined text-[20px] text-amber-300 fill">bolt</span>
-                <span>ACCEPT BOOKING</span>
+                <span>{tr("ACCEPT BOOKING")}</span>
               </button>
             </div>
           )}
@@ -686,14 +688,14 @@ export default function IncomingOrderModal() {
             <div className="p-3 bg-emerald-100 border border-emerald-300 rounded-2xl text-center">
               <p className="text-xs font-black text-emerald-950 flex items-center justify-center gap-1">
                 <span className="material-symbols-outlined text-[18px]">verified</span>
-                Order Assigned! Opening active job tracking…
+                {tr("Order Assigned! Opening active job tracking…")}
               </p>
             </div>
           )}
 
           {phase === "rejected" && (
             <div className="p-3 bg-slate-100 border border-slate-300 rounded-2xl text-center">
-              <p className="text-xs font-bold text-slate-700">Request declined. Looking for other partners…</p>
+              <p className="text-xs font-bold text-slate-700">{tr("Request declined. Looking for other partners…")}</p>
             </div>
           )}
         </div>

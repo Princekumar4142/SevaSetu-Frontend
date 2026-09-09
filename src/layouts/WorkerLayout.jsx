@@ -1,5 +1,6 @@
 import DashboardLayout from "./DashboardLayout";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import Badge from "../components/Badge";
 
 const NAV_ITEMS = [
@@ -12,10 +13,11 @@ const NAV_ITEMS = [
 
 export default function WorkerLayout() {
   const { currentUser } = useAuth();
+  const { tr } = useLanguage();
   const badge = currentUser?.isVerified ? (
-    <Badge tone="verified" icon="verified">Verified Worker</Badge>
+    <Badge tone="verified" icon="verified">{tr("Verified Worker")}</Badge>
   ) : (
-    <Badge tone="pending" icon="hourglass_empty">Verification Pending</Badge>
+    <Badge tone="pending" icon="hourglass_empty">{tr("Verification Pending")}</Badge>
   );
 
   return (

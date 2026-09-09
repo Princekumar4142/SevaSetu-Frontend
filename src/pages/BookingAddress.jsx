@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setAddress, selectCartAddress } from "../store/slices/cartSlice";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import MapLocationPicker from "../components/MapLocationPicker";
 import Input from "../components/Input";
 import Button from "../components/Button";
@@ -11,6 +12,7 @@ export default function BookingAddress() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { currentUser } = useAuth();
+  const { tr } = useLanguage();
   const cartAddress = useSelector(selectCartAddress);
 
   const [addressLine, setAddressLine] = useState(
@@ -58,8 +60,8 @@ export default function BookingAddress() {
             <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
           <div>
-            <h1 className="text-sm sm:text-base font-bold text-white">Select Service Location</h1>
-            <p className="text-[11px] text-slate-400">Step 1 of 3: Delivery Address &amp; Map</p>
+            <h1 className="text-sm sm:text-base font-bold text-white">{tr("Select Service Location")}</h1>
+            <p className="text-[11px] text-slate-400">{tr("Step 1 of 3: Delivery Address & Map")}</p>
           </div>
         </div>
         <button
@@ -77,11 +79,11 @@ export default function BookingAddress() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-on-surface-variant flex items-center gap-1.5">
               <span className="material-symbols-outlined text-[16px] text-brand-purple">map</span>
-              Pinpoint on Map
+              {tr("Pinpoint on Map")}
             </span>
             <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              Verified Worker Available in Area
+              {tr("Verified Worker Available in Area")}
             </span>
           </div>
 
@@ -106,25 +108,25 @@ export default function BookingAddress() {
                 <span className="material-symbols-outlined text-[20px]">location_on</span>
               </div>
               <div>
-                <p className="text-xs font-bold text-on-surface-variant uppercase">Current Area</p>
+                <p className="text-xs font-bold text-on-surface-variant uppercase">{tr("Current Area")}</p>
                 <p className="text-sm font-bold text-on-surface leading-snug">{addressLine}</p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => {
-                const newAdd = prompt("Enter complete address or street:", addressLine);
+                const newAdd = prompt(tr("Enter complete address or street:"), addressLine);
                 if (newAdd) setAddressLine(newAdd);
               }}
               className="text-xs font-bold text-brand-purple hover:underline px-2.5 py-1 rounded-lg bg-brand-purple-light shrink-0"
             >
-              Change Area
+              {tr("Change Area")}
             </button>
           </div>
 
           {/* Address Type Selector */}
           <div>
-            <label className="block text-xs font-bold text-on-surface-variant mb-1.5">Address Type</label>
+            <label className="block text-xs font-bold text-on-surface-variant mb-1.5">{tr("Address Type")}</label>
             <div className="flex gap-2">
               {["Home", "Office", "Shop / Other"].map((type) => (
                 <button
@@ -137,7 +139,7 @@ export default function BookingAddress() {
                       : "border-outline-variant bg-white text-on-surface hover:border-brand-purple/40"
                   }`}
                 >
-                  {type}
+                  {tr(type)}
                 </button>
               ))}
             </div>
@@ -145,15 +147,15 @@ export default function BookingAddress() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <Input
-              label="House / Flat / Block No."
-              placeholder="e.g. Flat 402, Sunshine Heights"
+              label={tr("House / Flat / Block No.")}
+              placeholder={tr("e.g. Flat 402, Sunshine Heights")}
               value={flatNo}
               onChange={(e) => setFlatNo(e.target.value)}
               required
             />
             <Input
-              label="Nearby Landmark"
-              placeholder="e.g. Near Ayurvedic College"
+              label={tr("Nearby Landmark")}
+              placeholder={tr("e.g. Near Ayurvedic College")}
               value={landmark}
               onChange={(e) => setLandmark(e.target.value)}
             />
@@ -163,7 +165,7 @@ export default function BookingAddress() {
         {/* Action Button */}
         <div className="pt-2">
           <Button onClick={handleSave} variant="purple" className="w-full justify-center py-3.5 text-base shadow-lg shadow-brand-purple/25">
-            <span>Save Address &amp; Proceed to Slots</span>
+            <span>{tr("Save Address & Proceed to Slots")}</span>
             <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
           </Button>
         </div>

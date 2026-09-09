@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import workerService from "../services/workerService";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function PlatformAdminDashboard() {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
+  const { tr } = useLanguage();
   const [pendingCount, setPendingCount] = useState(null);
   const [verifiedCount, setVerifiedCount] = useState(null);
   const [rejectedCount, setRejectedCount] = useState(null);
@@ -35,17 +37,17 @@ export default function PlatformAdminDashboard() {
     <div className="flex flex-col gap-lg">
       {/* Welcome */}
       <div className="bg-gradient-to-r from-primary to-brand-purple rounded-2xl p-lg text-white">
-        <p className="font-status-badge text-status-badge text-white/70 uppercase tracking-widest mb-xs">Platform Admin</p>
-        <h1 className="font-headline-lg text-headline-lg mb-xs">Welcome back, {currentUser?.name?.split(" ")[0] || "Admin"} 👋</h1>
+        <p className="font-status-badge text-status-badge text-white/70 uppercase tracking-widest mb-xs">{tr("Platform Admin")}</p>
+        <h1 className="font-headline-lg text-headline-lg mb-xs">{tr("Welcome back")}, {currentUser?.name?.split(" ")[0] || tr("Admin")} 👋</h1>
         <p className="font-body-md text-body-md text-white/80">
-          Manage workers, users, and the platform from your control center.
+          {tr("Manage workers, users, and the platform from your control center.")}
         </p>
       </div>
 
       {/* Stats grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-md">
         <StatCard
-          label="Pending Review"
+          label={tr("Pending Review")}
           value={loadingStats ? "—" : pendingCount}
           icon="hourglass_top"
           color="text-brand-orange"
@@ -54,7 +56,7 @@ export default function PlatformAdminDashboard() {
           urgent={pendingCount > 0}
         />
         <StatCard
-          label="Verified Workers"
+          label={tr("Verified Workers")}
           value={loadingStats ? "—" : verifiedCount}
           icon="verified"
           color="text-green-600"
@@ -62,7 +64,7 @@ export default function PlatformAdminDashboard() {
           onClick={() => navigate("/admin/workers?status=VERIFIED")}
         />
         <StatCard
-          label="Rejected"
+          label={tr("Rejected")}
           value={loadingStats ? "—" : rejectedCount}
           icon="cancel"
           color="text-error"
@@ -70,7 +72,7 @@ export default function PlatformAdminDashboard() {
           onClick={() => navigate("/admin/workers?status=REJECTED")}
         />
         <StatCard
-          label="Total Workers"
+          label={tr("Total Workers")}
           value={loadingStats ? "—" : (pendingCount ?? 0) + (verifiedCount ?? 0) + (rejectedCount ?? 0)}
           icon="engineering"
           color="text-primary"
@@ -83,30 +85,33 @@ export default function PlatformAdminDashboard() {
       <div>
         <h2 className="font-headline-md text-headline-md text-on-surface mb-md flex items-center gap-sm">
           <span className="material-symbols-outlined text-brand-purple text-[22px]">bolt</span>
-          Quick Actions
+          {tr("Quick Actions")}
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-md">
           <ActionCard
             icon="fact_check"
-            title="Review Pending Workers"
-            desc={`${loadingStats ? "..." : pendingCount} workers awaiting approval`}
+            title={tr("Review Pending Workers")}
+            desc={`${loadingStats ? "..." : pendingCount} ${tr("workers awaiting approval")}`}
             accent="bg-orange-500"
             onClick={() => navigate("/admin/workers")}
             badge={pendingCount > 0 ? pendingCount : null}
+            goText={tr("Go")}
           />
           <ActionCard
             icon="group"
-            title="Manage Users"
-            desc="View and manage all platform users"
+            title={tr("Manage Users")}
+            desc={tr("View and manage all platform users")}
             accent="bg-primary"
             onClick={() => navigate("/admin/users")}
+            goText={tr("Go")}
           />
           <ActionCard
             icon="add_business"
-            title="Cooperatives"
-            desc="Onboard and manage cooperatives"
+            title={tr("Cooperatives")}
+            desc={tr("Onboard and manage cooperatives")}
             accent="bg-brand-purple"
             onClick={() => navigate("/admin/cooperatives")}
+            goText={tr("Go")}
           />
         </div>
       </div>
@@ -115,9 +120,9 @@ export default function PlatformAdminDashboard() {
       <div className="bg-surface-container-lowest border border-outline-variant rounded-2xl p-lg flex items-start gap-md">
         <span className="material-symbols-outlined text-primary mt-0.5">info</span>
         <div>
-          <h4 className="font-label-md text-label-md text-on-surface mb-xs">Phase 1 Active</h4>
+          <h4 className="font-label-md text-label-md text-on-surface mb-xs">{tr("Phase 1 Active")}</h4>
           <p className="font-body-md text-body-md text-on-surface-variant">
-            Full platform management — user administration, fraud detection, and analytics — are built in later phases. Your PLATFORM_ADMIN role and full-access permissions are already active.
+            {tr("Full platform management — user administration, fraud detection, and analytics — are built in later phases. Your PLATFORM_ADMIN role and full-access permissions are already active.")}
           </p>
         </div>
       </div>
@@ -144,7 +149,7 @@ function StatCard({ label, value, icon, color, bgColor, onClick, urgent }) {
   );
 }
 
-function ActionCard({ icon, title, desc, accent, onClick, badge }) {
+function ActionCard({ icon, title, desc, accent, onClick, badge, goText = "Go" }) {
   return (
     <button
       onClick={onClick}
@@ -167,7 +172,7 @@ function ActionCard({ icon, title, desc, accent, onClick, badge }) {
       <p className="font-status-badge text-status-badge text-on-surface-variant">{desc}</p>
 
       <div className="flex items-center gap-xs mt-md font-label-md text-label-md text-primary group-hover:gap-sm transition-all">
-        Go <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+        {goText} <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
       </div>
     </button>
   );

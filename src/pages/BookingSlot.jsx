@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { setSlot, setCategory, selectCartAddress, selectCartCategory } from "../store/slices/cartSlice";
+import { useLanguage } from "../context/LanguageContext";
 import Button from "../components/Button";
 import WorkerPreviewSection from "../components/booking/WorkerPreviewSection";
 
@@ -58,6 +59,7 @@ export default function BookingSlot() {
   const { categoryId } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { tr } = useLanguage();
   const address = useSelector(selectCartAddress);
   const cartCategory = useSelector(selectCartCategory);
   const activeCategory = categoryId || cartCategory || "custom-services";
@@ -150,8 +152,8 @@ export default function BookingSlot() {
             <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
           <div>
-            <h1 className="text-sm sm:text-base font-bold text-white">Select Date &amp; Time Slot</h1>
-            <p className="text-[11px] text-slate-400">Step 2 of 3: Preferred Arrival Time</p>
+            <h1 className="text-sm sm:text-base font-bold text-white">{tr("Select Date & Time Slot")}</h1>
+            <p className="text-[11px] text-slate-400">{tr("Step 2 of 3: Preferred Arrival Time")}</p>
           </div>
         </div>
         <button
@@ -172,9 +174,9 @@ export default function BookingSlot() {
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-brand-purple bg-brand-purple-light px-2 py-0.5 rounded">
-                {address?.label || "Home"}
+                {tr(address?.label || "Home")}
               </span>
-              <span className="text-xs text-on-surface-variant">Service Address</span>
+              <span className="text-xs text-on-surface-variant">{tr("Service Address")}</span>
             </div>
             <p className="text-sm font-bold text-on-surface truncate mt-0.5">
               {address?.line1 || "Kesnand Rd, Wagholi, Pune"}
@@ -185,7 +187,7 @@ export default function BookingSlot() {
             onClick={() => navigate("/customer/checkout/address")}
             className="text-xs font-bold text-brand-purple hover:underline px-2.5 py-1 rounded-lg bg-slate-50 border border-slate-200 shrink-0"
           >
-            Edit
+            {tr("Edit")}
           </button>
         </div>
 
@@ -211,14 +213,14 @@ export default function BookingSlot() {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-black text-slate-900">
-                  ⚡ 45-Min Tatkal Farm Emergency
+                  {tr("⚡ 45-Min Tatkal Farm Emergency")}
                 </h3>
                 <span className="text-[10px] font-black bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">
-                  Priority Dispatch
+                  {tr("Priority Dispatch")}
                 </span>
               </div>
               <p className="text-xs text-slate-600 mt-0.5">
-                Urgent tube-well motor burnout, electrical starter fault, or paravet emergency in your village.
+                {tr("Urgent tube-well motor burnout, electrical starter fault, or paravet emergency in your village.")}
               </p>
             </div>
           </div>
@@ -237,15 +239,15 @@ export default function BookingSlot() {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-black text-on-surface uppercase tracking-wide flex items-center gap-2">
               <span className="material-symbols-outlined text-[18px] text-brand-purple">calendar_month</span>
-              1. Select Date of Service
+              {tr("1. Select Date of Service")}
             </h2>
             {hasTodaySlots ? (
               <span className="text-xs text-emerald-600 font-semibold bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-full">
-                Same Day Available
+                {tr("Same Day Available")}
               </span>
             ) : (
               <span className="text-xs text-amber-700 font-semibold bg-amber-50 border border-amber-200 px-2.5 py-0.5 rounded-full">
-                Next Day Booking Open
+                {tr("Next Day Booking Open")}
               </span>
             )}
           </div>
@@ -267,7 +269,7 @@ export default function BookingSlot() {
                   }`}
                 >
                   <span className={`text-[11px] font-bold ${isSelected ? "text-amber-300" : "text-on-surface-variant"}`}>
-                    {d.label}
+                    {tr(d.label)}
                   </span>
                   <span className="text-lg font-black mt-0.5 leading-tight">{d.day}</span>
                   <span className={`text-[10px] font-medium ${isSelected ? "text-white/80" : "text-on-surface-variant/70"}`}>
@@ -275,7 +277,7 @@ export default function BookingSlot() {
                   </span>
                   {isTodayClosed && (
                     <span className="absolute -top-1.5 -right-1 text-[8px] bg-rose-500 text-white font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-tight shadow-sm">
-                      Closed
+                      {tr("Closed")}
                     </span>
                   )}
                 </button>
@@ -288,7 +290,7 @@ export default function BookingSlot() {
         <div className="bg-amber-500/10 border border-amber-300/40 rounded-2xl p-3.5 flex items-center gap-3">
           <span className="material-symbols-outlined text-amber-600 text-[20px] shrink-0">verified_user</span>
           <p className="text-xs text-amber-900 font-medium">
-            <strong>Free Cancellation:</strong> You can reschedule or cancel for free up to 2 hours before the booked slot.
+            <strong>{tr("Free Cancellation:")} </strong>{tr("You can reschedule or cancel for free up to 2 hours before the booked slot.")}
           </p>
         </div>
 
@@ -297,9 +299,9 @@ export default function BookingSlot() {
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-black text-on-surface uppercase tracking-wide flex items-center gap-2">
               <span className="material-symbols-outlined text-[18px] text-brand-purple">schedule</span>
-              2. Select Arrival Time Slot
+              {tr("2. Select Arrival Time Slot")}
             </h2>
-            <span className="text-xs text-on-surface-variant font-medium">45-min arrival window</span>
+            <span className="text-xs text-on-surface-variant font-medium">{tr("45-min arrival window")}</span>
           </div>
 
           {/* All Slots Closed Alert if user views Today after hours */}
@@ -307,16 +309,16 @@ export default function BookingSlot() {
             <div className="bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-rose-900">
               <span className="material-symbols-outlined text-rose-600 text-[22px] shrink-0">event_busy</span>
               <div className="flex-1">
-                <p className="font-black text-sm text-rose-800">Aaj ke sabhi time slots complete ho chuke hain</p>
+                <p className="font-black text-sm text-rose-800">{tr("Aaj ke sabhi time slots complete ho chuke hain")}</p>
                 <p className="text-rose-700 text-xs mt-1 leading-relaxed">
-                  Present time ke baad aaj koi slot uplabdh nahi hai. Agle din ke liye booking karne ke liye kripya <strong>"Tomorrow"</strong> select karein.
+                  {tr("Present time ke baad aaj koi slot uplabdh nahi hai. Agle din ke liye booking karne ke liye kripya \"Tomorrow\" select karein.")}
                 </p>
                 <button
                   type="button"
                   onClick={() => handleDateSelect(DATES[1])}
                   className="mt-2.5 inline-flex items-center gap-1.5 text-xs font-bold text-white bg-brand-purple hover:bg-brand-purple-dark px-3.5 py-1.5 rounded-lg shadow-sm transition-all"
                 >
-                  <span>Select Tomorrow</span>
+                  <span>{tr("Select Tomorrow")}</span>
                   <span className="material-symbols-outlined text-[15px]">arrow_forward</span>
                 </button>
               </div>
@@ -352,12 +354,12 @@ export default function BookingSlot() {
                       {/* Cross status indicator */}
                       <span className="inline-flex items-center gap-0.5 text-[10px] font-black text-rose-500 uppercase tracking-tight mt-0.5">
                         <span className="material-symbols-outlined text-[13px] leading-none">close</span>
-                        <span>Closed</span>
+                        <span>{tr("Closed")}</span>
                       </span>
                       {/* Corner Cross Badge */}
                       <span
                         className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-rose-500 text-white flex items-center justify-center text-[10px] font-black shadow-sm"
-                        title="This time slot has already passed"
+                        title={tr("This time slot has already passed")}
                       >
                         ✕
                       </span>
@@ -371,7 +373,7 @@ export default function BookingSlot() {
                             isSelected ? "bg-amber-400 text-slate-900" : "bg-brand-orange text-white"
                           }`}
                         >
-                          Popular
+                          {tr("Popular")}
                         </span>
                       )}
                     </>
@@ -387,13 +389,13 @@ export default function BookingSlot() {
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-outline-variant p-4 pb-safe shadow-2xl">
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
           <div>
-            <span className="text-[11px] text-on-surface-variant block font-medium">Selected Slot</span>
+            <span className="text-[11px] text-on-surface-variant block font-medium">{tr("Selected Slot")}</span>
             <span className="text-sm sm:text-base font-black text-on-surface">
               {canProceed
-                ? `${selectedDate.label}, ${selectedDate.day} · ${selectedTime}`
+                ? `${tr(selectedDate.label)}, ${selectedDate.day} · ${selectedTime}`
                 : selectedDate?.isToday && !hasTodaySlots
-                ? "Please choose Tomorrow or a future date"
-                : "Please choose an upcoming slot"}
+                ? tr("Please choose Tomorrow or a future date")
+                : tr("Please choose an upcoming slot")}
             </span>
           </div>
 
@@ -405,7 +407,7 @@ export default function BookingSlot() {
               !canProceed ? "opacity-50 cursor-not-allowed pointer-events-none" : ""
             }`}
           >
-            <span>Proceed to Payment</span>
+            <span>{tr("Proceed to Payment")}</span>
             <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
           </Button>
         </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
 const ACCEPT_TIMEOUT_SECS = 30;
 
@@ -14,6 +15,7 @@ const ACCEPT_TIMEOUT_SECS = 30;
  *   onClose  {function} — dismiss without explicit action
  */
 export default function IncomingOrderModal({ order, workerId, onAccept, onReject, onClose }) {
+  const { tr } = useLanguage();
   const [timeLeft, setTimeLeft] = useState(ACCEPT_TIMEOUT_SECS);
   const [accepted, setAccepted] = useState(false);
   const [rejected, setRejected] = useState(false);
@@ -102,14 +104,14 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
               </span>
               <div>
                 <p className="text-[10px] uppercase tracking-widest font-bold text-white/70">
-                  {accepted ? "Order Accepted" : rejected ? "Order Skipped" : "New Order Request"}
+                  {accepted ? tr("Order Accepted") : rejected ? tr("Order Skipped") : tr("New Order Request")}
                 </p>
                 <p className="text-lg font-black leading-tight">
                   {accepted
-                    ? "You're on the job!"
+                    ? tr("You're on the job!")
                     : rejected
-                    ? "Looking for next partner"
-                    : "Incoming Service Request"}
+                    ? tr("Looking for next partner")
+                    : tr("Incoming Service Request")}
                 </p>
               </div>
             </div>
@@ -130,7 +132,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
           {!accepted && !rejected && (
             <div className="space-y-1">
               <div className="flex items-center justify-between text-xs font-bold">
-                <span className="text-white/80">Auto-expires in</span>
+                <span className="text-white/80">{tr("Auto-expires in")}</span>
                 <span className={urgent ? "text-amber-300 text-base font-black" : "text-white"}>
                   {timeLeft}s
                 </span>
@@ -152,7 +154,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
           {/* Booking number */}
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
-              Booking No.
+              {tr("Booking No.")}
             </span>
             <span className="text-sm font-black text-on-surface tracking-widest">
               #{order.bookingNumber || "—"}
@@ -162,7 +164,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
           {/* Services */}
           <div className="bg-slate-50 rounded-2xl p-3.5 space-y-2">
             <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant mb-2">
-              Services Requested
+              {tr("Services Requested")}
             </p>
             {(order.items || []).map((item, idx) => (
               <div key={idx} className="flex items-center justify-between gap-2">
@@ -170,7 +172,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
                   <span className="material-symbols-outlined text-[16px] text-brand-purple shrink-0">
                     {item.icon || "handyman"}
                   </span>
-                  <span className="text-xs font-semibold text-on-surface truncate">{item.name}</span>
+                  <span className="text-xs font-semibold text-on-surface truncate">{tr(item.name)}</span>
                 </div>
                 <span className="text-xs font-bold text-on-surface shrink-0">
                   ×{item.qty || 1}
@@ -182,7 +184,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
           {/* Address & Slot */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-brand-purple-light rounded-xl p-3 space-y-0.5">
-              <p className="text-[9px] font-bold uppercase tracking-wider text-brand-purple">Location</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-brand-purple">{tr("Location")}</p>
               <p className="text-xs font-bold text-on-surface leading-snug line-clamp-2">
                 {order.address?.line1 || "—"}
               </p>
@@ -191,9 +193,9 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
               </p>
             </div>
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 space-y-0.5">
-              <p className="text-[9px] font-bold uppercase tracking-wider text-amber-700">Slot</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-amber-700">{tr("Slot")}</p>
               <p className="text-xs font-bold text-on-surface leading-snug">{order.slot?.date || "—"}</p>
-              <p className="text-[10px] text-amber-700 font-medium">{order.slot?.time || ""}</p>
+              <p className="text-[10px] text-amber-700 font-medium">{tr(order.slot?.time || "")}</p>
             </div>
           </div>
 
@@ -201,7 +203,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
           <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl px-4 py-3">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-700">
-                Total Earnings
+                {tr("Total Earnings")}
               </p>
               <p className="text-xl font-black text-emerald-700">₹{amount.toLocaleString()}</p>
             </div>
@@ -216,7 +218,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
                 onClick={() => handleReject("manual")}
                 className="flex-1 py-3.5 rounded-2xl border-2 border-outline-variant bg-white text-sm font-black text-slate-600 hover:border-red-400 hover:bg-red-50 hover:text-red-600 transition-all active:scale-95"
               >
-                ✕ Skip
+                ✕ {tr("Skip")}
               </button>
               <button
                 type="button"
@@ -224,7 +226,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
                 className="flex-2 flex-grow-[2] py-3.5 rounded-2xl bg-gradient-to-r from-primary to-brand-purple text-white text-sm font-black shadow-lg shadow-brand-purple/30 hover:shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
               >
                 <span className="material-symbols-outlined text-[18px]">check_circle</span>
-                Accept Order
+                {tr("Accept Order")}
               </button>
             </div>
           )}
@@ -233,7 +235,7 @@ export default function IncomingOrderModal({ order, workerId, onAccept, onReject
           {accepted && (
             <div className="text-center py-2">
               <p className="text-sm font-bold text-emerald-700">
-                Great! Head to the customer's location. Check your bookings for full details.
+                {tr("Great! Head to the customer's location. Check your bookings for full details.")}
               </p>
             </div>
           )}

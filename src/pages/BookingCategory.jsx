@@ -297,7 +297,8 @@ export default function BookingCategory() {
                           />
                           <div className="absolute top-2 left-2 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold px-2 py-0.5 rounded-md flex items-center gap-1">
                             <span className="material-symbols-outlined text-[13px] text-amber-400">store</span>
-                            Local Shop
+                            <span className="material-symbols-outlined text-[13px] fill">storefront</span>
+                            {tr("Local Shop")}
                           </div>
                         </div>
                       )}
@@ -324,7 +325,7 @@ export default function BookingCategory() {
                               {worker.rating || "4.9"}
                             </span>
                             <span>•</span>
-                            <span>{worker.experienceYears || 4}+ yrs exp</span>
+                            <span>{worker.experienceYears || 4}+ {tr("yrs exp")}</span>
                             <span>•</span>
                             <span className="text-slate-600 truncate">{worker.location?.address || worker.city || "Bettiah"}</span>
                           </p>
@@ -566,25 +567,25 @@ export default function BookingCategory() {
             </div>
             <div className="flex-1">
               <span className="text-[11px] font-black tracking-wider uppercase text-brand-purple bg-brand-purple-light px-2.5 py-0.5 rounded-md inline-block mb-1">
-                Custom Requirement
+                {tr("Custom Requirement")}
               </span>
               <h3 className="font-headline-sm text-lg font-bold text-on-surface">
-                Need something else in {category.name}?
+                {tr("Need something else in")} {tr(category.name)}?
               </h3>
               <p className="text-xs text-on-surface-variant mt-0.5">
-                Type your custom task or unique repair requirement below. Our verified cooperative professional will assist accordingly.
+                {tr("Type your custom task or unique repair requirement below. Our verified cooperative professional will assist accordingly.")}
               </p>
 
               <div className="mt-4 space-y-3">
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Service Name / Requirement <span className="text-rose-500">*</span>
+                    {tr("Service Name / Requirement")} <span className="text-rose-500">*</span>
                   </label>
                   <input
                     type="text"
                     value={customTitle}
                     onChange={(e) => setCustomTitle(e.target.value)}
-                    placeholder={`e.g. Custom repair, multiple fittings, specific requirement...`}
+                    placeholder={tr("e.g. Custom repair, multiple fittings, specific requirement...")}
                     className="w-full bg-white border border-outline-variant rounded-xl px-4 py-2.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 shadow-sm"
                   />
                 </div>
@@ -592,7 +593,7 @@ export default function BookingCategory() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block text-xs font-bold text-on-surface mb-1">
-                      Estimated Inspection / Base Fee (₹)
+                      {tr("Estimated Inspection / Base Fee (₹)")}
                     </label>
                     <input
                       type="number"
@@ -606,7 +607,7 @@ export default function BookingCategory() {
                   </div>
                   <div>
                     <label className="block text-xs font-bold text-on-surface mb-1">
-                      Estimated Time (Mins)
+                      {tr("Estimated Time (Mins)")}
                     </label>
                     <input
                       type="number"
@@ -622,13 +623,13 @@ export default function BookingCategory() {
 
                 <div>
                   <label className="block text-xs font-bold text-on-surface mb-1">
-                    Special Instructions / Notes (Optional)
+                    {tr("Special Instructions / Notes (Optional)")}
                   </label>
                   <textarea
                     rows={2}
                     value={customDesc}
                     onChange={(e) => setCustomDesc(e.target.value)}
-                    placeholder="Describe parts needed, room location, urgency, or specific tool requirement..."
+                    placeholder={tr("Describe parts needed, room location, urgency, or specific tool requirement...")}
                     className="w-full bg-white border border-outline-variant rounded-xl px-4 py-2 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-brand-purple focus:ring-2 focus:ring-brand-purple/20 shadow-sm resize-none"
                   />
                 </div>
@@ -638,10 +639,10 @@ export default function BookingCategory() {
                   <div className="flex items-center justify-between mb-1.5">
                     <label className="text-xs font-bold text-on-surface flex items-center gap-1.5">
                       <span className="material-symbols-outlined text-[16px] text-brand-purple">add_a_photo</span>
-                      Upload Photos of Problem / Area (Optional)
+                      {tr("Upload Photos of Problem / Area (Optional)")}
                     </label>
                     <span className="text-[11px] text-on-surface-variant font-medium">
-                      {customImages.length} / 3 photos
+                      {customImages.length} / 3 {tr("photos")}
                     </span>
                   </div>
 
@@ -667,7 +668,7 @@ export default function BookingCategory() {
                         <span className="material-symbols-outlined text-[24px] group-hover:scale-110 transition-transform">
                           photo_camera
                         </span>
-                        <span className="text-[10px] font-bold mt-1">Add Photo</span>
+                        <span className="text-[10px] font-bold mt-1">{tr("Add Photo")}</span>
                         <input
                           type="file"
                           accept="image/*"
@@ -679,7 +680,7 @@ export default function BookingCategory() {
                     )}
                   </div>
                   <p className="text-[11px] text-on-surface-variant mt-1.5">
-                    Clear photos of the leakage, switchboard, wall, or area help the cooperative worker bring exact parts &amp; tools.
+                    {tr("Clear photos of the leakage, switchboard, wall, or area help the cooperative worker bring exact parts & tools.")}
                   </p>
                 </div>
 
@@ -699,12 +700,12 @@ export default function BookingCategory() {
                   {uploadingImages ? (
                     <>
                       <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      Uploading Photos...
+                      {tr("Uploading Photos...")}
                     </>
                   ) : (
                     <>
                       <span className="material-symbols-outlined text-[18px]">add_task</span>
-                      Add Custom Service to Booking
+                      {tr("Add Custom Service to Booking")}
                     </>
                   )}
                 </button>
@@ -716,7 +717,7 @@ export default function BookingCategory() {
       </div>
 
       {/* Floating Cart Bar */}
-      <CartBar buttonLabel="Proceed to Booking" onProceed={() => navigate("/customer/checkout/address")} />
+      <CartBar buttonLabel={tr("Proceed to Booking")} onProceed={() => navigate("/customer/checkout/address")} />
     </div>
   );
 }

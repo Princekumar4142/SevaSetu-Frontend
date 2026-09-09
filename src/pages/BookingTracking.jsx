@@ -3,6 +3,7 @@ import { useParams, useLocation, useNavigate } from "react-router-dom";
 import LiveTrackingMap from "../components/LiveTrackingMap";
 import Button from "../components/Button";
 import { useSocket } from "../context/SocketContext";
+import { useLanguage } from "../context/LanguageContext";
 import bookingService from "../services/bookingService";
 import Avatar from "../components/Avatar";
 
@@ -11,6 +12,7 @@ export default function BookingTracking() {
   const location = useLocation();
   const navigate = useNavigate();
   const { socket } = useSocket();
+  const { tr } = useLanguage();
 
   // Check initial state from route navigation
   const navState = location.state || {};
@@ -221,48 +223,48 @@ export default function BookingTracking() {
     const workerName = workerInfo?.name || "Worker Partner";
 
     return [
-      { id: 1, title: "Order Confirmed", desc: "Booking received and broadcasted", completed: true, time: "Just now" },
+      { id: 1, title: tr("Order Confirmed"), desc: tr("Booking received and broadcasted"), completed: true, time: tr("Just now") },
       {
         id: 2,
-        title: "Partner Assigned",
-        desc: isPending ? "Broadcasting to nearby certified workers..." : `Accepted by ${workerName}`,
+        title: tr("Partner Assigned"),
+        desc: isPending ? tr("Broadcasting to nearby certified workers...") : `${tr("Accepted by")} ${workerName}`,
         completed: !isPending,
         current: isPending,
-        time: isPending ? "Broadcasting" : "Assigned",
+        time: isPending ? tr("Broadcasting") : tr("Assigned"),
       },
       {
         id: 3,
-        title: "On The Way",
-        desc: isPending ? "Waiting for worker to accept" : `${workerName} is traveling to your location`,
+        title: tr("On The Way"),
+        desc: isPending ? tr("Waiting for worker to accept") : `${workerName} ${tr("is traveling to your location")}`,
         completed: ["ARRIVED", "IN_PROGRESS", "COMPLETED"].includes(bookingStatus),
         current: ["ASSIGNED", "ACCEPTED", "ON_THE_WAY"].includes(bookingStatus) && !isPending,
-        time: isPending ? "Pending" : "Live GPS",
+        time: isPending ? tr("Pending") : tr("Live GPS"),
       },
       {
         id: 4,
-        title: "Arrived at Doorstep",
+        title: tr("Arrived at Doorstep"),
         desc:
           bookingStatus === "ARRIVED"
-            ? `${workerName} is outside your doorstep right now!`
-            : "Worker has arrived at your service location",
+            ? `${workerName} ${tr("is outside your doorstep right now!")}`
+            : tr("Worker has arrived at your service location"),
         completed: ["IN_PROGRESS", "COMPLETED"].includes(bookingStatus),
         current: bookingStatus === "ARRIVED",
-        time: bookingStatus === "ARRIVED" ? "Arrived" : "Doorstep",
+        time: bookingStatus === "ARRIVED" ? tr("Arrived") : tr("Doorstep"),
       },
       {
         id: 5,
-        title: "Service in Progress",
-        desc: "Work being completed professionally",
+        title: tr("Service in Progress"),
+        desc: tr("Work being completed professionally"),
         completed: bookingStatus === "COMPLETED",
         current: bookingStatus === "IN_PROGRESS",
-        time: bookingStatus === "IN_PROGRESS" ? "Active" : "Pending",
+        time: bookingStatus === "IN_PROGRESS" ? tr("Active") : tr("Pending"),
       },
       {
         id: 6,
-        title: "Completed & Feedback",
-        desc: "Review partner and complete payment",
+        title: tr("Completed & Feedback"),
+        desc: tr("Review partner and complete payment"),
         completed: bookingStatus === "COMPLETED",
-        time: bookingStatus === "COMPLETED" ? "Done" : "Pending",
+        time: bookingStatus === "COMPLETED" ? tr("Done") : tr("Pending"),
       },
     ];
   };
@@ -283,10 +285,10 @@ export default function BookingTracking() {
           </button>
           <div>
             <h1 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-              <span>Live Order Tracking</span>
+              <span>{tr("Live Order Tracking")}</span>
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             </h1>
-            <p className="text-[11px] text-slate-400">Booking #{bookingData.bookingNumber}</p>
+            <p className="text-[11px] text-slate-400">{tr("Booking")} #{bookingData.bookingNumber}</p>
           </div>
         </div>
         <button
@@ -303,7 +305,7 @@ export default function BookingTracking() {
         <div className="bg-gradient-to-r from-purple-800 via-brand-purple to-indigo-800 text-white text-center py-2.5 px-4 text-xs sm:text-sm font-semibold shadow-md flex items-center justify-between gap-3">
           <div className="flex items-center justify-center gap-2.5 flex-1 min-w-0">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-300 animate-ping shrink-0" />
-            <span className="truncate">Broadcasting booking to nearby workers{searchingDots} Please wait.</span>
+            <span className="truncate">{tr("Broadcasting booking to nearby workers")}{searchingDots} {tr("Please wait.")}</span>
           </div>
           <button
             type="button"
@@ -320,8 +322,8 @@ export default function BookingTracking() {
         <div className="fixed top-16 left-1/2 -translate-x-1/2 z-50 bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 animate-bounce max-w-[90vw]">
           <span className="material-symbols-outlined text-[24px] shrink-0">verified</span>
           <div>
-            <p className="text-sm font-bold">Worker Accepted Your Booking!</p>
-            <p className="text-xs text-emerald-100">{workerInfo?.name} accepted and is preparing for your job.</p>
+            <p className="text-sm font-bold">{tr("Worker Accepted Your Booking!")}</p>
+            <p className="text-xs text-emerald-100">{workerInfo?.name} {tr("accepted and is preparing for your job.")}</p>
           </div>
         </div>
       )}
@@ -332,11 +334,11 @@ export default function BookingTracking() {
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
               <span className="material-symbols-outlined text-brand-purple text-[18px]">near_me</span>
-              Live GPS Navigation
+              {tr("Live GPS Navigation")}
             </span>
             <span className="text-xs text-brand-purple font-bold flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-brand-purple animate-pulse" />
-              Tracking Active
+              {tr("Tracking Active")}
             </span>
           </div>
 
@@ -347,7 +349,7 @@ export default function BookingTracking() {
               address: bookingData.address,
             }}
             workerLocation={workerLiveGps || workerInfo?.location}
-            workerInfo={workerInfo || { name: "Searching Partner", phone: "", rating: 4.9 }}
+            workerInfo={workerInfo || { name: tr("Searching Partner"), phone: "", rating: 4.9 }}
             height="380px"
             status={bookingStatus}
           />
@@ -365,7 +367,7 @@ export default function BookingTracking() {
                     <h3 className="text-base sm:text-lg font-bold text-slate-900">{workerInfo.name}</h3>
                     <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full flex items-center gap-0.5">
                       <span className="material-symbols-outlined text-[12px] fill">verified</span>
-                      Accepted Job
+                      {tr("Accepted Job")}
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
@@ -378,7 +380,7 @@ export default function BookingTracking() {
                   </p>
                   {workerInfo.phone && (
                     <p className="text-xs font-semibold text-slate-700 mt-1">
-                      Mobile: {workerInfo.phone}
+                      {tr("Mobile")}: {workerInfo.phone}
                     </p>
                   )}
                 </div>
@@ -392,16 +394,16 @@ export default function BookingTracking() {
                     className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all cursor-pointer no-underline"
                   >
                     <span className="material-symbols-outlined text-[16px]">call</span>
-                    Call Worker
+                    {tr("Call Worker")}
                   </a>
                 )}
                 <button
                   type="button"
-                  onClick={() => alert("Connecting to SevaSetu Support representative...")}
+                  onClick={() => alert(tr("Connecting to SevaSetu Support representative..."))}
                   className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-200 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[16px]">support_agent</span>
-                  Support
+                  {tr("Support")}
                 </button>
               </div>
             </div>
@@ -413,9 +415,9 @@ export default function BookingTracking() {
               <span className="material-symbols-outlined text-[32px] animate-spin">sync</span>
             </div>
             <div>
-              <h3 className="text-base font-black text-slate-900">Broadcasting Request to Nearby Workers...</h3>
+              <h3 className="text-base font-black text-slate-900">{tr("Broadcasting Request to Nearby Workers...")}</h3>
               <p className="text-xs text-slate-500 max-w-md mx-auto mt-1 leading-relaxed">
-                Your order request is live. When a nearby verified worker accepts your booking, their photo, name, and phone contact will update here in real-time.
+                {tr("Your order request is live. When a nearby verified worker accepts your booking, their photo, name, and phone contact will update here in real-time.")}
               </p>
             </div>
           </div>
@@ -425,7 +427,7 @@ export default function BookingTracking() {
         <div className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-sm space-y-4">
           <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px] text-brand-purple">timeline</span>
-            Service Progress Timeline
+            {tr("Service Progress Timeline")}
           </h2>
 
           <div className="space-y-4 relative before:absolute before:left-3.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200">
@@ -478,14 +480,14 @@ export default function BookingTracking() {
             onClick={() => navigate("/customer/bookings")}
           >
             <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-            View in My Bookings
+            {tr("View in My Bookings")}
           </Button>
           <Button
             variant="outline"
             className="flex-1 justify-center py-3"
             onClick={() => navigate("/customer")}
           >
-            Return to Home
+            {tr("Return to Home")}
           </Button>
         </div>
       </div>

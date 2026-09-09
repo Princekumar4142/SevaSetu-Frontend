@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Avatar from "./Avatar";
 import Logo from "./Logo";
 import LanguageSelector from "./LanguageSelector";
+import { useLanguage } from "../context/LanguageContext";
 
 /**
  * Shared sidebar shell used by every dashboard layout. Pass `navItems` and
@@ -16,6 +17,7 @@ import LanguageSelector from "./LanguageSelector";
 export default function Sidebar({ title, subtitle, navItems, user, showEmergencySOS = false, mobileOpen = false, onMobileClose }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { tr } = useLanguage();
 
   const handleLogout = async () => {
     await dispatch(logout());
@@ -35,10 +37,10 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
           <div>
             <h1 className="font-headline-md text-headline-md font-extrabold text-primary leading-tight">SevaSetu</h1>
             {subtitle ? (
-              <p className="font-status-badge text-status-badge text-on-surface-variant font-semibold">{subtitle}</p>
+              <p className="font-status-badge text-status-badge text-on-surface-variant font-semibold">{tr(subtitle)}</p>
             ) : (
               title && title !== "SevaSetu" && (
-                <p className="font-status-badge text-status-badge text-on-surface-variant font-semibold">{title}</p>
+                <p className="font-status-badge text-status-badge text-on-surface-variant font-semibold">{tr(title)}</p>
               )
             )}
           </div>
@@ -78,7 +80,7 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
               }
             >
               <span className="material-symbols-outlined">{item.icon}</span>
-              {item.label}
+              {tr(item.label)}
             </NavLink>
           </li>
         ))}
@@ -88,7 +90,7 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
         {showEmergencySOS && (
           <button className="bg-error text-on-error py-sm rounded-lg font-bold flex items-center justify-center gap-sm shadow-md hover:bg-error/90 transition-colors">
             <span className="material-symbols-outlined">emergency</span>
-            Emergency SOS
+            {tr("Emergency SOS")}
           </button>
         )}
         <div className="px-1 py-0.5">
@@ -102,7 +104,7 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
           className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant rounded-lg font-label-md text-label-md transition-colors"
         >
           <span className="material-symbols-outlined">logout</span>
-          Logout
+          {tr("Logout")}
         </button>
       </div>
     </>

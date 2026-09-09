@@ -6,6 +6,7 @@ import Badge from "../components/Badge";
 import { LoadingState, EmptyState } from "../components/Feedback";
 import { useSocket } from "../context/SocketContext";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import LiveTrackingMap from "../components/LiveTrackingMap";
 
 const MOCK_WORKER_JOBS = [
@@ -56,6 +57,7 @@ export default function WorkerBookings() {
   const location = useLocation();
   const { socket } = useSocket();
   const { currentUser } = useAuth();
+  const { tr } = useLanguage();
   const [activeTab, setActiveTab] = useState(() => location.state?.tab || "ACTIVE");
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -307,9 +309,9 @@ export default function WorkerBookings() {
             <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
           <div>
-            <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Job Management</h1>
+            <h1 className="font-headline-md text-headline-md text-on-surface font-bold">{tr("Job Management")}</h1>
             <p className="font-body-md text-body-md text-on-surface-variant">
-              Accept incoming cooperative job requests and update progress in real-time
+              {tr("Accept incoming cooperative job requests and update progress in real-time")}
             </p>
           </div>
         </div>
@@ -319,7 +321,7 @@ export default function WorkerBookings() {
           {gpsBroadcasting ? (
             <div className="flex items-center gap-2 bg-purple-50 text-brand-purple border border-purple-200 px-3.5 py-1.5 rounded-full font-label-md font-bold text-xs shadow-xs">
               <span className="w-2.5 h-2.5 rounded-full bg-brand-purple animate-ping" />
-              <span>Live GPS Broadcasting</span>
+              <span>{tr("Live GPS Broadcasting")}</span>
               {liveGpsCoords && (
                 <span className="text-[10px] text-brand-purple/70 hidden md:inline">
                   ({liveGpsCoords.lat.toFixed(4)}, {liveGpsCoords.lng.toFixed(4)})
@@ -329,7 +331,7 @@ export default function WorkerBookings() {
           ) : (
             <div className="flex items-center gap-2 bg-emerald-50 text-emerald-800 px-3.5 py-1.5 rounded-full font-label-md font-bold text-xs">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Status: Available for Jobs</span>
+              <span>{tr("Status: Available for Jobs")}</span>
             </div>
           )}
         </div>
@@ -345,9 +347,9 @@ export default function WorkerBookings() {
       {/* Tabs */}
       <div className="flex border-b border-outline-variant gap-1 sm:gap-2 overflow-x-auto scrollbar-none">
         {[
-          { key: "NEW", label: "New Requests", count: newRequests.length },
-          { key: "ACTIVE", label: "In Progress", count: activeJobs.length },
-          { key: "COMPLETED", label: "Completed", count: completedJobs.length },
+          { key: "NEW", label: tr("New Requests"), count: newRequests.length },
+          { key: "ACTIVE", label: tr("In Progress"), count: activeJobs.length },
+          { key: "COMPLETED", label: tr("Completed"), count: completedJobs.length },
         ].map((tab) => (
           <button
             key={tab.key}
@@ -399,35 +401,35 @@ export default function WorkerBookings() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
                     <span className="text-xs font-black uppercase tracking-wider text-brand-purple">
-                      Active Mission Live Console
+                      {tr("Active Mission Live Console")}
                     </span>
                     <span className="text-slate-300">·</span>
                     <span className="text-xs font-bold text-slate-700">
-                      Booking #{activeJob.bookingNumber}
+                      {tr("Booking #")}{activeJob.bookingNumber}
                     </span>
                     <Badge variant="primary" className="font-bold">
-                      {activeJob.status}
+                      {tr(activeJob.status)}
                     </Badge>
                   </div>
                   <h2 className="text-xl sm:text-2xl font-black text-slate-900 mt-1.5">
                     {activeJob.status === "ASSIGNED" || activeJob.status === "ACCEPTED"
-                      ? "Job Accepted — Ready to Begin Ride"
+                      ? tr("Job Accepted — Ready to Begin Ride")
                       : activeJob.status === "ON_THE_WAY"
-                      ? "On The Way to Customer Destination"
+                      ? tr("On The Way to Customer Destination")
                       : activeJob.status === "ARRIVED"
-                      ? "Arrived Outside Customer Doorstep"
+                      ? tr("Arrived Outside Customer Doorstep")
                       : activeJob.status === "IN_PROGRESS"
-                      ? "Service Work in Progress"
-                      : "Mission Completed"}
+                      ? tr("Service Work in Progress")
+                      : tr("Mission Completed")}
                   </h2>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    Slot: {activeJob.slot?.date} at {activeJob.slot?.time} · {activeJob.distance || "2.1 km away"}
+                    {tr("Slot")}: {activeJob.slot?.date} at {activeJob.slot?.time} · {activeJob.distance || "2.1 km away"}
                   </p>
                 </div>
 
                 <div className="sm:text-right bg-emerald-50 sm:bg-emerald-50/50 border border-emerald-200/80 p-3 sm:px-4 sm:py-2.5 rounded-2xl">
                   <span className="text-[11px] text-emerald-800 font-bold uppercase tracking-wider block">
-                    Your Share Payout (85%)
+                    {tr("Your Share Payout (85%)")}
                   </span>
                   <span className="text-2xl sm:text-3xl font-black text-emerald-600">
                     ₹{activeJob.pricing?.payoutAmount || Math.round((activeJob.pricing?.totalAmount || 599) * 0.85)}
@@ -440,11 +442,11 @@ export default function WorkerBookings() {
                 <div className="flex items-center justify-between text-xs font-bold text-slate-700">
                   <span className="flex items-center gap-1.5 uppercase tracking-wider text-brand-purple">
                     <span className="material-symbols-outlined text-[18px]">near_me</span>
-                    Live GPS Navigation &amp; Road Route
+                    {tr("Live GPS Navigation & Road Route")}
                   </span>
                   <span className="text-emerald-700 font-bold flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
                     <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    Broadcasting Live to Customer
+                    {tr("Broadcasting Live to Customer")}
                   </span>
                 </div>
 
@@ -480,7 +482,7 @@ export default function WorkerBookings() {
                     className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-purple-700 via-brand-purple to-indigo-700 hover:from-purple-800 hover:to-indigo-800 text-white font-black text-base sm:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 cursor-pointer transform active:scale-98"
                   >
                     <span className="material-symbols-outlined text-[26px]">directions_bike</span>
-                    <span>Start Journey to Customer (On The Way)</span>
+                    <span>{tr("Start Ride / On The Way")}</span>
                   </button>
                 )}
 
@@ -498,7 +500,7 @@ export default function WorkerBookings() {
                       className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-base sm:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 cursor-pointer animate-pulse transform active:scale-98"
                     >
                       <span className="material-symbols-outlined text-[26px]">doorbell</span>
-                      <span>I Have Arrived at Doorstep</span>
+                      <span>{tr("Mark Arrived")}</span>
                     </button>
                     <div className="flex items-center justify-between text-xs text-slate-500 px-1">
                       <span>Live GPS coordinates continuously streaming</span>
@@ -527,7 +529,7 @@ export default function WorkerBookings() {
                     className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-brand-purple to-purple-700 hover:from-indigo-700 hover:to-purple-800 text-white font-black text-base sm:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3 cursor-pointer transform active:scale-98"
                   >
                     <span className="material-symbols-outlined text-[26px]">play_circle</span>
-                    <span>Start Service / Begin Work</span>
+                    <span>{tr("Start Work (Verify OTP)")}</span>
                   </button>
                 )}
 
@@ -548,7 +550,7 @@ export default function WorkerBookings() {
                   >
                     <span className="material-symbols-outlined text-[26px]">task_alt</span>
                     <span>
-                      Complete Service &amp; Collect Payment (₹
+                      {tr("Complete Service & Collect Payment")} (₹
                       {activeJob.pricing?.payoutAmount ||
                         Math.round((activeJob.pricing?.totalAmount || 599) * 0.85)}
                       )
@@ -559,7 +561,7 @@ export default function WorkerBookings() {
                 {activeJob.status === "COMPLETED" && (
                   <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-center text-emerald-800 font-bold flex items-center justify-center gap-2">
                     <span className="material-symbols-outlined text-[24px] text-emerald-600 fill">verified</span>
-                    <span>Service Finished &amp; Payout Credited! Ready for next booking.</span>
+                    <span>{tr("Service Finished & Payout Credited! Ready for next booking.")}</span>
                   </div>
                 )}
               </div>
@@ -568,33 +570,33 @@ export default function WorkerBookings() {
               <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5">
                 <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4 flex items-center gap-1.5">
                   <span className="material-symbols-outlined text-brand-purple text-[18px]">timeline</span>
-                  Live Service Progress Timeline (Synced with Customer)
+                  {tr("Live Service Progress Timeline (Synced with Customer)")}
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
                   {[
-                    { label: "Order Confirmed", statusKey: "PENDING", isPast: true },
+                    { label: tr("Order Confirmed"), statusKey: "PENDING", isPast: true },
                     {
-                      label: "Partner Assigned",
+                      label: tr("Partner Assigned"),
                       statusKey: "ASSIGNED",
                       isPast: ["ASSIGNED", "ACCEPTED", "ON_THE_WAY", "ARRIVED", "IN_PROGRESS", "COMPLETED"].includes(activeJob.status),
                     },
                     {
-                      label: "On The Way",
+                      label: tr("On The Way"),
                       statusKey: "ON_THE_WAY",
                       isPast: ["ON_THE_WAY", "ARRIVED", "IN_PROGRESS", "COMPLETED"].includes(activeJob.status),
                     },
                     {
-                      label: "Doorstep",
+                      label: tr("Doorstep"),
                       statusKey: "ARRIVED",
                       isPast: ["ARRIVED", "IN_PROGRESS", "COMPLETED"].includes(activeJob.status),
                     },
                     {
-                      label: "In Progress",
+                      label: tr("In Progress"),
                       statusKey: "IN_PROGRESS",
                       isPast: ["IN_PROGRESS", "COMPLETED"].includes(activeJob.status),
                     },
                     {
-                      label: "Completed",
+                      label: tr("Completed"),
                       statusKey: "COMPLETED",
                       isPast: activeJob.status === "COMPLETED",
                     },
@@ -630,7 +632,7 @@ export default function WorkerBookings() {
                 <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-4 sm:p-5 flex flex-col justify-between gap-4">
                   <div>
                     <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block mb-1">
-                      Customer &amp; Service Destination
+                      {tr("Customer & Service Destination")}
                     </span>
                     <h4 className="text-base font-bold text-slate-900 flex items-center gap-2">
                       <span>{activeJob.customer?.name || "Customer Partner"}</span>
@@ -653,7 +655,7 @@ export default function WorkerBookings() {
                       className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition-colors cursor-pointer"
                     >
                       <span className="material-symbols-outlined text-[16px]">call</span>
-                      <span>Call ({activeJob.customer?.phone || "Customer"})</span>
+                      <span>{tr("Call")} ({activeJob.customer?.phone || "Customer"})</span>
                     </a>
                     <a
                       href={`https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(

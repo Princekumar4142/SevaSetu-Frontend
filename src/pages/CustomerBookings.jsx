@@ -156,15 +156,15 @@ export default function CustomerBookings() {
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </button>
             <div>
-              <h1 className="font-headline-sm text-headline-sm text-on-surface font-bold">My Bookings</h1>
+              <h1 className="font-headline-sm text-headline-sm text-on-surface font-bold">{tr("My Bookings")}</h1>
               <p className="font-body-md text-body-md text-on-surface-variant">
-                Track live service orders and view booking receipts
+                {tr("Track live service orders and view booking receipts")}
               </p>
             </div>
           </div>
           <Button variant="purple" onClick={() => navigate("/customer/services")} className="hidden sm:inline-flex">
             <span className="material-symbols-outlined text-[18px]">add</span>
-            Book New Service
+            {tr("Book New Service")}
           </Button>
         </div>
 
@@ -190,9 +190,9 @@ export default function CustomerBookings() {
         {/* Tab Filters */}
         <div className="flex border-b border-outline-variant gap-1 sm:gap-2 mb-6 overflow-x-auto scrollbar-none">
           {[
-            { key: "ACTIVE", label: "Active & Upcoming", count: activeBookings.length },
-            { key: "PAST", label: "Completed", count: pastBookings.length },
-            { key: "CANCELLED", label: "Cancelled", count: cancelledBookings.length },
+            { key: "ACTIVE", label: tr("Active & Upcoming"), count: activeBookings.length },
+            { key: "PAST", label: tr("Completed"), count: pastBookings.length },
+            { key: "CANCELLED", label: tr("Cancelled"), count: cancelledBookings.length },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -222,14 +222,14 @@ export default function CustomerBookings() {
 
         {/* Content */}
         {loading ? (
-          <LoadingState message="Loading your bookings..." />
+          <LoadingState message={tr("Loading your bookings...")} />
         ) : displayedList.length === 0 ? (
           <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant p-8 my-6">
             <EmptyState
               icon="receipt_long"
-              title={`No ${activeTab.toLowerCase()} bookings`}
-              description="Browse our catalog to schedule services with cooperative-verified professionals."
-              actionLabel="Explore Services"
+              title={tr("No bookings found")}
+              description={tr("Browse our catalog to schedule services with cooperative-verified professionals.")}
+              actionLabel={tr("Explore Services")}
               onAction={() => navigate("/customer/services")}
             />
           </div>
@@ -253,7 +253,7 @@ export default function CustomerBookings() {
                           <span className="font-label-md text-label-md text-on-surface font-bold">
                             #{booking.bookingNumber}
                           </span>
-                          <Badge variant={statusCfg.variant}>{statusCfg.label}</Badge>
+                          <Badge variant={statusCfg.variant}>{tr(statusCfg.label)}</Badge>
                         </div>
                         <p className="font-status-badge text-status-badge text-on-surface-variant flex items-center gap-1 mt-0.5">
                           <span className="material-symbols-outlined text-[14px]">calendar_today</span>
@@ -275,14 +275,14 @@ export default function CustomerBookings() {
                   {/* Items List */}
                   <div className="py-4">
                     <h4 className="font-status-badge text-status-badge text-on-surface-variant uppercase font-bold tracking-wider mb-2">
-                      Services Booked
+                      {tr("Services Booked")}
                     </h4>
                     <div className="flex flex-col gap-2">
                       {booking.items.map((item, idx) => (
                         <div key={idx} className="flex items-center justify-between text-body-md text-on-surface">
                           <div className="flex items-center gap-2">
                             <span className="w-1.5 h-1.5 rounded-full bg-brand-purple" />
-                            <span className="font-medium">{item.name}</span>
+                            <span className="font-medium">{tr(item.name)}</span>
                             <span className="text-on-surface-variant text-status-badge font-status-badge">
                               × {item.qty || 1}
                             </span>
@@ -306,7 +306,7 @@ export default function CustomerBookings() {
                             <span className="material-symbols-outlined text-brand-success text-[16px] fill">verified</span>
                           </p>
                           <p className="font-status-badge text-status-badge text-on-surface-variant">
-                            {booking.worker.cooperative?.name || "Verified Cooperative Partner"} · ⭐ {booking.worker.rating || "4.9"}
+                            {booking.worker.cooperative?.name || tr("Verified Cooperative Partner")} · ⭐ {booking.worker.rating || "4.9"}
                           </p>
                         </div>
                       </div>
@@ -314,7 +314,7 @@ export default function CustomerBookings() {
                         <a
                           href={`tel:${booking.worker.user?.phone || "+919800000000"}`}
                           className="w-9 h-9 rounded-full bg-emerald-50 text-brand-success flex items-center justify-center hover:bg-emerald-100 transition-colors"
-                          title="Call Professional"
+                          title={tr("Call Professional")}
                         >
                           <span className="material-symbols-outlined text-[18px]">call</span>
                         </a>
@@ -326,8 +326,8 @@ export default function CustomerBookings() {
                   {booking.status !== "CANCELLED" && booking.status !== "COMPLETED" && (
                     <div className="mb-4 bg-brand-purple-light/40 rounded-xl p-3.5">
                       <div className="flex items-center justify-between text-status-badge font-status-badge text-brand-purple font-bold mb-2">
-                        <span>Live Status: {statusCfg.label}</span>
-                        <span>Step {statusCfg.step} of 5</span>
+                        <span>{tr("Live Status:")} {tr(statusCfg.label)}</span>
+                        <span>{tr("Step")} {statusCfg.step} {tr("of")} 5</span>
                       </div>
                       <div className="w-full bg-outline-variant/50 h-2 rounded-full overflow-hidden">
                         <div
@@ -369,7 +369,7 @@ export default function CustomerBookings() {
                           className="flex items-center gap-1 shadow-sm flex-1 sm:flex-initial justify-center"
                         >
                           <span className="material-symbols-outlined text-[16px]">near_me</span>
-                          Track on Map
+                          {tr("Track on Map")}
                         </Button>
                       )}
                       <Button
@@ -378,7 +378,7 @@ export default function CustomerBookings() {
                         onClick={() => setSelectedBooking(booking)}
                         className="flex-1 sm:flex-initial justify-center"
                       >
-                        Details
+                        {tr("Details")}
                       </Button>
                     </div>
                   </div>
@@ -395,10 +395,10 @@ export default function CustomerBookings() {
               <div className="flex items-center justify-between pb-4 border-b border-outline-variant">
                 <div>
                   <h3 className="font-headline-sm text-headline-sm text-on-surface font-bold">
-                    Booking #{selectedBooking.bookingNumber}
+                    {tr("Booking")} #{selectedBooking.bookingNumber}
                   </h3>
                   <p className="font-status-badge text-status-badge text-on-surface-variant">
-                    Placed on {selectedBooking.slot?.date}
+                    {tr("Placed on")} {selectedBooking.slot?.date}
                   </p>
                 </div>
                 <button
@@ -412,15 +412,15 @@ export default function CustomerBookings() {
 
               {/* Timeline History */}
               <div className="py-4 border-b border-outline-variant">
-                <h4 className="font-label-md text-label-md text-on-surface font-bold mb-3">Status Timeline</h4>
+                <h4 className="font-label-md text-label-md text-on-surface font-bold mb-3">{tr("Status Timeline")}</h4>
                 <div className="flex flex-col gap-3">
                   {selectedBooking.statusHistory?.map((h, i) => (
                     <div key={i} className="flex items-start gap-3">
                       <span className="w-2.5 h-2.5 rounded-full bg-brand-purple mt-1.5 shrink-0" />
                       <div>
-                        <p className="font-body-md text-body-md text-on-surface font-semibold">{h.status}</p>
+                        <p className="font-body-md text-body-md text-on-surface font-semibold">{tr(h.status)}</p>
                         <p className="font-status-badge text-status-badge text-on-surface-variant">
-                          {h.note} · {h.timestamp ? new Date(h.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Just now"}
+                          {tr(h.note)} · {h.timestamp ? new Date(h.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : tr("Just now")}
                         </p>
                       </div>
                     </div>
@@ -430,24 +430,24 @@ export default function CustomerBookings() {
 
               {/* Pricing breakdown */}
               <div className="py-4 border-b border-outline-variant">
-                <h4 className="font-label-md text-label-md text-on-surface font-bold mb-3">Payment Summary</h4>
+                <h4 className="font-label-md text-label-md text-on-surface font-bold mb-3">{tr("Payment Summary")}</h4>
                 <div className="flex justify-between text-body-md text-on-surface-variant py-1">
-                  <span>Subtotal</span>
+                  <span>{tr("Subtotal")}</span>
                   <span>₹{selectedBooking.pricing?.subtotal}</span>
                 </div>
                 <div className="flex justify-between text-body-md text-brand-success py-1">
-                  <span>Cooperative Discount</span>
+                  <span>{tr("Cooperative Discount")}</span>
                   <span>− ₹{selectedBooking.pricing?.discount || 0}</span>
                 </div>
                 <div className="flex justify-between text-label-md font-bold text-on-surface pt-2 border-t border-outline-variant">
-                  <span>Total Paid</span>
+                  <span>{tr("Total Paid")}</span>
                   <span>₹{selectedBooking.pricing?.totalAmount}</span>
                 </div>
               </div>
 
               <div className="pt-4 flex justify-end">
                 <Button variant="purple" onClick={() => setSelectedBooking(null)}>
-                  Close
+                  {tr("Close")}
                 </Button>
               </div>
             </div>

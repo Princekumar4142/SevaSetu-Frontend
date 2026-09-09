@@ -501,14 +501,75 @@ export default function LandingHero() {
                 </span>
               </div>
 
-              {/* Complete Workflow Infographic Image - Unblocked so all 4 steps are clearly visible */}
-              <div className="rounded-xl overflow-hidden border border-slate-200/80 bg-slate-50 shadow-inner group/img">
-                <img
-                  src={workflowImg}
-                  alt="SevaSetu Rural Cooperative 4-Step Workflow: 1. Book Farm Service, 2. Verified Co-op Arrival, 3. 5-Star Field Service, 4. Direct Worker Earnings"
-                  className="w-full h-auto object-cover transition-transform duration-500 group-hover/img:scale-[1.02]"
-                  loading="lazy"
-                />
+              {/* Dynamic Multilingual Workflow Showcase Card — 100% Translated in all Languages */}
+              <div className="rounded-2xl border border-emerald-100 bg-gradient-to-b from-amber-50/40 via-white to-emerald-50/40 p-3 sm:p-4 shadow-sm space-y-3">
+                {/* Infographic Main Title Banner */}
+                <div className="text-center pb-2 border-b border-slate-100">
+                  <h4 className="text-xs sm:text-sm font-black text-amber-900 tracking-tight leading-snug">
+                    <span className="text-brand-purple">SevaSetu: </span>
+                    {tr("Connecting Rural Communities, Empowering Cooperative Families")}
+                  </h4>
+                </div>
+
+                {/* 4 Illustrated Step Storyboard Panels */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {/* Step 1: Farmer Booking */}
+                  <div className="p-3 rounded-xl bg-white border border-emerald-200/80 shadow-xs hover:border-emerald-400 transition-all flex flex-col justify-between gap-2">
+                    <div className="flex items-center justify-between">
+                      <span className="w-6 h-6 rounded-full bg-emerald-600 text-white font-black text-xs flex items-center justify-center shadow-xs">1</span>
+                      <span className="text-xl">📱🌾</span>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-700 leading-snug">
+                      <strong className="text-slate-900 font-bold block mb-0.5">{tr("Book Farm Service")}</strong>
+                      {tr("Indian rural farmer booking agricultural and solar pump services on smartphone app.")}
+                    </p>
+                  </div>
+
+                  {/* Step 2: Verified Technician Arrival */}
+                  <div className="p-3 rounded-xl bg-white border border-indigo-200/80 shadow-xs hover:border-indigo-400 transition-all flex flex-col justify-between gap-2">
+                    <div className="flex items-center justify-between">
+                      <span className="w-6 h-6 rounded-full bg-indigo-600 text-white font-black text-xs flex items-center justify-center shadow-xs">2</span>
+                      <span className="text-xl">🛵🔧</span>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-700 leading-snug">
+                      <strong className="text-slate-900 font-bold block mb-0.5">{tr("Verified Arrival")}</strong>
+                      {tr("Verified friendly cooperative technician arriving at farm on motorcycle with tool kit.")}
+                    </p>
+                  </div>
+
+                  {/* Step 3: Quality Field Repair */}
+                  <div className="p-3 rounded-xl bg-white border border-amber-200/80 shadow-xs hover:border-amber-400 transition-all flex flex-col justify-between gap-2">
+                    <div className="flex items-center justify-between">
+                      <span className="w-6 h-6 rounded-full bg-amber-500 text-white font-black text-xs flex items-center justify-center shadow-xs">3</span>
+                      <span className="text-xs font-black text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <span>★</span> 5.0 Rating
+                      </span>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-700 leading-snug">
+                      <strong className="text-slate-900 font-bold block mb-0.5">{tr("5-Star Field Service")}</strong>
+                      {tr("Quality agricultural repair service: technician servicing solar water pump and checking tractor with 5 star rating badge.")}
+                    </p>
+                  </div>
+
+                  {/* Step 4: Fair Wage & Instant Payout */}
+                  <div className="p-3 rounded-xl bg-white border border-emerald-300 shadow-xs hover:border-emerald-500 transition-all flex flex-col justify-between gap-2 bg-gradient-to-br from-white to-emerald-50/60">
+                    <div className="flex items-center justify-between">
+                      <span className="w-6 h-6 rounded-full bg-emerald-700 text-white font-black text-xs flex items-center justify-center shadow-xs">4</span>
+                      <div className="text-right">
+                        <span className="text-xs font-black text-emerald-800 bg-emerald-100/90 px-2 py-0.5 rounded-lg border border-emerald-300 block">
+                          ₹ 2,450.00
+                        </span>
+                        <span className="text-[9px] font-extrabold text-emerald-700 uppercase">
+                          {tr("Received - Instant Earnings")}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-[11px] font-semibold text-slate-700 leading-snug">
+                      <strong className="text-slate-900 font-bold block mb-0.5">{tr("Direct Earnings")}</strong>
+                      {tr("Instant digital earnings on mobile phone showing fair wage received with happy cooperative worker family.")}
+                    </p>
+                  </div>
+                </div>
               </div>
 
               {/* 4 Connected Step Sequence with Arrow Indicators (1 → 2 → 3 → 4) */}

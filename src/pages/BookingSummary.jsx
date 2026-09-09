@@ -17,6 +17,7 @@ import Button from "../components/Button";
 import { EmptyState } from "../components/Feedback";
 import bookingService from "../services/bookingService";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 
 const FLAT_DISCOUNT = 0.1; // illustrative — a real coupon/discount engine is a later-phase concern
 
@@ -24,6 +25,7 @@ export default function BookingSummary() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
+  const { tr } = useLanguage();
   const items = useSelector(selectCartItems);
   const subtotal = useSelector(selectCartSubtotal);
   const address = useSelector(selectCartAddress);
@@ -98,11 +100,11 @@ export default function BookingSummary() {
         </div>
         <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-purple-light/70 text-brand-purple rounded-full text-status-badge font-bold font-status-badge">
           <span className="material-symbols-outlined text-[16px]">receipt</span>
-          Booking #{createdBooking.bookingNumber || "BK-829104"}
+          {tr("Booking")} #{createdBooking.bookingNumber || "BK-829104"}
         </div>
-        <h1 className="font-headline-md text-headline-md text-on-surface font-bold">Booking Confirmed!</h1>
+        <h1 className="font-headline-md text-headline-md text-on-surface font-bold">{tr("Booking Confirmed!")}</h1>
         <p className="font-body-md text-body-md text-on-surface-variant max-w-sm">
-          A verified cooperative professional will arrive at your selected slot. You can track real-time status and worker updates.
+          {tr("A verified cooperative professional will arrive at your selected slot. You can track real-time status and worker updates.")}
         </p>
 
         <div className="flex flex-col gap-sm w-full mt-4">
@@ -122,7 +124,7 @@ export default function BookingSummary() {
             }
           >
             <span className="material-symbols-outlined text-[18px]">near_me</span>
-            Track Worker Live on Map
+            {tr("Track Worker Live on Map")}
           </Button>
           <Button
             variant="outline"
@@ -130,14 +132,14 @@ export default function BookingSummary() {
             onClick={() => navigate("/customer/bookings")}
           >
             <span className="material-symbols-outlined text-[18px]">receipt_long</span>
-            View in My Bookings
+            {tr("View in My Bookings")}
           </Button>
           <button
             type="button"
             className="text-xs font-semibold text-on-surface-variant hover:text-brand-purple py-1 mt-1"
             onClick={() => navigate("/customer")}
           >
-            Return to Home
+            {tr("Return to Home")}
           </button>
         </div>
       </div>
@@ -147,7 +149,7 @@ export default function BookingSummary() {
   if (items.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center px-margin-mobile">
-        <EmptyState icon="shopping_cart" title="Your cart is empty" description="Browse services from the home screen to build your order." />
+        <EmptyState icon="shopping_cart" title={tr("Your cart is empty")} description={tr("Browse services from the home screen to build your order.")} />
       </div>
     );
   }
@@ -159,7 +161,7 @@ export default function BookingSummary() {
           <button type="button" onClick={() => navigate(-1)} className="text-on-surface">
             <span className="material-symbols-outlined">arrow_back</span>
           </button>
-          <h1 className="font-label-md text-label-md text-on-surface font-bold">Summary</h1>
+          <h1 className="font-label-md text-label-md text-on-surface font-bold">{tr("Summary")}</h1>
         </div>
 
         <div className="px-margin-mobile flex flex-col gap-md">
@@ -168,14 +170,14 @@ export default function BookingSummary() {
               <span className="material-symbols-outlined text-[14px] fill">bolt</span>
             </span>
             <div className="flex-1">
-              <p className="font-label-md text-label-md text-on-surface font-bold">Save 15% on every service</p>
-              <p className="font-status-badge text-status-badge text-brand-purple">Select your plan</p>
+              <p className="font-label-md text-label-md text-on-surface font-bold">{tr("Save 15% on every service")}</p>
+              <p className="font-status-badge text-status-badge text-brand-purple">{tr("Select your plan")}</p>
             </div>
             <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
           </button>
 
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
-            <h2 className="font-label-md text-label-md text-on-surface font-bold mb-md">Your orders</h2>
+            <h2 className="font-label-md text-label-md text-on-surface font-bold mb-md">{tr("Your orders")}</h2>
             <div className="flex flex-col divide-y divide-outline-variant">
               {items.map((item) => (
                 <div key={item.id} className="py-sm">
@@ -184,9 +186,9 @@ export default function BookingSummary() {
                       <span className="material-symbols-outlined text-brand-purple text-[20px]">{item.icon || "spa"}</span>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-label-md text-label-md text-on-surface truncate">{item.name}</p>
+                      <p className="font-label-md text-label-md text-on-surface truncate">{tr(item.name)}</p>
                       {item.durationMins && (
-                        <p className="font-status-badge text-status-badge text-on-surface-variant">{item.durationMins} mins</p>
+                        <p className="font-status-badge text-status-badge text-on-surface-variant">{item.durationMins} {tr("mins")}</p>
                       )}
                     </div>
                     <QuantityStepper
@@ -197,7 +199,7 @@ export default function BookingSummary() {
                   </div>
                   <div className="flex items-center justify-between mt-1 pl-16">
                     <span className="font-status-badge text-status-badge text-brand-purple font-bold">
-                      {item.meta === "edit" ? "Edit" : item.meta === "customise" ? "Customise" : ""}
+                      {item.meta === "edit" ? tr("Edit") : item.meta === "customise" ? tr("Customise") : ""}
                     </span>
                     <span className="font-label-md text-label-md text-on-surface">
                       {item.originalPrice && (
@@ -209,7 +211,7 @@ export default function BookingSummary() {
                   {item.includes && (
                     <ul className="pl-16 mt-1 list-disc font-status-badge text-status-badge text-on-surface-variant">
                       {item.includes.map((i) => (
-                        <li key={i.label}>{i.label} – ₹{i.price}</li>
+                        <li key={i.label}>{tr(i.label)} – ₹{i.price}</li>
                       ))}
                     </ul>
                   )}
@@ -221,39 +223,39 @@ export default function BookingSummary() {
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg flex items-center justify-between">
             <span className="flex items-center gap-sm font-label-md text-label-md text-on-surface font-bold">
               <span className="material-symbols-outlined text-brand-success text-[18px] fill">sell</span>
-              Coupons and offers
+              {tr("Coupons and offers")}
             </span>
             <span className="flex items-center gap-1 font-body-md text-body-md text-brand-purple">
-              5 offers
+              5 {tr("offers")}
               <span className="material-symbols-outlined text-[16px]">chevron_right</span>
             </span>
           </div>
 
           <div className="bg-surface-container-lowest border border-outline-variant rounded-xl p-lg">
-            <h2 className="font-label-md text-label-md text-on-surface font-bold mb-md">Payment summary</h2>
-            <Row label="Item total" value={`₹${subtotal}`} />
-            <Row label="Item discount" value={`− ₹${discount}`} valueClass="text-brand-success" />
+            <h2 className="font-label-md text-label-md text-on-surface font-bold mb-md">{tr("Payment summary")}</h2>
+            <Row label={tr("Item total")} value={`₹${subtotal}`} />
+            <Row label={tr("Item discount")} value={`− ₹${discount}`} valueClass="text-brand-success" />
 
             <div className="flex items-center gap-sm py-sm border-t border-outline-variant mt-sm">
               <span className="material-symbols-outlined text-on-surface-variant text-[18px]">home</span>
               <span className="font-body-md text-body-md text-on-surface flex-1 truncate">
-                {address ? `${address.label} - ${address.line1}` : "No address selected"}
+                {address ? `${tr(address.label)} - ${address.line1}` : tr("No address selected")}
               </span>
               <span className="material-symbols-outlined text-on-surface-variant text-[16px]">edit</span>
             </div>
             <div className="flex items-center gap-sm py-sm">
               <span className="material-symbols-outlined text-on-surface-variant text-[18px]">schedule</span>
               <span className="font-body-md text-body-md text-on-surface flex-1 truncate">
-                {slot ? `${slot.date} · ${slot.time}` : "No time slot selected"}
+                {slot ? `${tr(slot.date)} · ${tr(slot.time)}` : tr("No time slot selected")}
               </span>
               <span className="material-symbols-outlined text-on-surface-variant text-[16px]">edit</span>
             </div>
 
             <Button variant="purple" className="w-full mt-md" onClick={handlePay} disabled={!address || !slot}>
-              Pay ₹{payable}
+              {tr("Pay")} ₹{payable}
             </Button>
             <p className="font-status-badge text-status-badge text-on-surface-variant mt-sm text-center">
-              By proceeding, you agree to our T&amp;C, Privacy, and Cancellation policy
+              {tr("By proceeding, you agree to our T&C, Privacy, and Cancellation policy")}
             </p>
           </div>
         </div>

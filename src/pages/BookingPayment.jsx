@@ -11,6 +11,7 @@ import {
   clearCart,
 } from "../store/slices/cartSlice";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import bookingService from "../services/bookingService";
 import api from "../services/api";
 import Button from "../components/Button";
@@ -52,6 +53,7 @@ export default function BookingPayment() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated, currentUser } = useAuth();
+  const { tr } = useLanguage();
 
   const items = useSelector(selectCartItems);
   const subtotal = useSelector(selectCartSubtotal);
@@ -215,10 +217,10 @@ export default function BookingPayment() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
         <span className="material-symbols-outlined text-[48px] text-brand-purple mb-2">shopping_bag</span>
-        <h2 className="text-xl font-bold text-on-surface">No Active Booking Found</h2>
-        <p className="text-sm text-on-surface-variant mt-1 mb-4">Please select a service from our catalog.</p>
+        <h2 className="text-xl font-bold text-on-surface">{tr("No Active Booking Found")}</h2>
+        <p className="text-sm text-on-surface-variant mt-1 mb-4">{tr("Please select a service from our catalog.")}</p>
         <Button onClick={() => navigate("/customer/services")} variant="purple">
-          Browse Services
+          {tr("Browse Services")}
         </Button>
       </div>
     );
@@ -237,8 +239,8 @@ export default function BookingPayment() {
             <span className="material-symbols-outlined text-[20px]">arrow_back</span>
           </button>
           <div>
-            <h1 className="text-sm sm:text-base font-bold text-white">Payment &amp; Checkout</h1>
-            <p className="text-[11px] text-slate-400">Step 3 of 3: Select Payment Mode</p>
+            <h1 className="text-sm sm:text-base font-bold text-white">{tr("Payment & Checkout")}</h1>
+            <p className="text-[11px] text-slate-400">{tr("Step 3 of 3: Select Payment Mode")}</p>
           </div>
         </div>
         <button
@@ -256,9 +258,9 @@ export default function BookingPayment() {
           <div className="flex items-center justify-between border-b border-outline-variant/50 pb-2.5">
             <h2 className="text-sm font-black text-on-surface uppercase tracking-wide flex items-center gap-2">
               <span className="material-symbols-outlined text-[18px] text-brand-purple">receipt_long</span>
-              Order Overview
+              {tr("Order Overview")}
             </h2>
-            <span className="text-xs font-bold text-brand-purple">{items.length} {items.length === 1 ? "Service" : "Services"}</span>
+            <span className="text-xs font-bold text-brand-purple">{items.length} {items.length === 1 ? tr("Service") : tr("Services")}</span>
           </div>
 
           <div className="space-y-2">
@@ -266,7 +268,7 @@ export default function BookingPayment() {
               <div key={item.id} className="flex items-center justify-between text-xs sm:text-sm py-1">
                 <span className="text-on-surface font-semibold flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-brand-purple" />
-                  {item.name} × {item.qty}
+                  {tr(item.name)} × {item.qty}
                 </span>
                 <span className="font-black text-on-surface">₹{item.price * item.qty}</span>
               </div>
@@ -275,19 +277,19 @@ export default function BookingPayment() {
 
           <div className="pt-2 border-t border-outline-variant/40 space-y-1.5 text-xs text-on-surface-variant">
             <div className="flex justify-between">
-              <span>Item Total</span>
+              <span>{tr("Item Total")}</span>
               <span className="font-semibold text-on-surface">₹{subtotal}</span>
             </div>
             <div className="flex justify-between text-emerald-600 font-semibold">
-              <span>Special Cooperative Discount (10%)</span>
+              <span>{tr("Special Cooperative Discount (10%)")}</span>
               <span>− ₹{discount}</span>
             </div>
             <div className="flex justify-between">
-              <span>Safety &amp; Verified Worker Insurance</span>
+              <span>{tr("Safety & Verified Worker Insurance")}</span>
               <span className="font-semibold text-on-surface">₹{safetyFee}</span>
             </div>
             <div className="flex justify-between text-sm sm:text-base font-black text-on-surface pt-2 border-t border-outline-variant/60">
-              <span>Total Payable</span>
+              <span>{tr("Total Payable")}</span>
               <span className="text-brand-purple font-extrabold">₹{payable}</span>
             </div>
           </div>
@@ -298,16 +300,16 @@ export default function BookingPayment() {
           <div className="bg-white border border-outline-variant/70 rounded-2xl p-3.5 shadow-sm flex items-center gap-2.5">
             <span className="material-symbols-outlined text-brand-purple text-[20px]">schedule</span>
             <div className="min-w-0">
-              <span className="text-[10px] uppercase font-bold text-on-surface-variant block">Slot</span>
+              <span className="text-[10px] uppercase font-bold text-on-surface-variant block">{tr("Slot")}</span>
               <span className="text-xs font-bold text-on-surface truncate block">
-                {slot ? `${slot.date} · ${slot.time}` : "Today · 11:00 AM"}
+                {slot ? `${tr(slot.date)} · ${tr(slot.time)}` : `${tr("Today")} · 11:00 AM`}
               </span>
             </div>
           </div>
           <div className="bg-white border border-outline-variant/70 rounded-2xl p-3.5 shadow-sm flex items-center gap-2.5">
             <span className="material-symbols-outlined text-brand-purple text-[20px]">location_on</span>
             <div className="min-w-0">
-              <span className="text-[10px] uppercase font-bold text-on-surface-variant block">Destination</span>
+              <span className="text-[10px] uppercase font-bold text-on-surface-variant block">{tr("Destination")}</span>
               <span className="text-xs font-bold text-on-surface truncate block">
                 {address?.line1 || "Kesnand Rd, Wagholi, Pune"}
               </span>
@@ -319,7 +321,7 @@ export default function BookingPayment() {
         <div className="bg-white border border-outline-variant/80 rounded-2xl p-5 shadow-sm space-y-3">
           <h2 className="text-sm font-black text-on-surface uppercase tracking-wide flex items-center gap-2">
             <span className="material-symbols-outlined text-[18px] text-brand-purple">payment</span>
-            Choose Payment Method
+            {tr("Choose Payment Method")}
           </h2>
 
           <div className="space-y-3">
@@ -346,12 +348,12 @@ export default function BookingPayment() {
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-sm font-bold text-on-surface">{method.title}</span>
+                      <span className="text-sm font-bold text-on-surface">{tr(method.title)}</span>
                       <span className={`text-[9px] font-black px-2 py-0.5 rounded-full ${method.badgeColor}`}>
-                        {method.badge}
+                        {tr(method.badge)}
                       </span>
                     </div>
-                    <p className="text-xs text-on-surface-variant mt-0.5 leading-relaxed">{method.subtitle}</p>
+                    <p className="text-xs text-on-surface-variant mt-0.5 leading-relaxed">{tr(method.subtitle)}</p>
                   </div>
                 </div>
               );
@@ -365,33 +367,33 @@ export default function BookingPayment() {
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
               <span className="text-xs font-black text-emerald-950 uppercase tracking-wider">
-                Cooperative Fair Wage Transparency
+                {tr("Cooperative Fair Wage Transparency")}
               </span>
             </div>
             <span className="text-[10px] font-black bg-emerald-600 text-white px-2.5 py-0.5 rounded-full">
-              0% Private Commission
+              {tr("0% Private Commission")}
             </span>
           </div>
 
           <p className="text-xs text-emerald-900 leading-relaxed">
-            Unlike private aggregator apps taking a 25%–35% cut, <strong>100% of your payment</strong> directly empowers our cooperative worker partner and their community social security fund.
+            {tr("Unlike private aggregator apps taking a 25%–35% cut, 100% of your payment directly empowers our cooperative worker partner and their community social security fund.")}
           </p>
 
           <div className="grid grid-cols-3 gap-2 pt-1 text-center">
             <div className="bg-white/90 rounded-xl p-2 border border-emerald-100 shadow-xs">
-              <span className="block text-[10px] font-bold text-slate-500 uppercase">Worker Direct</span>
+              <span className="block text-[10px] font-bold text-slate-500 uppercase">{tr("Worker Direct")}</span>
               <span className="text-sm font-black text-emerald-700">₹{Math.round(payable * 0.90)}</span>
-              <span className="block text-[9px] font-semibold text-emerald-600">90% Fair Wage</span>
+              <span className="block text-[9px] font-semibold text-emerald-600">{tr("90% Fair Wage")}</span>
             </div>
             <div className="bg-white/90 rounded-xl p-2 border border-emerald-100 shadow-xs">
-              <span className="block text-[10px] font-bold text-slate-500 uppercase">Welfare &amp; PMSBY</span>
+              <span className="block text-[10px] font-bold text-slate-500 uppercase">{tr("Welfare & PMSBY")}</span>
               <span className="text-sm font-black text-teal-700">₹{Math.round(payable * 0.05)}</span>
-              <span className="block text-[9px] font-semibold text-teal-600">5% Micro-Insurance</span>
+              <span className="block text-[9px] font-semibold text-teal-600">{tr("5% Micro-Insurance")}</span>
             </div>
             <div className="bg-white/90 rounded-xl p-2 border border-emerald-100 shadow-xs">
-              <span className="block text-[10px] font-bold text-slate-500 uppercase">Co-op Society</span>
+              <span className="block text-[10px] font-bold text-slate-500 uppercase">{tr("Co-op Society")}</span>
               <span className="text-sm font-black text-slate-700">₹{Math.round(payable * 0.05)}</span>
-              <span className="block text-[9px] font-semibold text-slate-600">5% PACS Ops</span>
+              <span className="block text-[9px] font-semibold text-slate-600">{tr("5% PACS Ops")}</span>
             </div>
           </div>
         </div>
@@ -399,7 +401,7 @@ export default function BookingPayment() {
         {/* Safety & Trust guarantee */}
         <div className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-100 text-slate-700 text-xs font-medium">
           <span className="material-symbols-outlined text-emerald-600 text-[18px]">verified</span>
-          <span>100% Satisfaction Guarantee · Transparent Fixed Pricing · No Hidden Surcharges</span>
+          <span>{tr("100% Satisfaction Guarantee · Transparent Fixed Pricing · No Hidden Surcharges")}</span>
         </div>
       </div>
 
@@ -407,7 +409,7 @@ export default function BookingPayment() {
       <div className="fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-t border-outline-variant p-4 pb-safe shadow-2xl">
         <div className="max-w-2xl mx-auto flex items-center justify-between gap-4">
           <div>
-            <span className="text-[11px] text-on-surface-variant block font-medium">Amount to Pay</span>
+            <span className="text-[11px] text-on-surface-variant block font-medium">{tr("Amount to Pay")}</span>
             <span className="text-lg sm:text-xl font-black text-brand-purple">₹{payable}</span>
           </div>
 
@@ -420,17 +422,17 @@ export default function BookingPayment() {
             {loading ? (
               <>
                 <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Processing...
+                {tr("Processing...")}
               </>
             ) : selectedMethod === "RAZORPAY" ? (
               <>
                 <span className="material-symbols-outlined text-[18px]">lock</span>
-                Pay with Razorpay
+                {tr("Pay with Razorpay")}
               </>
             ) : (
               <>
                 <span className="material-symbols-outlined text-[18px]">check_circle</span>
-                Confirm Cash on Delivery
+                {tr("Confirm Cash on Delivery")}
               </>
             )}
           </Button>

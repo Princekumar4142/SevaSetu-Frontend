@@ -4,12 +4,13 @@ import workerService from "../services/workerService";
 import { LoadingState, ErrorBanner } from "../components/Feedback";
 import Badge from "../components/Badge";
 import Avatar from "../components/Avatar";
+import { useLanguage } from "../context/LanguageContext";
 
-const STEPS = [
-  { key: "registered", label: "Registered", icon: "how_to_reg", desc: "Account created successfully" },
-  { key: "pending", label: "Under Review", icon: "manage_search", desc: "Admin is reviewing your profile" },
-  { key: "approved", label: "Approved", icon: "verified", desc: "Profile approved by admin" },
-  { key: "visible", label: "Visible to Customers", icon: "people", desc: "Customers can book you now" },
+const RAW_STEPS = [
+  { key: "registered", labelKey: "Registered", icon: "how_to_reg", descKey: "Account created successfully" },
+  { key: "pending", labelKey: "Under Review", icon: "manage_search", descKey: "Admin is reviewing your profile" },
+  { key: "approved", labelKey: "Approved", icon: "verified", descKey: "Profile approved by admin" },
+  { key: "visible", labelKey: "Visible to Customers", icon: "people", descKey: "Customers can book you now" },
 ];
 
 function getStepIndex(status) {
@@ -20,6 +21,7 @@ function getStepIndex(status) {
 
 export default function WorkerDashboard() {
   const navigate = useNavigate();
+  const { tr } = useLanguage();
   const [worker, setWorker] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -32,8 +34,15 @@ export default function WorkerDashboard() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <LoadingState label="Loading your dashboard…" />;
+  if (loading) return <LoadingState label={tr("Loading your dashboard…") || "Loading your dashboard…"} />;
   if (error) return <ErrorBanner message={error} />;
+
+  const STEPS = RAW_STEPS.map((s) => ({
+    key: s.key,
+    label: tr(s.labelKey),
+    icon: s.icon,
+    desc: tr(s.descKey),
+  }));
 
   const stepIndex = getStepIndex(worker?.verificationStatus);
   const isVerified = worker?.verificationStatus === "VERIFIED";
@@ -55,7 +64,7 @@ export default function WorkerDashboard() {
         >
           <span className="material-symbols-outlined text-[20px]">arrow_back</span>
         </button>
-        <span className="text-xs font-bold uppercase tracking-wider text-slate-500">Worker Portal</span>
+        <span className="text-xs font-bold uppercase tracking-wider text-slate-500">{tr("Worker Portal")}</span>
       </div>
 
       {/* ── Top Worker Profile Card ── */}
@@ -66,11 +75,11 @@ export default function WorkerDashboard() {
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-xl font-black text-slate-900">{worker?.user?.name || "Worker Partner"}</h2>
               <Badge tone={isVerified ? "verified" : isRejected ? "rejected" : "pending"}>
-                {worker?.verificationStatus || "PENDING"}
+                {tr(worker?.verificationStatus || "PENDING")}
               </Badge>
             </div>
             <p className="text-xs font-semibold text-brand-purple mt-0.5 uppercase tracking-wider">
-              {worker?.serviceCategory?.replace(/-/g, " ") || "SKILLED SERVICE PROFESSIONAL"} · {worker?.city || "Pune"}
+              {tr(worker?.serviceCategory?.replace(/-/g, " ") || "SKILLED SERVICE PROFESSIONAL")} · {worker?.city || "Pune"}
             </p>
             <p className="text-xs text-slate-500 mt-1">
               Phone: {worker?.user?.phone} · Email: {worker?.user?.email || "—"}
@@ -83,7 +92,7 @@ export default function WorkerDashboard() {
           className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all border border-slate-200 shrink-0 cursor-pointer"
         >
           <span className="material-symbols-outlined text-[16px] text-brand-purple">edit</span>
-          Edit Profile &amp; Photo
+          {tr("Edit Profile & Photo")}
         </button>
       </div>
 
@@ -116,24 +125,24 @@ export default function WorkerDashboard() {
             <div className="flex items-center gap-2 flex-wrap">
               <h2 className="text-lg font-black tracking-tight">
                 {isVerified
-                  ? "You're verified and ready!"
+                  ? tr("You're verified and ready!")
                   : isRejected
-                  ? "Profile Needs Updates"
-                  : "Verification in Progress"}
+                  ? tr("Profile Needs Updates")
+                  : tr("Verification in Progress")}
               </h2>
               <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${
                 isVerified ? "bg-emerald-200/80 text-emerald-900" : isRejected ? "bg-rose-200/80 text-rose-900" : "bg-amber-200/90 text-amber-950 border border-amber-300"
               }`}>
-                {isVerified ? "Live Profile" : isRejected ? "Action Required" : "Under Admin Review"}
+                {isVerified ? tr("Live Profile") : isRejected ? tr("Action Required") : tr("Under Admin Review")}
               </span>
             </div>
 
             <p className="text-xs font-medium mt-1 leading-relaxed opacity-90 max-w-2xl">
               {isVerified
-                ? "Customers can now see your profile and book your services. Keep your profile updated to get more bookings!"
+                ? tr("Customers can now see your profile and book your services. Keep your profile updated to get more bookings!")
                 : isRejected
-                ? `Rejection reason: ${worker?.rejectionReason || "Please review your profile details and resubmit."}`
-                : "Your profile is under review by cooperative admins. Once approved by an admin, you'll appear in customer search results automatically."}
+                ? `${tr("Rejection reason")}: ${worker?.rejectionReason || tr("Please review your profile details and resubmit.")}`
+                : tr("Your profile is under review by cooperative admins. Once approved by an admin, you'll appear in customer search results automatically.")}
             </p>
 
             {!isVerified && (
@@ -142,7 +151,7 @@ export default function WorkerDashboard() {
                 className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-amber-200/70 hover:bg-amber-200 text-amber-950 font-extrabold text-xs transition-all border border-amber-300/80 shadow-sm cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[15px]">edit</span>
-                Update Profile Details
+                {tr("Update Profile Details")}
               </button>
             )}
           </div>
@@ -152,7 +161,7 @@ export default function WorkerDashboard() {
       {/* ── Approval Flow Steps ── */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-sm">
         <h3 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-6">
-          Your Approval Journey
+          {tr("Your Approval Journey")}
         </h3>
         <div className="relative">
           {/* Progress line */}
@@ -195,7 +204,7 @@ export default function WorkerDashboard() {
                       {step.label}
                       {isCurrent && !isRejected && (
                         <span className="ml-2 text-[10px] bg-brand-purple text-white px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
-                          Current
+                          {tr("Current")}
                         </span>
                       )}
                     </p>
@@ -216,22 +225,22 @@ export default function WorkerDashboard() {
         <div className="bg-white border border-slate-200/90 rounded-2xl p-6 shadow-sm">
           <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-brand-purple text-[22px]">verified_user</span>
-            Verification Status
+            {tr("Verification Status")}
           </h3>
           <Badge
             tone={isVerified ? "verified" : isRejected ? "rejected" : "pending"}
             icon={isVerified ? "verified" : isRejected ? "cancel" : "hourglass_empty"}
           >
-            {worker?.verificationStatus}
+            {tr(worker?.verificationStatus)}
           </Badge>
           {isPending && (
             <p className="text-xs text-slate-500 mt-3 leading-relaxed">
-              Your cooperative admin will review your documents and skills. Verification usually takes 24–48 hours.
+              {tr("Your cooperative admin will review your documents and skills. Verification usually takes 24–48 hours.") || "Your cooperative admin will review your documents and skills. Verification usually takes 24–48 hours."}
             </p>
           )}
           {isVerified && worker?.verifiedAt && (
             <p className="text-xs text-slate-500 mt-3">
-              Verified on {new Date(worker.verifiedAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
+              {tr("Verified on")} {new Date(worker.verifiedAt).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" })}
             </p>
           )}
         </div>
@@ -240,20 +249,20 @@ export default function WorkerDashboard() {
         <div className="bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-6 shadow-sm">
           <h3 className="text-base font-bold text-slate-900 mb-4 flex items-center gap-2">
             <span className="material-symbols-outlined text-brand-purple text-[22px]">payments</span>
-            Earnings
+            {tr("Earnings")}
           </h3>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-center">
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-100">
               <p className="text-lg sm:text-xl font-black text-slate-900">₹{worker?.earnings?.gross || 0}</p>
-              <p className="text-[11px] font-bold text-slate-500 uppercase mt-0.5">Gross</p>
+              <p className="text-[11px] font-bold text-slate-500 uppercase mt-0.5">{tr("Gross") || "Gross"}</p>
             </div>
             <div className="bg-purple-50/70 p-3 rounded-xl border border-purple-100">
               <p className="text-lg sm:text-xl font-black text-brand-purple">₹{worker?.earnings?.net || 0}</p>
-              <p className="text-[11px] font-bold text-brand-purple uppercase mt-0.5">Net</p>
+              <p className="text-[11px] font-bold text-brand-purple uppercase mt-0.5">{tr("Net") || "Net"}</p>
             </div>
             <div className="bg-amber-50/70 p-3 rounded-xl border border-amber-100">
               <p className="text-lg sm:text-xl font-black text-amber-700">₹{worker?.earnings?.welfareContribution || 0}</p>
-              <p className="text-[11px] font-bold text-amber-700 uppercase mt-0.5">Welfare</p>
+              <p className="text-[11px] font-bold text-amber-700 uppercase mt-0.5">{tr("Welfare") || "Welfare"}</p>
             </div>
           </div>
         </div>
@@ -263,22 +272,22 @@ export default function WorkerDashboard() {
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
               <span className="material-symbols-outlined text-brand-purple text-[22px]">workspace_premium</span>
-              Skill Passport
+              {tr("Skill Passport")}
             </h3>
             <button
               onClick={() => navigate("/worker/profile")}
               className="flex items-center gap-1 text-xs font-bold text-brand-purple hover:underline"
             >
               <span className="material-symbols-outlined text-[16px]">edit</span>
-              Edit Skills
+              {tr("Edit Skills")}
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
             {(!worker?.skills || worker.skills.length === 0) && (
               <p className="text-xs text-slate-500">
-                No skills added yet.{" "}
+                {tr("No skills added yet.")}{" "}
                 <button onClick={() => navigate("/worker/profile")} className="text-brand-purple font-bold hover:underline">
-                  Add skills to your profile →
+                  {tr("Add skills to your profile →")}
                 </button>
               </p>
             )}
@@ -288,12 +297,12 @@ export default function WorkerDashboard() {
                 className="flex items-center gap-1.5 px-3 py-1 bg-purple-50 rounded-xl border border-purple-200 text-xs font-bold text-brand-purple"
               >
                 <span className="material-symbols-outlined text-[14px] text-emerald-600">check_circle</span>
-                <span className="capitalize">{skill.replace(/_/g, " ")}</span>
+                <span className="capitalize">{tr(skill.replace(/_/g, " "))}</span>
               </span>
             ))}
           </div>
           <p className="text-xs text-slate-500 mt-4 pt-3 border-t border-slate-100">
-            Skill level: <strong className="text-slate-800">{worker?.skillLevel || "Level 1"}</strong> · {worker?.experienceYears || 0} years experience
+            {tr("Skill level")}: <strong className="text-slate-800">{worker?.skillLevel || "Level 1"}</strong> · {worker?.experienceYears || 0} {tr("years experience")}
           </p>
         </div>
       </div>
@@ -314,38 +323,38 @@ export default function WorkerDashboard() {
               </span>
               <div>
                 <h4 className="text-xs font-black uppercase tracking-wider text-emerald-300">
-                  सहकारी श्रमिक पहचान पत्र · Digital Worker ID
+                  {tr("सहकारी श्रमिक पहचान पत्र · Digital Worker ID")}
                 </h4>
-                <p className="text-[10px] text-white/70">Labour Cooperative Federation of India</p>
+                <p className="text-[10px] text-white/70">{tr("Labour Cooperative Federation of India")}</p>
               </div>
             </div>
             <span className="text-[10px] font-black bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-2.5 py-0.5 rounded-full">
-              Verified Member
+              {tr("Verified Member")}
             </span>
           </div>
 
           <div className="mt-5 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-5">
             <div className="space-y-3 flex-1 text-center sm:text-left">
               <div>
-                <span className="text-[10px] font-bold uppercase text-white/50 block">Worker Name</span>
+                <span className="text-[10px] font-bold uppercase text-white/50 block">{tr("Worker Name")}</span>
                 <span className="text-lg font-black text-white">{worker?.user?.name || "Cooperative Partner"}</span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-left">
                 <div>
-                  <span className="text-[10px] font-bold uppercase text-white/50 block">Member ID</span>
+                  <span className="text-[10px] font-bold uppercase text-white/50 block">{tr("Member ID")}</span>
                   <span className="text-xs font-mono font-bold text-emerald-300">
                     COOP-BR-{worker?._id?.slice(-6).toUpperCase() || "845438"}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] font-bold uppercase text-white/50 block">Skill Certification</span>
+                  <span className="text-[10px] font-bold uppercase text-white/50 block">{tr("Skill Certification")}</span>
                   <span className="text-xs font-bold text-white">Skill India / PMKVY</span>
                 </div>
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase text-white/50 block">Affiliated Cooperative</span>
+                <span className="text-[10px] font-bold uppercase text-white/50 block">{tr("Affiliated Cooperative")}</span>
                 <span className="text-xs font-semibold text-white/90">
-                  Bettiah Primary Agricultural Credit Society (PACS)
+                  {tr("Bettiah Primary Agricultural Credit Society (PACS)")}
                 </span>
               </div>
             </div>
@@ -373,7 +382,7 @@ export default function WorkerDashboard() {
                   <div className="bg-white rounded-xs" />
                 </div>
               </div>
-              <span className="text-[9px] font-bold text-slate-600 block mt-1">Scan to Verify</span>
+              <span className="text-[9px] font-bold text-slate-600 block mt-1">{tr("Scan to Verify")}</span>
             </div>
           </div>
         </div>
@@ -385,18 +394,18 @@ export default function WorkerDashboard() {
               <div className="flex items-center gap-2">
                 <span className="material-symbols-outlined text-emerald-600 text-xl">health_and_safety</span>
                 <h4 className="text-sm font-black text-slate-900 uppercase tracking-wide">
-                  Social Security &amp; Welfare
+                  {tr("Social Security & Welfare")}
                 </h4>
               </div>
               <span className="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
-                Active Cover
+                {tr("Active Cover")}
               </span>
             </div>
 
             <div className="space-y-2.5">
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
                 <div>
-                  <h5 className="text-xs font-bold text-slate-900">PMSBY Accidental Insurance</h5>
+                  <h5 className="text-xs font-bold text-slate-900">{tr("PMSBY Accidental Insurance")}</h5>
                   <p className="text-[10px] text-slate-500">Pradhan Mantri Suraksha Bima Yojana</p>
                 </div>
                 <span className="text-xs font-black text-emerald-700">₹2,00,000 Cover</span>
@@ -404,16 +413,16 @@ export default function WorkerDashboard() {
 
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
                 <div>
-                  <h5 className="text-xs font-bold text-slate-900">Cooperative Welfare Fund</h5>
-                  <p className="text-[10px] text-slate-500">Emergency medical &amp; children scholarship</p>
+                  <h5 className="text-xs font-bold text-slate-900">{tr("Cooperative Welfare Fund")}</h5>
+                  <p className="text-[10px] text-slate-500">{tr("Emergency medical & children scholarship")}</p>
                 </div>
-                <span className="text-xs font-black text-indigo-700">Active Claimable</span>
+                <span className="text-xs font-black text-indigo-700">{tr("Active Claimable")}</span>
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
                 <div>
-                  <h5 className="text-xs font-bold text-slate-900">On-Duty Emergency SOS</h5>
-                  <p className="text-[10px] text-slate-500">24/7 Cooperative rapid safety network</p>
+                  <h5 className="text-xs font-bold text-slate-900">{tr("On-Duty Emergency SOS")}</h5>
+                  <p className="text-[10px] text-slate-500">{tr("24/7 Cooperative rapid safety network")}</p>
                 </div>
                 <span className="material-symbols-outlined text-rose-600 text-[18px]">e911_emergency</span>
               </div>
@@ -422,11 +431,11 @@ export default function WorkerDashboard() {
 
           <button
             type="button"
-            onClick={() => alert("Emergency assistance request sent to your local Cooperative Society Admin.")}
+            onClick={() => alert(tr("Emergency assistance request sent to your local Cooperative Society Admin."))}
             className="w-full py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold text-xs border border-rose-200 transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
           >
             <span className="material-symbols-outlined text-[16px]">emergency</span>
-            On-Duty Emergency Accident SOS
+            {tr("On-Duty Emergency Accident SOS")}
           </button>
         </div>
       </div>
