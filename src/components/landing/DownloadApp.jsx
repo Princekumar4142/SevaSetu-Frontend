@@ -1,7 +1,9 @@
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function DownloadApp() {
   const { ref, isRevealed } = useScrollReveal();
+  const { tr } = useLanguage();
 
   return (
     <section className="py-16 md:py-20 bg-white relative overflow-hidden">
@@ -16,13 +18,13 @@ export default function DownloadApp() {
             <div className="flex-1 text-center md:text-left">
               <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5 mb-6">
                 <span className="material-symbols-outlined text-secondary text-[18px] fill">phone_iphone</span>
-                <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Coming Soon</span>
+                <span className="text-xs font-bold text-white/80 uppercase tracking-widest">{tr("Coming Soon")}</span>
               </div>
               <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-                Get the SevaSetu App
+                {tr("Get the SevaSetu App")}
               </h2>
               <p className="text-white/60 text-base md:text-lg max-w-lg mb-8">
-                Book services on-the-go, track your professional in real-time, and manage everything from your phone. Available soon on Android & iOS.
+                {tr("Book services on-the-go, track your professional in real-time, and manage everything from your phone. Available soon on Android & iOS.")}
               </p>
 
               <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
@@ -33,8 +35,8 @@ export default function DownloadApp() {
                 >
                   <span className="material-symbols-outlined text-white text-[28px]">play_arrow</span>
                   <div className="text-left">
-                    <div className="text-[10px] text-white/60 uppercase tracking-wider">Get it on</div>
-                    <div className="text-sm font-bold text-white">Google Play</div>
+                    <div className="text-[10px] text-white/60 uppercase tracking-wider">{tr("Get it on")}</div>
+                    <div className="text-sm font-bold text-white">{tr("Google Play")}</div>
                   </div>
                 </button>
 
@@ -45,8 +47,8 @@ export default function DownloadApp() {
                 >
                   <span className="material-symbols-outlined text-white text-[28px]">phone_iphone</span>
                   <div className="text-left">
-                    <div className="text-[10px] text-white/60 uppercase tracking-wider">Download on</div>
-                    <div className="text-sm font-bold text-white">App Store</div>
+                    <div className="text-[10px] text-white/60 uppercase tracking-wider">{tr("Download on")}</div>
+                    <div className="text-sm font-bold text-white">{tr("App Store")}</div>
                   </div>
                 </button>
               </div>

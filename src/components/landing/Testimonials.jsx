@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { useLanguage } from "../../context/LanguageContext";
 
 const TESTIMONIALS = [
   {
@@ -97,13 +98,13 @@ export default function Testimonials() {
         {/* Section header */}
         <div className={`text-center mb-16 ${isRevealed ? "animate-fade-in-up" : "opacity-0"}`}>
           <span className="inline-block px-4 py-1.5 rounded-full bg-brand-orange/10 text-brand-orange text-xs font-bold uppercase tracking-widest mb-4">
-            Testimonials
+            {tr("Customer Testimonials")}
           </span>
           <h2 className="text-3xl md:text-5xl font-black text-on-surface mb-4">
-            What Our Customers <span className="text-gradient">Say</span>
+            {tr("What People Say")}
           </h2>
           <p className="text-on-surface-variant text-base md:text-lg max-w-2xl mx-auto">
-            Trusted by thousands of families across India.
+            {tr("Read experiences from customers across India who use SevaSetu for their everyday home needs.")}
           </p>
         </div>
 
@@ -131,7 +132,7 @@ export default function Testimonials() {
                   <StarRating count={t.rating} />
                   <p className="text-sm text-on-surface-variant leading-relaxed mt-4 flex-1">"{t.text}"</p>
                   <div className="mt-4 pt-4 border-t border-outline-variant/50">
-                    <span className="text-xs font-semibold text-brand-purple">{t.service}</span>
+                    <span className="text-xs font-semibold text-brand-purple">{tr(t.service)}</span>
                   </div>
                 </div>
               );

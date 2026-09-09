@@ -5,6 +5,7 @@ import { fetchCurrentUser } from "./store/slices/authSlice";
 import AppRoutes from "./routes/AppRoutes";
 import ScrollToTop from "./components/ScrollToTop";
 import { SocketProvider } from "./context/SocketContext";
+import { VoiceAgentProvider } from "./context/VoiceAgentContext";
 import IncomingOrderModal from "./components/IncomingOrderModal";
 import GlobalVoiceAssistant from "./components/GlobalVoiceAssistant";
 
@@ -21,12 +22,14 @@ export default function App() {
 
   return (
     <BrowserRouter>
-      <SocketProvider>
-        <ScrollToTop />
-        <AppRoutes />
-        <IncomingOrderModal />
-        <GlobalVoiceAssistant />
-      </SocketProvider>
+      <VoiceAgentProvider>
+        <SocketProvider>
+          <ScrollToTop />
+          <AppRoutes />
+          <IncomingOrderModal />
+          <GlobalVoiceAssistant />
+        </SocketProvider>
+      </VoiceAgentProvider>
     </BrowserRouter>
   );
 }

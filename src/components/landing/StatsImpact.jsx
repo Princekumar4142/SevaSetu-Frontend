@@ -1,4 +1,5 @@
 import { useScrollReveal, useCountUp } from "../../hooks/useScrollReveal";
+import { useLanguage } from "../../context/LanguageContext";
 
 const IMPACT_STATS = [
   { icon: "currency_rupee", value: 25, suffix: "Cr+", label: "Worker Earnings Generated", desc: "Direct income to skilled workers" },
@@ -8,6 +9,7 @@ const IMPACT_STATS = [
 ];
 
 function ImpactCounter({ stat, isRevealed, delay }) {
+  const { tr } = useLanguage();
   const count = useCountUp(stat.value, 2500, isRevealed);
   const displayValue = stat.value > 9999
     ? `${Math.floor(count / 1000)}K`
@@ -24,14 +26,15 @@ function ImpactCounter({ stat, isRevealed, delay }) {
       <div className="text-4xl md:text-5xl font-black text-white mb-2">
         {displayValue}<span className="text-secondary">{stat.suffix}</span>
       </div>
-      <div className="text-sm font-bold text-white/90 mb-1">{stat.label}</div>
-      <div className="text-xs text-white/50">{stat.desc}</div>
+      <div className="text-sm font-bold text-white/90 mb-1">{tr(stat.label)}</div>
+      <div className="text-xs text-white/50">{tr(stat.desc)}</div>
     </div>
   );
 }
 
 export default function StatsImpact() {
   const { ref, isRevealed } = useScrollReveal();
+  const { tr } = useLanguage();
 
   return (
     <section className="py-20 md:py-28 hero-gradient relative overflow-hidden">
@@ -43,13 +46,13 @@ export default function StatsImpact() {
         {/* Section header */}
         <div className={`text-center mb-16 ${isRevealed ? "animate-fade-in-up" : "opacity-0"}`}>
           <span className="inline-block px-4 py-1.5 rounded-full bg-white/10 text-secondary text-xs font-bold uppercase tracking-widest mb-4">
-            Our Impact
+            {tr("Our Impact")}
           </span>
           <h2 className="text-3xl md:text-5xl font-black text-white mb-4">
-            Making a Real <span className="text-secondary">Difference</span>
+            {tr("Making a Real")} <span className="text-secondary">{tr("Difference")}</span>
           </h2>
           <p className="text-white/60 text-base md:text-lg max-w-2xl mx-auto">
-            SevaSetu is more than a service platform — it's a movement to empower India's skilled workforce and build sustainable livelihoods.
+            {tr("SevaSetu is more than a service platform — it's a movement to empower India's skilled workforce and build sustainable livelihoods.")}
           </p>
         </div>
 

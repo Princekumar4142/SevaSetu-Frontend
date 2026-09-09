@@ -244,10 +244,10 @@ export default function GlobalVoiceAssistant() {
                             </div>
                             <div>
                               <p className="font-bold text-xs text-slate-900">
-                                {msg.bookingPreview.service.name}
+                                {tr(msg.bookingPreview.service.name)}
                               </p>
                               <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-100 px-1.5 py-0.5 rounded">
-                                100% Fair Cooperative Wage
+                                {tr("100% Fair Cooperative Wage")}
                               </span>
                             </div>
                           </div>
@@ -271,7 +271,7 @@ export default function GlobalVoiceAssistant() {
                           <button
                             type="button"
                             onClick={() => triggerConfirmBooking(msg.bookingPreview)}
-                            className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 text-white py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                            className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 active:scale-95 text-white py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-sm transition-all cursor-pointer"
                           >
                             <span className="material-symbols-outlined text-[16px]">check_circle</span>
                             {tr("Confirm & Book")}
@@ -292,7 +292,7 @@ export default function GlobalVoiceAssistant() {
                           </span>
                         </div>
                         <p className="text-[11px] text-emerald-800 mb-2">
-                          Order Number: <strong>#{msg.confirmedBooking.bookingNumber}</strong>
+                          {tr("Order Number:")} <strong>#{msg.confirmedBooking.bookingNumber}</strong>
                         </p>
                         <button
                           type="button"
@@ -300,7 +300,7 @@ export default function GlobalVoiceAssistant() {
                             setIsOpen(false);
                             navigate("/customer/bookings");
                           }}
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-1"
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-1.5 px-3 rounded-lg text-xs font-bold transition-colors flex items-center justify-center gap-1 cursor-pointer"
                         >
                           <span className="material-symbols-outlined text-[16px]">list_alt</span>
                           {tr("View My Bookings")}
@@ -320,14 +320,14 @@ export default function GlobalVoiceAssistant() {
           {/* Quick Suggestion Chips */}
           <div className="bg-white border-t border-slate-100 p-2.5 overflow-x-auto flex items-center gap-1.5 shrink-0 no-scrollbar">
             <span className="text-[10px] text-slate-400 uppercase font-black tracking-wider shrink-0 mr-1">
-              Quick:
+              {tr("Quick:")}
             </span>
-            {servicesCatalog.slice(0, 5).map((svc) => (
+            {servicesCatalog.slice(0, 6).map((svc) => (
               <button
                 key={svc.id}
                 type="button"
                 onClick={() => selectServiceChip(svc.id)}
-                className="shrink-0 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 border border-slate-200/70 text-slate-700 text-xs px-2.5 py-1.5 rounded-full transition-all flex items-center gap-1 active:scale-95 font-medium"
+                className="shrink-0 bg-slate-100 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 border border-slate-200/70 text-slate-700 text-xs px-2.5 py-1.5 rounded-full transition-all flex items-center gap-1 active:scale-95 font-medium cursor-pointer"
               >
                 <span className="material-symbols-outlined text-[14px]">
                   {svc.icon}
@@ -352,7 +352,7 @@ export default function GlobalVoiceAssistant() {
               {textInput.trim() ? (
                 <button
                   type="submit"
-                  className="w-11 h-11 rounded-2xl bg-primary hover:bg-primary/90 text-white flex items-center justify-center shrink-0 shadow-md transition-transform active:scale-95"
+                  className="w-11 h-11 rounded-2xl bg-primary hover:bg-primary/90 text-white flex items-center justify-center shrink-0 shadow-md transition-transform active:scale-95 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-[20px]">send</span>
                 </button>
@@ -361,7 +361,7 @@ export default function GlobalVoiceAssistant() {
                 <button
                   type="button"
                   onClick={isListening ? stopListening : startListening}
-                  className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-md transition-all active:scale-95 ${
+                  className={`w-11 h-11 rounded-2xl flex items-center justify-center shrink-0 shadow-md transition-all active:scale-95 cursor-pointer ${
                     isListening
                       ? "bg-red-600 hover:bg-red-700 text-white animate-pulse"
                       : "bg-gradient-to-r from-primary to-indigo-700 hover:from-primary/90 hover:to-indigo-800 text-white"
@@ -376,8 +376,8 @@ export default function GlobalVoiceAssistant() {
             </form>
 
             <div className="mt-2 flex items-center justify-between text-[10px] text-slate-400 px-1">
-              <span>🔒 100% Private in-browser voice recognition</span>
-              <span>Say "Haan book kar do" to confirm</span>
+              <span>{tr("100% Private in-browser voice recognition")}</span>
+              <span>{tr('Say "Haan book kar do" to confirm')}</span>
             </div>
           </div>
         </div>

@@ -1,7 +1,10 @@
 import { Link } from "react-router-dom";
 import Logo from "../components/Logo";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function RegisterChoose() {
+  const { tr } = useLanguage();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/40 to-orange-50/30 flex flex-col">
       {/* Top bar */}
@@ -19,13 +22,13 @@ export default function RegisterChoose() {
         <div className="text-center mb-10 max-w-lg">
           <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-200 rounded-full px-4 py-1.5 mb-4">
             <span className="w-2 h-2 rounded-full bg-indigo-500 animate-pulse" />
-            <span className="text-xs font-semibold text-indigo-700 tracking-wide">Join SevaSetu</span>
+            <span className="text-xs font-semibold text-indigo-700 tracking-wide">{tr("Join SevaSetu")}</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-            How would you like to <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">join us?</span>
+            {tr("How would you like to")} <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">{tr("join us?")}</span>
           </h1>
           <p className="mt-3 text-slate-500 text-base sm:text-lg">
-            Choose your role to get started — it only takes 2 minutes
+            {tr("Choose your role to get started — it only takes 2 minutes")}
           </p>
         </div>
 
@@ -48,15 +51,15 @@ export default function RegisterChoose() {
 
             {/* Badge */}
             <div className="absolute top-4 right-4 bg-indigo-100 text-indigo-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
-              Customer
+              {tr("Customer")}
             </div>
 
             <div className="relative flex flex-col gap-2 flex-1">
               <h2 className="text-xl font-extrabold text-slate-900 group-hover:text-indigo-700 transition-colors">
-                Sign Up as User
+                {tr("Sign Up as User")}
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Book verified workers for home services, repairs, cleaning, salon & more at fixed prices.
+                {tr("Book verified workers for home services, repairs, cleaning, salon & more at fixed prices.")}
               </p>
             </div>
 
@@ -71,7 +74,7 @@ export default function RegisterChoose() {
                   <span className="w-4 h-4 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-indigo-600 text-[12px]">check</span>
                   </span>
-                  {f}
+                  {tr(f)}
                 </li>
               ))}
             </ul>
@@ -79,7 +82,7 @@ export default function RegisterChoose() {
             {/* CTA */}
             <div className="relative flex items-center justify-between mt-1">
               <span className="text-sm font-bold text-indigo-600 group-hover:text-indigo-700">
-                Get Started
+                {tr("Continue as User")}
               </span>
               <div className="w-9 h-9 rounded-xl bg-indigo-600 group-hover:bg-indigo-700 flex items-center justify-center shadow-md group-hover:translate-x-1 transition-transform duration-200">
                 <span className="material-symbols-outlined text-white text-[18px]">arrow_forward</span>
@@ -103,15 +106,15 @@ export default function RegisterChoose() {
 
             {/* Badge */}
             <div className="absolute top-4 right-4 bg-orange-100 text-orange-700 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">
-              Worker
+              {tr("Worker")}
             </div>
 
             <div className="relative flex flex-col gap-2 flex-1">
               <h2 className="text-xl font-extrabold text-slate-900 group-hover:text-orange-600 transition-colors">
-                Sign Up as Worker
+                {tr("Join as Skilled Worker")}
               </h2>
               <p className="text-sm text-slate-500 leading-relaxed">
-                Register your skills, get bookings from nearby customers & earn with 0% commission.
+                {tr("Earn fair wages with 0% platform commission. Get steady bookings and insurance.")}
               </p>
             </div>
 
@@ -126,7 +129,7 @@ export default function RegisterChoose() {
                   <span className="w-4 h-4 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
                     <span className="material-symbols-outlined text-orange-600 text-[12px]">check</span>
                   </span>
-                  {f}
+                  {tr(f)}
                 </li>
               ))}
             </ul>
@@ -134,7 +137,7 @@ export default function RegisterChoose() {
             {/* CTA */}
             <div className="relative flex items-center justify-between mt-1">
               <span className="text-sm font-bold text-orange-600 group-hover:text-orange-700">
-                Start Earning
+                {tr("Continue as Worker")}
               </span>
               <div className="w-9 h-9 rounded-xl bg-orange-500 group-hover:bg-orange-600 flex items-center justify-center shadow-md group-hover:translate-x-1 transition-transform duration-200">
                 <span className="material-symbols-outlined text-white text-[18px]">arrow_forward</span>
@@ -145,9 +148,9 @@ export default function RegisterChoose() {
 
         {/* Bottom login link */}
         <p className="mt-8 text-sm text-slate-500 text-center">
-          Already have an account?{" "}
+          {tr("Already have an account?")}{" "}
           <Link to="/login" className="font-bold text-indigo-600 hover:text-indigo-700 hover:underline transition-colors">
-            Log In
+            {tr("Log In")}
           </Link>
         </p>
 
@@ -160,7 +163,7 @@ export default function RegisterChoose() {
           ].map((b) => (
             <div key={b.label} className="flex items-center gap-1.5 text-xs text-slate-400 font-semibold">
               <span className="material-symbols-outlined text-slate-300 text-[16px]">{b.icon}</span>
-              {b.label}
+              {tr(b.label)}
             </div>
           ))}
         </div>

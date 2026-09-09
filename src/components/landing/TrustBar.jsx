@@ -1,4 +1,5 @@
 import { useScrollReveal, useCountUp } from "../../hooks/useScrollReveal";
+import { useLanguage } from "../../context/LanguageContext";
 
 const STATS = [
   { icon: "groups", value: 50000, suffix: "+", label: "Happy Customers" },
@@ -8,6 +9,7 @@ const STATS = [
 ];
 
 function CounterItem({ stat, isRevealed }) {
+  const { tr } = useLanguage();
   const count = useCountUp(
     stat.isDecimal ? 48 : stat.value, // for 4.8, count to 48 then divide
     2000,
@@ -24,7 +26,7 @@ function CounterItem({ stat, isRevealed }) {
         <div className="text-2xl md:text-3xl font-black text-on-surface">
           {displayValue}<span className="text-brand-purple">{stat.suffix}</span>
         </div>
-        <div className="text-xs text-on-surface-variant uppercase tracking-wider font-semibold">{stat.label}</div>
+        <div className="text-xs text-on-surface-variant uppercase tracking-wider font-semibold">{tr(stat.label)}</div>
       </div>
     </div>
   );

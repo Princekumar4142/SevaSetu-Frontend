@@ -1,4 +1,5 @@
 import { useScrollReveal } from "../../hooks/useScrollReveal";
+import { useLanguage } from "../../context/LanguageContext";
 
 const FEATURES = [
   {
@@ -41,6 +42,7 @@ const FEATURES = [
 
 export default function WhyChooseUs() {
   const { ref, isRevealed } = useScrollReveal();
+  const { tr } = useLanguage();
 
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-white via-surface to-white relative overflow-hidden">
@@ -52,13 +54,13 @@ export default function WhyChooseUs() {
         {/* Section header */}
         <div className={`text-center mb-16 ${isRevealed ? "animate-fade-in-up" : "opacity-0"}`}>
           <span className="inline-block px-4 py-1.5 rounded-full bg-brand-purple/10 text-brand-purple text-xs font-bold uppercase tracking-widest mb-4">
-            Why SevaSetu
+            {tr("Why SevaSetu")}
           </span>
           <h2 className="text-3xl md:text-5xl font-black text-on-surface mb-4">
-            Why Customers <span className="text-gradient">Love Us</span>
+            {tr("Why Customers")} <span className="text-gradient">{tr("Love Us")}</span>
           </h2>
           <p className="text-on-surface-variant text-base md:text-lg max-w-2xl mx-auto">
-            We're not just another service platform. We're a movement to empower India's skilled workforce while delivering the best experience to you.
+            {tr("A platform designed to empower workers and deliver exceptional service to customers.")}
           </p>
         </div>
 
@@ -76,8 +78,8 @@ export default function WhyChooseUs() {
                 <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.gradient} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
                   <span className="material-symbols-outlined text-white text-[28px] fill">{feature.icon}</span>
                 </div>
-                <h3 className="text-lg font-bold text-on-surface mb-3">{feature.title}</h3>
-                <p className="text-sm text-on-surface-variant leading-relaxed">{feature.desc}</p>
+                <h3 className="text-lg font-bold text-on-surface mb-3">{tr(feature.title)}</h3>
+                <p className="text-sm text-on-surface-variant leading-relaxed">{tr(feature.desc)}</p>
               </div>
             </div>
           ))}
@@ -86,3 +88,4 @@ export default function WhyChooseUs() {
     </section>
   );
 }
+

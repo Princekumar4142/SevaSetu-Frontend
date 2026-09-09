@@ -91,7 +91,7 @@ export default function HomeVoiceAssistantCard() {
               <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight flex items-center justify-center lg:justify-start gap-2.5">
                 <span>{tr("Speak to Order")}</span>
                 <span className="text-sm font-bold bg-gradient-to-r from-amber-400 to-yellow-300 text-slate-900 px-2.5 py-0.5 rounded-lg shadow">
-                  1-Click Voice Order
+                  {tr("1-Click Voice Order")}
                 </span>
               </h2>
 
@@ -232,7 +232,7 @@ export default function HomeVoiceAssistantCard() {
             <div className="flex items-center gap-2 mb-2.5">
               <span className="material-symbols-outlined text-amber-400 text-[18px]">tips_and_updates</span>
               <span className="text-xs font-black uppercase tracking-wider text-slate-400">
-                {langCode === "en" ? "Try saying or tap to book:" : "बोलकर देखें या तुरंत क्लिक करें:"}
+                {tr("Try saying or tap to book:")}
               </span>
             </div>
 

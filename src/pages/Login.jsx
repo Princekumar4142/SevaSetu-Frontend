@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import { useLanguage } from "../context/LanguageContext";
 import { login, clearAuthError } from "../store/slices/authSlice";
 import { ROLE_HOME } from "../constants/roles";
 import Input from "../components/Input";
@@ -9,6 +10,7 @@ import { ErrorBanner } from "../components/Feedback";
 
 export default function Login() {
   const { dispatch, loading, error, isAuthenticated, role } = useAuth();
+  const { tr } = useLanguage();
   const navigate = useNavigate();
   const [form, setForm] = useState({ identifier: "", password: "" });
 
@@ -35,20 +37,20 @@ export default function Login() {
           {/* Header Badges */}
           <div className="flex items-center justify-between gap-2 mb-3">
             <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-brand-purple bg-purple-50 px-3.5 py-1 rounded-full border border-purple-100">
-              Secure Account Access
+              {tr("Secure Account Access")}
             </span>
             <span className="flex items-center gap-1.5 text-xs sm:text-sm font-bold text-emerald-600">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Live Portal
+              {tr("Live Portal")}
             </span>
           </div>
 
           {/* Heading */}
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-slate-900 tracking-tight">
-            Welcome back
+            {tr("Welcome back")}
           </h1>
           <p className="text-xs sm:text-sm md:text-base text-slate-500 mt-1.5 mb-6 sm:mb-8">
-            Log in to your SevaSetu customer, worker, or cooperative account.
+            {tr("Log in to your SevaSetu customer, worker, or cooperative account.")}
           </p>
 
           {/* Form */}
@@ -56,8 +58,8 @@ export default function Login() {
             <ErrorBanner message={error} />
 
             <Input
-              label="Phone Number or Email"
-              placeholder="e.g. 9876543210 or user@example.com"
+              label={tr("Phone Number or Email")}
+              placeholder={tr("e.g. 9876543210 or user@example.com")}
               value={form.identifier}
               onChange={(e) => setForm({ ...form, identifier: e.target.value })}
               required
@@ -65,7 +67,7 @@ export default function Login() {
             />
 
             <Input
-              label="Password"
+              label={tr("Password")}
               type="password"
               placeholder="••••••••"
               value={form.password}
@@ -79,10 +81,9 @@ export default function Login() {
                 to="/forgot-password"
                 className="text-xs sm:text-sm font-bold text-brand-purple hover:text-brand-purple-dark hover:underline transition-colors"
               >
-                Forgot Password?
+                {tr("Forgot password?")}
               </Link>
             </div>
-
 
             <Button
               type="submit"
@@ -90,16 +91,16 @@ export default function Login() {
               variant="purple"
               className="w-full py-3.5 sm:py-4 text-base font-bold shadow-lg shadow-brand-purple/25 mt-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
             >
-              <span>Login to Dashboard</span>
+              <span>{loading ? tr("Signing in...") : tr("Sign in")}</span>
               <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
             </Button>
           </form>
 
           {/* Signup Link */}
           <div className="pt-6 sm:pt-7 mt-6 sm:mt-8 border-t border-slate-100 text-center text-xs sm:text-sm text-slate-500">
-            Don't have an account?{" "}
+            {tr("Don't have an account?")}{" "}
             <Link to="/register" className="text-brand-purple font-bold hover:underline">
-              Create an Account
+              {tr("Create one now")}
             </Link>
           </div>
 
