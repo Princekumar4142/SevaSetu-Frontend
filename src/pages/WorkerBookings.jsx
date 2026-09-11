@@ -64,7 +64,42 @@ export default function WorkerBookings() {
   const [actionSuccess, setActionSuccess] = useState("");
   const [liveGpsCoords, setLiveGpsCoords] = useState(null);
   const [gpsBroadcasting, setGpsBroadcasting] = useState(false);
+  const [ratingModalJob, setRatingModalJob] = useState(null);
+  const [ratingStars, setRatingStars] = useState(5);
+  const [ratingReview, setRatingReview] = useState("");
+  const [customerRatings, setCustomerRatings] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("sevasetu_customer_ratings") || "{}");
+    } catch {
+      return {};
+    }
+  });
   const watchIdRef = useRef(null);
+
+  const handleSaveCustomerRating = (e) => {
+    e.preventDefault();
+    if (!ratingModalJob) return;
+    const updated = {
+      ...customerRatings,
+      [ratingModalJob._id]: {
+        stars: ratingStars,
+        review: ratingReview,
+        customerName: ratingModalJob.customer?.name || "Customer",
+        ratedAt: new Date().toISOString(),
+      },
+    };
+    setCustomerRatings(updated);
+    try {
+      localStorage.setItem("sevasetu_customer_ratings", JSON.stringify(updated));
+    } catch (err) {
+      console.error(err);
+    }
+    setRatingModalJob(null);
+    setRatingReview("");
+    setRatingStars(5);
+    setActionSuccess("Customer rating saved! Two-way feedback helps keep our cooperative community safe.");
+    setTimeout(() => setActionSuccess(""), 4000);
+  };
 
   useEffect(() => {
     if (location.state?.tab) {
@@ -912,10 +947,32 @@ export default function WorkerBookings() {
                         )}
 
                         {job.status === "COMPLETED" && (
-                          <span className="inline-flex items-center gap-1 text-brand-success font-label-md font-bold">
-                            <span className="material-symbols-outlined text-[18px] fill">verified</span>
-                            Payout Settled to Wallet
-                          </span>
+                          <div className="flex flex-wrap items-center gap-3">
+                            <span className="inline-flex items-center gap-1 text-brand-success font-label-md font-bold">
+                              <span className="material-symbols-outlined text-[18px] fill">verified</span>
+                              Payout Settled
+                            </span>
+
+                            {customerRatings[job._id] ? (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-900 border border-amber-200 rounded-lg text-xs font-bold">
+                                <span className="material-symbols-outlined text-[16px] text-amber-500 fill">star</span>
+                                You Rated: {customerRatings[job._id].stars}/5
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setRatingModalJob(job);
+                                  setRatingStars(5);
+                                  setRatingReview("");
+                                }}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-300 font-bold text-xs transition-colors cursor-pointer"
+                              >
+                                <span className="material-symbols-outlined text-[16px] text-amber-600">star</span>
+                                Rate Customer
+                              </button>
+                            )}
+                          </div>
                         )}
                       </div>
                     </div>
@@ -923,6 +980,99 @@ export default function WorkerBookings() {
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {/* Two-Way Rating Modal for Workers */}
+      {ratingModalJob && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2">
+                <div className="w-9 h-9 rounded-xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                  <span className="material-symbols-outlined text-xl">reviews</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900 text-sm">Rate Customer Experience</h3>
+                  <p className="text-[11px] text-slate-500">Booking #{ratingModalJob.bookingNumber}</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRatingModalJob(null)}
+                className="p-1 text-slate-400 hover:text-slate-600 rounded-lg cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCustomerRating} className="mt-4 space-y-4">
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-slate-500">Customer Name</p>
+                  <p className="font-bold text-slate-900 text-sm">{ratingModalJob.customer?.name || "Customer"}</p>
+                </div>
+                <span className="material-symbols-outlined text-2xl text-slate-400">person</span>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2 text-center">
+                  How was your experience?
+                </label>
+                <div className="flex items-center justify-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRatingStars(star)}
+                      className="p-1 text-3xl transition-transform hover:scale-110 cursor-pointer focus:outline-none"
+                    >
+                      <span
+                        className={`material-symbols-outlined text-3xl ${
+                          star <= ratingStars ? "text-amber-400 fill" : "text-slate-300"
+                        }`}
+                      >
+                        star
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                <p className="text-center text-xs font-semibold text-slate-600 mt-1">
+                  {ratingStars === 5
+                    ? "⭐⭐⭐⭐⭐ Outstanding & Courteous"
+                    : ratingStars === 4
+                    ? "⭐⭐⭐⭐ Very Good & Cooperative"
+                    : ratingStars === 3
+                    ? "⭐⭐⭐ Average Experience"
+                    : ratingStars === 2
+                    ? "⭐⭐ Unpunctual / Delayed Access"
+                    : "⭐ Poor / Hostile Environment"}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">
+                  Worker Feedback / Notes (Confidential to Cooperative)
+                </label>
+                <textarea
+                  rows={3}
+                  value={ratingReview}
+                  onChange={(e) => setRatingReview(e.target.value)}
+                  placeholder="e.g. Prompt access provided, clear instructions, polite family members..."
+                  className="w-full text-xs p-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500"
+                />
+              </div>
+
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <Button variant="outline" size="sm" type="button" onClick={() => setRatingModalJob(null)}>
+                  Cancel
+                </Button>
+                <Button variant="primary" size="sm" type="submit" className="bg-amber-600 hover:bg-amber-700 text-white">
+                  Submit Rating
+                </Button>
+              </div>
+            </form>
+          </div>
         </div>
       )}
     </div>

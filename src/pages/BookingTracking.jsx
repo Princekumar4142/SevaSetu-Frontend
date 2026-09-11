@@ -6,6 +6,9 @@ import { useSocket } from "../context/SocketContext";
 import { useLanguage } from "../context/LanguageContext";
 import bookingService from "../services/bookingService";
 import Avatar from "../components/Avatar";
+import DigitalInvoiceModal from "../components/booking/DigitalInvoiceModal";
+import GrievanceModal from "../components/booking/GrievanceModal";
+import DigitalWorkerIDCard from "../components/worker/DigitalWorkerIDCard";
 
 export default function BookingTracking() {
   const { bookingId } = useParams();
@@ -29,6 +32,9 @@ export default function BookingTracking() {
   const [dismissedBanner, setDismissedBanner] = useState(false);
   const [assignedToast, setAssignedToast] = useState(false);
   const [workerLiveGps, setWorkerLiveGps] = useState(null);
+  const [showInvoice, setShowInvoice] = useState(false);
+  const [showGrievance, setShowGrievance] = useState(false);
+  const [showIdCard, setShowIdCard] = useState(false);
 
   const [bookingData, setBookingData] = useState({
     bookingNumber: navState.bookingNumber || bookingId || "BK-" + Math.floor(100000 + Math.random() * 900000),
@@ -386,8 +392,17 @@ export default function BookingTracking() {
                 </div>
               </div>
 
-              {/* Quick Contact Buttons */}
-              <div className="flex items-center gap-2 sm:self-center">
+              {/* Quick Contact & Verification Buttons */}
+              <div className="flex items-center gap-2 sm:self-center flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => setShowIdCard(true)}
+                  className="px-3.5 py-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  title="Verify Technician Credentials & Scan QR"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-emerald-700">badge</span>
+                  <span>{tr("Verify ID")}</span>
+                </button>
                 {workerInfo.phone && (
                   <a
                     href={`tel:${workerInfo.phone}`}
@@ -399,11 +414,12 @@ export default function BookingTracking() {
                 )}
                 <button
                   type="button"
-                  onClick={() => alert(tr("Connecting to SevaSetu Support representative..."))}
-                  className="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-200 cursor-pointer"
+                  onClick={() => setShowGrievance(true)}
+                  className="px-3.5 py-2.5 rounded-xl bg-slate-100 hover:bg-rose-50 text-slate-700 hover:text-rose-700 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-slate-200 cursor-pointer"
+                  title="Report Issue to Cooperative Cell"
                 >
-                  <span className="material-symbols-outlined text-[16px]">support_agent</span>
-                  {tr("Support")}
+                  <span className="material-symbols-outlined text-[16px]">report_problem</span>
+                  <span>{tr("Dispute")}</span>
                 </button>
               </div>
             </div>
@@ -475,11 +491,19 @@ export default function BookingTracking() {
         {/* Bottom Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <Button
+            variant="outline"
+            className="flex-1 justify-center py-3 text-indigo-700 border-indigo-200 hover:bg-indigo-50"
+            onClick={() => setShowInvoice(true)}
+          >
+            <span className="material-symbols-outlined text-[18px]">receipt_long</span>
+            {tr("Download E-Invoice")}
+          </Button>
+          <Button
             variant="purple"
             className="flex-1 justify-center py-3"
             onClick={() => navigate("/customer/bookings")}
           >
-            <span className="material-symbols-outlined text-[18px]">receipt_long</span>
+            <span className="material-symbols-outlined text-[18px]">list_alt</span>
             {tr("View in My Bookings")}
           </Button>
           <Button
@@ -490,6 +514,47 @@ export default function BookingTracking() {
             {tr("Return to Home")}
           </Button>
         </div>
+
+        {/* Digital Tax Invoice Modal */}
+        {showInvoice && (
+          <DigitalInvoiceModal
+            booking={{
+              bookingNumber: bookingData.bookingNumber,
+              _id: bookingData._id,
+              slot: { date: bookingData.slot?.split("·")[0]?.trim(), time: bookingData.slot?.split("·")[1]?.trim() },
+              address: bookingData.address,
+              pricing: { totalAmount: bookingData.payable, paymentMethod: bookingData.paymentMethod },
+              worker: workerInfo ? { user: { name: workerInfo.name, phone: workerInfo.phone }, cooperative: { name: workerInfo.cooperative } } : null,
+            }}
+            onClose={() => setShowInvoice(false)}
+          />
+        )}
+
+        {/* Grievance Modal */}
+        {showGrievance && (
+          <GrievanceModal
+            booking={{
+              bookingNumber: bookingData.bookingNumber,
+              worker: workerInfo ? { user: { name: workerInfo.name } } : null,
+            }}
+            onClose={() => setShowGrievance(false)}
+          />
+        )}
+
+        {/* Digital Worker ID Badge Modal */}
+        {showIdCard && workerInfo && (
+          <DigitalWorkerIDCard
+            worker={{
+              _id: workerInfo.id || "verified-worker",
+              user: { name: workerInfo.name, phone: workerInfo.phone, profilePhoto: workerInfo.profilePhoto },
+              serviceCategory: workerInfo.vehicle || "Skilled Labor Professional",
+              cooperative: { name: workerInfo.cooperative },
+              rating: workerInfo.rating,
+              location: workerInfo.location,
+            }}
+            onClose={() => setShowIdCard(false)}
+          />
+        )}
       </div>
     </div>
   );

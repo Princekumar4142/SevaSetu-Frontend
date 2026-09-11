@@ -1,0 +1,19 @@
+{
+  "name": "SevaSetu AI - Labour Cooperative Marketplace",
+  "short_name": "SevaSetu",
+  "description": "Cooperative-owned digital service marketplace connecting verified skilled workers with households and rural enterprises",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f766e",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "lifestyle", "productivity", "utilities"]
+}

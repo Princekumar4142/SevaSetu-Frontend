@@ -5,6 +5,8 @@ import { LoadingState, ErrorBanner } from "../components/Feedback";
 import Badge from "../components/Badge";
 import Avatar from "../components/Avatar";
 import { useLanguage } from "../context/LanguageContext";
+import DigitalWorkerIDCard from "../components/worker/DigitalWorkerIDCard";
+import WorkerWelfareModal from "../components/worker/WorkerWelfareModal";
 
 const RAW_STEPS = [
   { key: "registered", labelKey: "Registered", icon: "how_to_reg", descKey: "Account created successfully" },
@@ -25,6 +27,8 @@ export default function WorkerDashboard() {
   const [worker, setWorker] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showIdCard, setShowIdCard] = useState(false);
+  const [showWelfareModal, setShowWelfareModal] = useState(false);
 
   useEffect(() => {
     workerService
@@ -87,13 +91,22 @@ export default function WorkerDashboard() {
           </div>
         </div>
 
-        <button
-          onClick={() => navigate("/worker/profile")}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all border border-slate-200 shrink-0 cursor-pointer"
-        >
-          <span className="material-symbols-outlined text-[16px] text-brand-purple">edit</span>
-          {tr("Edit Profile & Photo")}
-        </button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setShowIdCard(true)}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs transition-all shadow-md shadow-emerald-700/20 shrink-0 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px]">badge</span>
+            {tr("Official Digital ID")}
+          </button>
+          <button
+            onClick={() => navigate("/worker/profile")}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-all border border-slate-200 shrink-0 cursor-pointer"
+          >
+            <span className="material-symbols-outlined text-[16px] text-brand-purple">edit</span>
+            {tr("Edit Profile & Photo")}
+          </button>
+        </div>
       </div>
 
       {/* ── Status Banner (Clean Light Theme) ── */}
@@ -385,6 +398,18 @@ export default function WorkerDashboard() {
               <span className="text-[9px] font-bold text-slate-600 block mt-1">{tr("Scan to Verify")}</span>
             </div>
           </div>
+
+          <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+            <span className="text-[10px] text-emerald-200">Aadhaar Linked &amp; PACS Verified Stamp</span>
+            <button
+              type="button"
+              onClick={() => setShowIdCard(true)}
+              className="text-xs font-bold text-amber-300 hover:text-amber-200 flex items-center gap-1 cursor-pointer"
+            >
+              <span>{tr("View Full Printable ID Badge")}</span>
+              <span className="material-symbols-outlined text-[14px]">arrow_forward</span>
+            </button>
+          </div>
         </div>
 
         {/* Social Security & Insurance Card */}
@@ -403,20 +428,37 @@ export default function WorkerDashboard() {
             </div>
 
             <div className="space-y-2.5">
+              {/* Accidental Insurance */}
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
                 <div>
                   <h5 className="text-xs font-bold text-slate-900">{tr("PMSBY Accidental Insurance")}</h5>
-                  <p className="text-[10px] text-slate-500">Pradhan Mantri Suraksha Bima Yojana</p>
+                  <p className="text-[10px] text-slate-500">Policy: PMSBY-FED-2026-BR · Nominee: Registered</p>
                 </div>
                 <span className="text-xs font-black text-emerald-700">₹2,00,000 Cover</span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+              {/* Cooperative Welfare Fund with Claim Button */}
+              <div className="p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 flex items-center justify-between gap-2">
                 <div>
                   <h5 className="text-xs font-bold text-slate-900">{tr("Cooperative Welfare Fund")}</h5>
-                  <p className="text-[10px] text-slate-500">{tr("Emergency medical & children scholarship")}</p>
+                  <p className="text-[10px] text-slate-500">₹2,450 Reserve (Medical &amp; Equipment)</p>
                 </div>
-                <span className="text-xs font-black text-indigo-700">{tr("Active Claimable")}</span>
+                <button
+                  type="button"
+                  onClick={() => setShowWelfareModal(true)}
+                  className="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-[11px] shrink-0 shadow-xs cursor-pointer"
+                >
+                  {tr("Submit Claim")}
+                </button>
+              </div>
+
+              {/* Annual Dividend Share History */}
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                <div>
+                  <h5 className="text-xs font-bold text-slate-900">{tr("Annual Cooperative Dividend")}</h5>
+                  <p className="text-[10px] text-slate-500">FY 2025-26 Surplus Payout (Direct Bank Transfer)</p>
+                </div>
+                <span className="text-xs font-black text-indigo-700">₹3,200 Credited</span>
               </div>
 
               <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
@@ -439,6 +481,16 @@ export default function WorkerDashboard() {
           </button>
         </div>
       </div>
+
+      {/* Digital Worker ID Card Modal */}
+      {showIdCard && worker && (
+        <DigitalWorkerIDCard worker={worker} onClose={() => setShowIdCard(false)} />
+      )}
+
+      {/* Worker Welfare Claim Modal */}
+      {showWelfareModal && worker && (
+        <WorkerWelfareModal worker={worker} onClose={() => setShowWelfareModal(false)} />
+      )}
     </div>
   );
 }

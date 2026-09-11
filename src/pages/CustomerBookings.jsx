@@ -6,6 +6,8 @@ import Badge from "../components/Badge";
 import { LoadingState, EmptyState } from "../components/Feedback";
 import { useSocket } from "../context/SocketContext";
 import { useLanguage } from "../context/LanguageContext";
+import DigitalInvoiceModal from "../components/booking/DigitalInvoiceModal";
+import GrievanceModal from "../components/booking/GrievanceModal";
 
 const MOCK_CUSTOMER_BOOKINGS = [
   {
@@ -71,6 +73,8 @@ export default function CustomerBookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedBooking, setSelectedBooking] = useState(null);
+  const [invoiceBooking, setInvoiceBooking] = useState(null);
+  const [grievanceBooking, setGrievanceBooking] = useState(null);
   const [liveToast, setLiveToast] = useState("");
 
   const loadBookings = useCallback(async () => {
@@ -375,11 +379,31 @@ export default function CustomerBookings() {
                       <Button
                         variant="outline"
                         size="sm"
+                        onClick={() => setInvoiceBooking(booking)}
+                        className="flex-1 sm:flex-initial justify-center text-indigo-700 border-indigo-200 hover:bg-indigo-50"
+                        title={tr("Download Invoice")}
+                      >
+                        <span className="material-symbols-outlined text-[16px]">receipt_long</span>
+                        {tr("Invoice")}
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="sm"
                         onClick={() => setSelectedBooking(booking)}
                         className="flex-1 sm:flex-initial justify-center"
                       >
                         {tr("Details")}
                       </Button>
+
+                      <button
+                        type="button"
+                        onClick={() => setGrievanceBooking(booking)}
+                        className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-rose-50 text-slate-500 hover:text-rose-600 flex items-center justify-center transition-colors shrink-0"
+                        title={tr("Report Grievance / Dispute")}
+                      >
+                        <span className="material-symbols-outlined text-[16px]">report_problem</span>
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -445,13 +469,48 @@ export default function CustomerBookings() {
                 </div>
               </div>
 
-              <div className="pt-4 flex justify-end">
-                <Button variant="purple" onClick={() => setSelectedBooking(null)}>
-                  {tr("Close")}
-                </Button>
+              <div className="pt-4 flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const b = selectedBooking;
+                    setSelectedBooking(null);
+                    setGrievanceBooking(b);
+                  }}
+                  className="text-xs font-bold text-rose-600 hover:text-rose-700 flex items-center gap-1 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-[16px]">report_problem</span>
+                  <span>Report Dispute</span>
+                </button>
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      const b = selectedBooking;
+                      setSelectedBooking(null);
+                      setInvoiceBooking(b);
+                    }}
+                  >
+                    <span className="material-symbols-outlined text-[16px]">receipt_long</span>
+                    <span>Download Invoice</span>
+                  </Button>
+                  <Button variant="purple" onClick={() => setSelectedBooking(null)}>
+                    {tr("Close")}
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
+        )}
+
+        {/* Digital Tax Invoice Modal */}
+        {invoiceBooking && (
+          <DigitalInvoiceModal booking={invoiceBooking} onClose={() => setInvoiceBooking(null)} />
+        )}
+
+        {/* Dispute / Grievance Redressal Modal */}
+        {grievanceBooking && (
+          <GrievanceModal booking={grievanceBooking} onClose={() => setGrievanceBooking(null)} />
         )}
       </div>
     </div>

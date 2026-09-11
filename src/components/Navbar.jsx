@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import Logo from "./Logo";
 import LanguageSelector from "./LanguageSelector";
+import InstallPWAButton from "./InstallPWAButton";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function Navbar() {
@@ -20,6 +21,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 md:gap-md">
+          {/* PWA App Install Button */}
+          <InstallPWAButton />
+
           {/* Language Selector */}
           <LanguageSelector />
 

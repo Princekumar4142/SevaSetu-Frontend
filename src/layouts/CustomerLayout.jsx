@@ -10,6 +10,7 @@ import AddressModal from "../components/AddressModal";
 import Footer from "../components/Footer";
 import Avatar from "../components/Avatar";
 import LanguageSelector from "../components/LanguageSelector";
+import InstallPWAButton from "../components/InstallPWAButton";
 
 const PUBLIC_NAV_LINKS = [
   { label: "Services", href: "/customer/services" },
@@ -96,6 +97,9 @@ export default function CustomerLayout() {
                 </Link>
               ))}
             </nav>
+
+            {/* PWA App Install */}
+            <InstallPWAButton />
 
             {/* Global Language Toggle */}
             <LanguageSelector />

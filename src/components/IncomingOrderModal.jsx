@@ -6,7 +6,7 @@ import { useLanguage } from "../context/LanguageContext";
 import Avatar from "./Avatar";
 import api from "../services/api";
 
-const ACCEPT_TIMEOUT_SECS = 30;
+const ACCEPT_TIMEOUT_SECS = 45;
 
 // Synthesize 100% reliable loud WAV audio blob for HTML5 <audio> element
 let cachedRingtoneUrl = null;
