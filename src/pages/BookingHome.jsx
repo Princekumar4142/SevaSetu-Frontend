@@ -17,7 +17,6 @@ import LandingHero from "../components/landing/LandingHero";
 import HomeVoiceAssistantCard from "../components/HomeVoiceAssistantCard";
 import HowItWorks from "../components/landing/HowItWorks";
 import JoinAsWorker from "../components/landing/JoinAsWorker";
-import ExtraFeaturesSection from "../components/booking/ExtraFeaturesSection";
 
 /** Wrapper that applies scroll-reveal to each service section. */
 function ServiceSection({ title, items, onSelect, exploreLink, bgClass = "bg-white", badge = null }) {
@@ -96,10 +95,16 @@ export default function BookingHome() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════
-          CORE SECTION: Extra Features
+          CORE SECTION: Labour Cooperative Skilled Workforce (Verified Trades)
        ═══════════════════════════════════════════════════════ */}
       <div className="flex-1">
-        <ExtraFeaturesSection />
+        <ServiceSection
+          title="🛠️ Labour Cooperative Skilled Workforce (Verified Trades)"
+          badge="Federation Verified Pool · 10 Core Skilled Trades · Direct Fair Living Wages"
+          items={COOP_SKILLED_SERVICES}
+          onSelect={handleSelectService}
+          bgClass="bg-white"
+        />
 
         <ServiceSection
           title="🚜 Agri & Farm Mechanization Services"
