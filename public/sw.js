@@ -1,4 +1,4 @@
-const CACHE_NAME = "sevasetu-v1";
+const CACHE_NAME = "sevasetu-v2";
 const ASSETS_TO_CACHE = [
   "/",
   "/index.html",
@@ -32,16 +32,20 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Network-first with cache fallback
+// Network-first with cache fallback ONLY for same-origin static assets
 self.addEventListener("fetch", (event) => {
-  if (event.request.method !== "GET" || !event.request.url.startsWith("http")) {
-    return;
+  // CRITICAL: NEVER intercept cross-origin requests (e.g. Railway backend) or /api/ requests
+  if (
+    event.request.method !== "GET" ||
+    !event.request.url.startsWith(self.location.origin) ||
+    event.request.url.includes("/api/")
+  ) {
+    return; // Pass through natively to network without service worker intervention
   }
 
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
-        // Cache successful GET responses for assets
         if (networkResponse && networkResponse.status === 200 && networkResponse.type === "basic") {
           const responseClone = networkResponse.clone();
           caches.open(CACHE_NAME).then((cache) => {
@@ -50,14 +54,14 @@ self.addEventListener("fetch", (event) => {
         }
         return networkResponse;
       })
-      .catch(() => {
-        // Offline fallback
-        return caches.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse;
-          if (event.request.mode === "navigate") {
-            return caches.match("/index.html");
-          }
-        });
+      .catch(async () => {
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) return cachedResponse;
+        if (event.request.mode === "navigate") {
+          const indexMatch = await caches.match("/index.html");
+          if (indexMatch) return indexMatch;
+        }
+        return new Response("Service Unavailable", { status: 503, statusText: "Offline" });
       })
   );
 });
