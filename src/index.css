@@ -285,8 +285,8 @@ html.dark {
 }
 
 .dark body {
-  background-color: #0b0f19;
-  color: #f8fafc;
+  background-color: #0b0f19 !important;
+  color: #f8fafc !important;
 }
 
 /* M3 Surface & Layout tokens in Dark Mode */
@@ -299,29 +299,121 @@ html.dark {
 .dark .bg-surface-bright {
   background-color: #111827 !important;
 }
-.dark .bg-surface-container-lowest {
-  background-color: #0f172a !important;
-}
+.dark .bg-surface-container-lowest,
 .dark .bg-surface-container-low {
-  background-color: #131d31 !important;
+  background-color: #111a2e !important;
 }
 .dark .bg-surface-container {
-  background-color: #1e293b !important;
+  background-color: #16223b !important;
 }
 .dark .bg-surface-container-high {
-  background-color: #243048 !important;
+  background-color: #1d2c4d !important;
 }
 .dark .bg-surface-container-highest {
-  background-color: #2d3c58 !important;
+  background-color: #24355a !important;
 }
-.dark .border-outline-variant {
-  border-color: #243048 !important;
+
+/* All standard white containers and cards become dark sleek panels */
+.dark .bg-white {
+  background-color: #111a2e !important;
 }
+.dark .bg-white\/80,
+.dark .bg-white\/90,
+.dark .bg-white\/95 {
+  background-color: rgba(17, 26, 46, 0.95) !important;
+}
+
+/* Light slate fills in dark mode */
+.dark .bg-slate-50,
+.dark .bg-slate-50\/80,
+.dark .bg-slate-100,
+.dark .bg-slate-100\/80,
+.dark .bg-slate-100\/90 {
+  background-color: #162035 !important;
+}
+.dark .bg-slate-200,
+.dark .bg-slate-200\/60,
+.dark .bg-slate-200\/80 {
+  background-color: #1e2b47 !important;
+}
+
+/* Gradients that fade to white */
+.dark [class*="to-white"] {
+  --tw-gradient-to: #0b0f19 var(--tw-gradient-to-position) !important;
+}
+.dark [class*="via-white"] {
+  --tw-gradient-stops: var(--tw-gradient-from), #0f172a var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+}
+.dark [class*="from-slate-50"] {
+  --tw-gradient-from: #0b0f19 var(--tw-gradient-from-position) !important;
+}
+
+/* Headings & Text in Dark Mode */
+.dark .text-slate-900,
+.dark .text-slate-800,
+.dark .text-primary,
 .dark .text-on-surface {
-  color: #f1f5f9 !important;
+  color: #f8fafc !important;
 }
+
+.dark .text-slate-700,
+.dark .text-slate-600 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-slate-500,
+.dark .text-slate-400,
 .dark .text-on-surface-variant {
   color: #94a3b8 !important;
+}
+
+/* Borders in Dark Mode */
+.dark .border-slate-100,
+.dark .border-slate-200,
+.dark .border-slate-200\/80,
+.dark .border-slate-200\/90,
+.dark .border-outline-variant,
+.dark .border-outline-variant\/30,
+.dark .border-outline-variant\/80 {
+  border-color: #22304d !important;
+}
+
+.dark .divide-slate-100 > * {
+  border-color: #22304d !important;
+}
+
+/* Hover States in Dark Mode */
+.dark .hover\:bg-slate-50:hover,
+.dark .hover\:bg-slate-100:hover {
+  background-color: #1b2842 !important;
+}
+.dark .hover\:bg-slate-200:hover {
+  background-color: #243454 !important;
+}
+.dark .hover\:border-slate-300:hover,
+.dark .hover\:border-slate-400:hover {
+  border-color: #3b4d75 !important;
+}
+
+/* Inputs & Form Fields in Dark Mode */
+.dark input:not([type="checkbox"]):not([type="radio"]),
+.dark textarea,
+.dark select {
+  background-color: #0f172a;
+  color: #f8fafc;
+  border-color: #22304d;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #64748b !important;
+}
+
+/* Dark Mode Dropdown & Card Shadows */
+.dark .shadow-sm,
+.dark .shadow-md,
+.dark .shadow-lg,
+.dark .shadow-xl {
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.4) !important;
 }
 
 /* ── Mobile Sidebar Drawer Animation ── */

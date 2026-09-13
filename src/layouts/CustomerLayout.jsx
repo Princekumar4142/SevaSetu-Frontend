@@ -100,7 +100,7 @@ export default function CustomerLayout() {
             </nav>
 
             {/* Theme Toggle (Light / Dark / System) */}
-            <ThemeSelector />
+            <ThemeSelector variant="segmented" />
 
             {/* PWA App Install */}
             <InstallPWAButton />

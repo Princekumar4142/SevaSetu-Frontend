@@ -23,7 +23,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-2 md:gap-md">
           {/* Theme Selector */}
-          <ThemeSelector />
+          <ThemeSelector variant="segmented" />
 
           {/* PWA App Install Button */}
           <InstallPWAButton />
