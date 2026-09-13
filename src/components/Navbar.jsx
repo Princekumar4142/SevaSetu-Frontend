@@ -38,11 +38,24 @@ export default function Navbar() {
               type="button"
               onClick={() => setDrawerOpen(true)}
               aria-label="Open Navigation Menu"
-              className="w-10 h-10 rounded-xl bg-slate-100/90 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 flex flex-col items-center justify-center gap-1 transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700 active:scale-95 group"
+              title="Navigation Menu"
+              className="w-10 h-10 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 flex items-center justify-center transition-all cursor-pointer border border-slate-200/80 dark:border-slate-700 active:scale-95 group"
             >
-              <span className="w-5 h-0.5 bg-current rounded-full transition-all group-hover:w-5.5" />
-              <span className="w-5 h-0.5 bg-current rounded-full transition-all" />
-              <span className="w-3.5 h-0.5 bg-current rounded-full self-start ml-2.5 transition-all group-hover:w-5" />
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="w-5 h-5 transition-transform group-hover:scale-105"
+              >
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="18" x2="20" y2="18" />
+              </svg>
             </button>
           </div>
         </div>
