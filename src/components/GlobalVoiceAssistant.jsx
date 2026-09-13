@@ -67,9 +67,9 @@ export default function GlobalVoiceAssistant() {
 
   return (
     <>
-      {/* ── Floating Launcher Trigger Button ── */}
+      {/* ── Floating Launcher Trigger Button (Elevated on mobile to avoid overlapping BottomTabBar) ── */}
       {!isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+        <div className="fixed bottom-[84px] right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-3">
           {/* Pulsing Hint Tooltip */}
           <div
             onClick={() => {
@@ -112,7 +112,7 @@ export default function GlobalVoiceAssistant() {
 
       {/* ── Voice Assistant Modal / Chat Panel ── */}
       {isOpen && (
-        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[420px] max-h-[85vh] h-[640px] bg-white rounded-3xl shadow-2xl border border-slate-200/80 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 z-50 w-[calc(100vw-32px)] sm:w-[420px] max-h-[78vh] sm:max-h-[85vh] h-[580px] sm:h-[640px] bg-white dark:bg-[#111726] rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300">
           {/* Header */}
           <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-primary p-4 text-white flex items-center justify-between shrink-0 shadow-md">
             <div className="flex items-center gap-3">

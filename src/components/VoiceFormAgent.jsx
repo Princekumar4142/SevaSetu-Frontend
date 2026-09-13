@@ -142,7 +142,7 @@ export default function VoiceFormAgent({ fields, onFieldFill, onComplete }) {
         <button
           type="button"
           onClick={agent.startAgent}
-          className={`fixed bottom-5 right-5 z-50 w-[58px] h-[58px] rounded-full
+          className={`fixed bottom-[84px] right-4 sm:bottom-5 sm:right-5 z-40 w-[58px] h-[58px] rounded-full
             bg-gradient-to-br from-purple-600 to-indigo-700
             text-white shadow-2xl flex flex-col items-center justify-center gap-0.5
             vfa-btn-idle hover:scale-110 active:scale-95 transition-transform cursor-pointer group`}

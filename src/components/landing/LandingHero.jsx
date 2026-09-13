@@ -345,10 +345,10 @@ export default function LandingHero() {
   };
 
   return (
-    <section className="relative bg-gradient-to-b from-emerald-50/40 via-white to-slate-50 py-10 sm:py-14 lg:py-16 border-b border-slate-200/80 overflow-hidden">
+    <section className="relative bg-gradient-to-b from-emerald-50/40 via-white to-slate-50 dark:from-[#080c14] dark:via-[#0c1220] dark:to-[#080c14] py-10 sm:py-14 lg:py-16 border-b border-slate-200/80 dark:border-slate-800/80 overflow-hidden">
       {/* Soft background ambient light */}
-      <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-100/40 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-10 w-80 h-80 bg-amber-100/30 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-emerald-100/40 dark:bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 left-10 w-80 h-80 bg-amber-100/30 dark:bg-indigo-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-screen-xl mx-auto px-4 sm:px-8 lg:px-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
@@ -357,9 +357,9 @@ export default function LandingHero() {
           <div className="lg:col-span-7 space-y-6">
 
             {/* Trust Pill */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white border border-emerald-200/80 shadow-sm">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-700/50 shadow-sm">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-xs font-bold text-emerald-900 tracking-wide">
+              <span className="text-xs font-bold text-emerald-900 dark:text-emerald-300 tracking-wide">
                 {tr("Labour Cooperative Federation · Skilled Trades & Rural Services")}
               </span>
             </div>
@@ -368,25 +368,25 @@ export default function LandingHero() {
             <div>
               {isAuthenticated ? (
                 <div className="space-y-1">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
                     {tr("Welcome Back · Cooperative Member Portal")}
                   </span>
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
-                    {tr("Hello,")} <span className="text-emerald-700">{firstName}</span>.
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
+                    {tr("Hello,")} <span className="text-emerald-600 dark:text-emerald-400">{firstName}</span>.
                   </h1>
-                  <p className="text-sm sm:text-base text-slate-600 max-w-xl pt-1">
+                  <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-xl pt-1">
                     {tr("Book verified cooperative electricians, plumbers, carpenters, domestic helpers, caregivers, technicians and farm operators.")}
                   </p>
                 </div>
               ) : (
                 <div className="space-y-1">
-                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-tight">
+                  <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 dark:text-white leading-tight">
                     {tr("Cooperative Services for")} <br />
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-700 to-teal-700">
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-300">
                       {tr("Households & Rural Bharat.")}
                     </span>
                   </h1>
-                  <p className="text-sm sm:text-base text-slate-600 max-w-xl pt-1 leading-relaxed">
+                  <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 max-w-xl pt-1 leading-relaxed">
                     {tr("Connecting Labour Cooperative Federations with households & enterprises for verified electricians, plumbers, carpenters, painters, domestic helpers, caregivers, drivers, gardeners, cleaners & technicians.")}
                   </p>
                 </div>
@@ -395,14 +395,14 @@ export default function LandingHero() {
 
             {/* Elevated Light Search Bar */}
             <form onSubmit={handleSearch} className="relative max-w-xl">
-              <div className="flex items-center bg-white rounded-2xl p-1.5 sm:p-2 shadow-lg shadow-indigo-100/60 border border-slate-200/90 focus-within:border-indigo-400 focus-within:ring-4 focus-within:ring-indigo-100 transition-all overflow-hidden w-full">
-                <span className="material-symbols-outlined text-indigo-500 ml-2 sm:ml-3 text-[20px] sm:text-[22px] shrink-0">search</span>
+              <div className="flex items-center bg-white dark:bg-[#111726] rounded-2xl p-1.5 sm:p-2 shadow-lg shadow-indigo-100/60 dark:shadow-none border border-slate-200/90 dark:border-slate-800 focus-within:border-indigo-400 dark:focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-100 dark:focus-within:ring-indigo-950/40 transition-all overflow-hidden w-full">
+                <span className="material-symbols-outlined text-indigo-500 dark:text-indigo-400 ml-2 sm:ml-3 text-[20px] sm:text-[22px] shrink-0">search</span>
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   placeholder={tr("Search for services...")}
-                  className="min-w-0 w-full flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 text-sm sm:text-base placeholder:text-slate-400 bg-transparent font-medium"
+                  className="min-w-0 w-full flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 dark:text-white text-sm sm:text-base placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent font-medium"
                 />
 
                 {/* Voice Booking Trigger Button */}
@@ -430,7 +430,7 @@ export default function LandingHero() {
 
             {/* Quick Skilled Trade Pills */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-1.5 scrollbar-none pt-1">
-              <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 shrink-0 mr-1">
+              <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400 shrink-0 mr-1">
                 {tr("Quick Book:")}
               </span>
               {POPULAR_TAGS.map((tag) => (
@@ -438,7 +438,7 @@ export default function LandingHero() {
                   key={tag.id}
                   type="button"
                   onClick={() => navigate(`/customer/services/${tag.id}`)}
-                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-400 text-slate-700 hover:text-emerald-800 transition-all shrink-0 shadow-sm cursor-pointer"
+                  className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-white dark:bg-[#131b2c] hover:bg-emerald-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-700/80 hover:border-emerald-400 dark:hover:border-slate-500 text-slate-700 dark:text-slate-200 hover:text-emerald-800 dark:hover:text-white transition-all shrink-0 shadow-xs cursor-pointer"
                 >
                   <span className="text-xs">{tag.emoji}</span>
                   <span>{tr(tag.label)}</span>
@@ -446,10 +446,9 @@ export default function LandingHero() {
               ))}
             </div>
 
-
             {/* ── Root Category Image Tiles ── */}
             <div className="pt-2">
-              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
+              <p className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">
                 {tr("Explore Services with 1-Tap Booking")}
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-3">
@@ -458,10 +457,10 @@ export default function LandingHero() {
                     key={cat.id}
                     type="button"
                     onClick={() => navigate(`/customer/services/${cat.id}`)}
-                    className={`group flex flex-col items-center bg-gradient-to-b ${cat.bg} border border-slate-200/80 ${cat.border} rounded-2xl overflow-hidden hover:shadow-lg ${cat.shadow} hover:-translate-y-1 transition-all duration-300 text-center cursor-pointer`}
+                    className={`group flex flex-col items-center bg-gradient-to-b ${cat.bg} dark:from-[#141d2e] dark:to-[#0f1726] border border-slate-200/80 dark:border-slate-800/90 ${cat.border} dark:hover:border-slate-600 rounded-2xl overflow-hidden hover:shadow-lg dark:hover:shadow-indigo-950/30 ${cat.shadow} hover:-translate-y-1 transition-all duration-300 text-center cursor-pointer`}
                   >
                     {/* Image */}
-                    <div className="w-full h-20 sm:h-24 overflow-hidden">
+                    <div className="w-full h-20 sm:h-24 overflow-hidden bg-slate-100 dark:bg-slate-800">
                       <img
                         src={cat.image}
                         alt={cat.label}
@@ -472,7 +471,7 @@ export default function LandingHero() {
                     {/* Label */}
                     <div className="px-2 py-2.5 flex flex-col items-center">
                       <span className="text-lg leading-none mb-1">{cat.emoji}</span>
-                      <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-600 leading-tight">
+                      <span className="text-xs font-bold text-slate-800 dark:text-slate-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 leading-tight">
                         {tr(cat.label)}
                       </span>
                     </div>
@@ -487,79 +486,79 @@ export default function LandingHero() {
           <div className="lg:col-span-5 space-y-4">
 
             {/* ── SevaSetu Workflow & Social Impact Card ── */}
-            <div className="bg-white rounded-2xl p-4 sm:p-5 border border-slate-200/90 shadow-xl shadow-slate-200/60 relative overflow-hidden group">
+            <div className="bg-white dark:bg-[#111726] rounded-2xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-xl shadow-slate-200/60 dark:shadow-none relative overflow-hidden group">
               {/* Card Header */}
-              <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-100">
+              <div className="flex items-center justify-between mb-3 pb-2.5 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-2">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-xs font-black text-slate-800 uppercase tracking-wider">
+                  <span className="text-xs font-black text-slate-800 dark:text-slate-100 uppercase tracking-wider">
                     {tr("How SevaSetu Agri-Coop Works")}
                   </span>
                 </div>
-                <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-100">
+                <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-100 dark:border-emerald-800/50">
                   {tr("Fair & Transparent")}
                 </span>
               </div>
 
               {/* Infographic Visual Card */}
-              <div className="rounded-2xl overflow-hidden border border-outline-variant/60 shadow-inner bg-surface-container-low group">
+              <div className="rounded-2xl overflow-hidden border border-outline-variant/60 dark:border-slate-700/60 shadow-inner bg-surface-container-low dark:bg-white/95 p-1 group">
                 <img
                   src={workflowImg}
                   alt="SevaSetu Rural Cooperative Workflow"
-                  className="w-full h-auto object-cover group-hover:scale-[1.02] transition-transform duration-500"
+                  className="w-full h-auto object-cover rounded-xl group-hover:scale-[1.01] transition-transform duration-500"
                   loading="lazy"
                 />
               </div>
 
               {/* 4 Connected Step Sequence with Arrow Indicators (1 → 2 → 3 → 4) */}
               <div className="mt-3 space-y-2">
-                <div className="flex items-center justify-between px-1 text-[10px] font-black uppercase tracking-wider text-slate-400">
+                <div className="flex items-center justify-between px-1 text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-slate-400">
                   <span>{tr("Farm-to-Doorstep Flow")}</span>
                   <span>1 → 2 → 3 → 4</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-[#151f33] hover:bg-emerald-50/50 dark:hover:bg-[#1a2842] border border-slate-200/80 dark:border-slate-700/70 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-emerald-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">1</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">{tr("Book Farm Service")}</h5>
-                      <p className="text-[10px] text-slate-500 truncate">{tr("Tractor, pump & tech in 2 mins")}</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 dark:text-white leading-tight">{tr("Book Farm Service")}</h5>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{tr("Tractor, pump & tech in 2 mins")}</p>
                     </div>
                   </div>
 
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-indigo-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-[#151f33] hover:bg-indigo-50/50 dark:hover:bg-[#1a2842] border border-slate-200/80 dark:border-slate-700/70 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">2</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">{tr("Verified Arrival")}</h5>
-                      <p className="text-[10px] text-slate-500 truncate">{tr("PACS & certified technician")}</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 dark:text-white leading-tight">{tr("Verified Arrival")}</h5>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{tr("PACS & certified technician")}</p>
                     </div>
                   </div>
 
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-amber-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-[#151f33] hover:bg-amber-50/50 dark:hover:bg-[#1a2842] border border-slate-200/80 dark:border-slate-700/70 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">3</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">{tr("5-Star Field Service")}</h5>
-                      <p className="text-[10px] text-slate-500 truncate">{tr("Quality harvest & repair output")}</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 dark:text-white leading-tight">{tr("5-Star Field Service")}</h5>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{tr("Quality harvest & repair output")}</p>
                     </div>
                   </div>
 
-                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 hover:bg-purple-50/50 border border-slate-200/80 transition-colors flex items-start gap-2">
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-slate-50 dark:bg-[#151f33] hover:bg-purple-50/50 dark:hover:bg-[#1a2842] border border-slate-200/80 dark:border-slate-700/70 transition-colors flex items-start gap-2">
                     <span className="w-5 h-5 rounded-full bg-purple-600 text-white flex items-center justify-center text-[10px] font-black shrink-0 mt-0.5">4</span>
                     <div className="min-w-0">
-                      <h5 className="text-[11px] font-bold text-slate-900 leading-tight">{tr("Direct Earnings")}</h5>
-                      <p className="text-[10px] text-slate-500 truncate">{tr("Fair income & dignity")}</p>
+                      <h5 className="text-[11px] font-bold text-slate-900 dark:text-white leading-tight">{tr("Direct Earnings")}</h5>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{tr("Fair income & dignity")}</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Bottom Impact Strip */}
-              <div className="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px] sm:text-xs">
-                <span className="font-bold text-emerald-600 flex items-center gap-1">
+              <div className="mt-3 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] sm:text-xs">
+                <span className="font-bold text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
                   <span className="material-symbols-outlined text-[15px]">check_circle</span>
                   {tr("100% Direct Payouts")}
                 </span>
-                <span className="font-semibold text-slate-600 flex items-center gap-1">
+                <span className="font-semibold text-slate-600 dark:text-slate-300 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
                   {tr("Social Impact 🌱")}
                 </span>

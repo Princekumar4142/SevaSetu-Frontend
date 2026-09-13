@@ -24,11 +24,11 @@ function ServiceSection({ title, items, onSelect, exploreLink, bgClass = "bg-whi
   const { tr } = useLanguage();
 
   return (
-    <div ref={ref} className={`border-b border-outline-variant/30 py-12 md:py-16 ${bgClass}`}>
+    <div ref={ref} className={`border-b border-slate-200/80 dark:border-slate-800/80 py-12 md:py-16 ${bgClass}`}>
       <div className={`px-[16px] md:px-[64px] max-w-screen-xl mx-auto section-reveal ${isRevealed ? "revealed" : ""}`}>
         {badge && (
           <div className="mb-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-800">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/50">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
               {tr(badge)}
             </span>
@@ -103,7 +103,7 @@ export default function BookingHome() {
           badge="Federation Verified Pool · 10 Core Skilled Trades · Direct Fair Living Wages"
           items={COOP_SKILLED_SERVICES}
           onSelect={handleSelectService}
-          bgClass="bg-white"
+          bgClass="bg-white dark:bg-[#080c14]"
         />
 
         <ServiceSection
@@ -111,7 +111,7 @@ export default function BookingHome() {
           badge="Cooperative Fleet · Tractor, Solar Pump & Agri-Drone"
           items={AGRI_MECHANIZATION_SERVICES}
           onSelect={handleSelectService}
-          bgClass="bg-slate-50/80"
+          bgClass="bg-slate-50/80 dark:bg-[#0c101a]"
         />
 
         <ServiceSection
@@ -119,7 +119,7 @@ export default function BookingHome() {
           badge="Value Addition · Cold Storage, Grain Sorters & Mills"
           items={FOODTECH_PROCESSING_SERVICES}
           onSelect={handleSelectService}
-          bgClass="bg-slate-50/80"
+          bgClass="bg-slate-50/80 dark:bg-[#0c101a]"
         />
 
         <ServiceSection
@@ -127,7 +127,7 @@ export default function BookingHome() {
           badge="Gram Panchayat & Jal Jeevan Mission Skilled Labor"
           items={RURAL_INFRASTRUCTURE_SERVICES}
           onSelect={handleSelectService}
-          bgClass="bg-white"
+          bgClass="bg-white dark:bg-[#080c14]"
         />
 
         <ServiceSection
@@ -135,7 +135,7 @@ export default function BookingHome() {
           badge="Certified Paravets, Pashu Sakhis & Milking Tech"
           items={DAIRY_LIVESTOCK_SERVICES}
           onSelect={handleSelectService}
-          bgClass="bg-slate-50/80"
+          bgClass="bg-slate-50/80 dark:bg-[#0c101a]"
         />
 
         <ServiceSection
@@ -143,7 +143,7 @@ export default function BookingHome() {
           badge="45-Min Guaranteed Emergency Dispatch"
           items={RURAL_EMERGENCY_SERVICES}
           onSelect={handleSelectService}
-          bgClass="bg-white"
+          bgClass="bg-white dark:bg-[#080c14]"
         />
 
         <ServiceSection
@@ -151,7 +151,7 @@ export default function BookingHome() {
           badge="B2B & Panchayat Contracts · 5-15 Member Teams"
           items={INSTITUTIONAL_BULK_SERVICES}
           onSelect={handleSelectService}
-          bgClass="bg-emerald-50/40"
+          bgClass="bg-emerald-50/40 dark:bg-[#0b141d]"
         />
       </div>
 

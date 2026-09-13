@@ -285,42 +285,42 @@ html.dark {
 }
 
 .dark body {
-  background-color: #0b0f19 !important;
+  background-color: #080c14 !important;
   color: #f8fafc !important;
 }
 
 /* M3 Surface & Layout tokens in Dark Mode */
 .dark .bg-surface {
-  background-color: #0b0f19 !important;
-}
-.dark .bg-surface-dim {
   background-color: #080c14 !important;
 }
+.dark .bg-surface-dim {
+  background-color: #05080f !important;
+}
 .dark .bg-surface-bright {
-  background-color: #111827 !important;
+  background-color: #0f172a !important;
 }
 .dark .bg-surface-container-lowest,
 .dark .bg-surface-container-low {
-  background-color: #111a2e !important;
+  background-color: #0f1728 !important;
 }
 .dark .bg-surface-container {
-  background-color: #16223b !important;
+  background-color: #131d31 !important;
 }
 .dark .bg-surface-container-high {
-  background-color: #1d2c4d !important;
+  background-color: #19253d !important;
 }
 .dark .bg-surface-container-highest {
-  background-color: #24355a !important;
+  background-color: #202e4a !important;
 }
 
-/* All standard white containers and cards become dark sleek panels */
+/* All standard white containers and cards become dark sleek obsidian panels */
 .dark .bg-white {
-  background-color: #111a2e !important;
+  background-color: #0f1728 !important;
 }
 .dark .bg-white\/80,
 .dark .bg-white\/90,
 .dark .bg-white\/95 {
-  background-color: rgba(17, 26, 46, 0.95) !important;
+  background-color: rgba(15, 23, 40, 0.95) !important;
 }
 
 /* Light slate fills in dark mode */
@@ -329,23 +329,64 @@ html.dark {
 .dark .bg-slate-100,
 .dark .bg-slate-100\/80,
 .dark .bg-slate-100\/90 {
-  background-color: #162035 !important;
+  background-color: #141d2e !important;
 }
 .dark .bg-slate-200,
 .dark .bg-slate-200\/60,
 .dark .bg-slate-200\/80 {
-  background-color: #1e2b47 !important;
+  background-color: #1a263c !important;
+}
+
+/* Pastel background chips & containers in dark mode */
+.dark .bg-emerald-50,
+.dark .bg-emerald-50\/40,
+.dark .bg-emerald-50\/50,
+.dark .bg-amber-50,
+.dark .bg-amber-50\/50,
+.dark .bg-sky-50,
+.dark .bg-sky-50\/50,
+.dark .bg-rose-50,
+.dark .bg-rose-50\/50,
+.dark .bg-purple-50,
+.dark .bg-purple-50\/50,
+.dark .bg-indigo-50,
+.dark .bg-indigo-50\/50,
+.dark .bg-blue-50,
+.dark .bg-green-50 {
+  background-color: #141d2e !important;
+  border-color: #1e293b !important;
+}
+
+/* Pastel gradient tiles in dark mode */
+.dark [class*="from-amber-50"],
+.dark [class*="from-sky-50"],
+.dark [class*="from-emerald-50"],
+.dark [class*="from-rose-50"],
+.dark [class*="from-purple-50"],
+.dark [class*="from-green-50"],
+.dark [class*="from-teal-50"] {
+  background-image: linear-gradient(to bottom, #141d2e, #0f1726) !important;
 }
 
 /* Gradients that fade to white */
 .dark [class*="to-white"] {
-  --tw-gradient-to: #0b0f19 var(--tw-gradient-to-position) !important;
+  --tw-gradient-to: #080c14 var(--tw-gradient-to-position) !important;
 }
 .dark [class*="via-white"] {
-  --tw-gradient-stops: var(--tw-gradient-from), #0f172a var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
+  --tw-gradient-stops: var(--tw-gradient-from), #0d1322 var(--tw-gradient-via-position), var(--tw-gradient-to) !important;
 }
 .dark [class*="from-slate-50"] {
-  --tw-gradient-from: #0b0f19 var(--tw-gradient-from-position) !important;
+  --tw-gradient-from: #080c14 var(--tw-gradient-from-position) !important;
+}
+.dark [class*="to-slate-50"],
+.dark [class*="to-slate-100"] {
+  --tw-gradient-to: #080c14 var(--tw-gradient-to-position) !important;
+}
+
+/* Dim ambient backdrop blur circles so they do not produce muddy fog */
+.dark .blur-3xl,
+.dark .blur-2xl {
+  opacity: 0.1 !important;
 }
 
 /* Headings & Text in Dark Mode */
@@ -367,6 +408,41 @@ html.dark {
   color: #94a3b8 !important;
 }
 
+/* Contrast Enhancement: Convert muddy dark pastel text into luminous vibrant accents */
+.dark .text-emerald-700,
+.dark .text-emerald-800,
+.dark .text-emerald-900,
+.dark .text-green-700,
+.dark .text-green-800,
+.dark .text-green-900 {
+  color: #34d399 !important;
+}
+
+.dark .text-indigo-700,
+.dark .text-indigo-800,
+.dark .text-indigo-900,
+.dark .text-blue-700,
+.dark .text-blue-800 {
+  color: #818cf8 !important;
+}
+
+.dark .text-purple-700,
+.dark .text-purple-800,
+.dark .text-brand-purple {
+  color: #c084fc !important;
+}
+
+.dark .text-amber-700,
+.dark .text-amber-800,
+.dark .text-yellow-800 {
+  color: #fbbf24 !important;
+}
+
+.dark .text-rose-700,
+.dark .text-rose-800 {
+  color: #fb7185 !important;
+}
+
 /* Borders in Dark Mode */
 .dark .border-slate-100,
 .dark .border-slate-200,
@@ -374,34 +450,35 @@ html.dark {
 .dark .border-slate-200\/90,
 .dark .border-outline-variant,
 .dark .border-outline-variant\/30,
+.dark .border-outline-variant\/60,
 .dark .border-outline-variant\/80 {
-  border-color: #22304d !important;
+  border-color: #1e293b !important;
 }
 
 .dark .divide-slate-100 > * {
-  border-color: #22304d !important;
+  border-color: #1e293b !important;
 }
 
 /* Hover States in Dark Mode */
 .dark .hover\:bg-slate-50:hover,
 .dark .hover\:bg-slate-100:hover {
-  background-color: #1b2842 !important;
+  background-color: #19253c !important;
 }
 .dark .hover\:bg-slate-200:hover {
-  background-color: #243454 !important;
+  background-color: #21304c !important;
 }
 .dark .hover\:border-slate-300:hover,
 .dark .hover\:border-slate-400:hover {
-  border-color: #3b4d75 !important;
+  border-color: #334155 !important;
 }
 
 /* Inputs & Form Fields in Dark Mode */
 .dark input:not([type="checkbox"]):not([type="radio"]),
 .dark textarea,
 .dark select {
-  background-color: #0f172a;
+  background-color: #0b0f19;
   color: #f8fafc;
-  border-color: #22304d;
+  border-color: #1e293b;
 }
 .dark input::placeholder,
 .dark textarea::placeholder {
@@ -413,7 +490,7 @@ html.dark {
 .dark .shadow-md,
 .dark .shadow-lg,
 .dark .shadow-xl {
-  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.6), 0 4px 12px -2px rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 10px 30px -4px rgba(0, 0, 0, 0.7), 0 4px 12px -2px rgba(0, 0, 0, 0.5) !important;
 }
 
 /* ── Mobile Sidebar Drawer Animation ── */
