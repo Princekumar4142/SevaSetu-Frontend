@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Avatar from "./Avatar";
 import Logo from "./Logo";
 import LanguageSelector from "./LanguageSelector";
+import ThemeSelector from "./ThemeSelector";
 import { useLanguage } from "../context/LanguageContext";
 
 /**
@@ -93,15 +94,18 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
             {tr("Emergency SOS")}
           </button>
         )}
-        <div className="px-1 py-0.5">
-          <LanguageSelector />
+        <div className="flex items-center justify-between px-1 py-0.5 gap-2">
+          <div className="flex-1">
+            <LanguageSelector />
+          </div>
+          <ThemeSelector />
         </div>
         <button
           onClick={() => {
             handleLogout();
             handleNavClick();
           }}
-          className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant rounded-lg font-label-md text-label-md transition-colors"
+          className="flex items-center gap-md px-md py-sm text-on-surface-variant hover:bg-surface-variant dark:hover:bg-slate-800 rounded-lg font-label-md text-label-md transition-colors"
         >
           <span className="material-symbols-outlined">logout</span>
           {tr("Logout")}
@@ -113,7 +117,7 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
   return (
     <>
       {/* ── Desktop Sidebar (fixed, always visible) ── */}
-      <nav className="hidden md:flex flex-col bg-surface-container-low border-r border-outline-variant fixed left-0 top-0 h-full w-64 z-40 py-lg px-md">
+      <nav className="hidden md:flex flex-col bg-surface-container-low dark:bg-slate-900 border-r border-outline-variant fixed left-0 top-0 h-full w-64 z-40 py-lg px-md">
         {sidebarContent}
       </nav>
 
@@ -127,7 +131,7 @@ export default function Sidebar({ title, subtitle, navItems, user, showEmergency
           />
           {/* Slide-in Panel */}
           <nav
-            className="absolute left-0 top-0 h-full w-72 max-w-[85vw] bg-white shadow-2xl flex flex-col py-lg px-md overflow-y-auto"
+            className="absolute left-0 top-0 h-full w-72 max-w-[85vw] bg-white dark:bg-slate-900 shadow-2xl flex flex-col py-lg px-md overflow-y-auto"
             style={{ animation: "slideInFromLeft 0.25s ease-out" }}
           >
             {sidebarContent}

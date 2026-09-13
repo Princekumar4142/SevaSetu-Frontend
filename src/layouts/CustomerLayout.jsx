@@ -10,6 +10,7 @@ import AddressModal from "../components/AddressModal";
 import Footer from "../components/Footer";
 import Avatar from "../components/Avatar";
 import LanguageSelector from "../components/LanguageSelector";
+import ThemeSelector from "../components/ThemeSelector";
 import InstallPWAButton from "../components/InstallPWAButton";
 
 const PUBLIC_NAV_LINKS = [
@@ -47,13 +48,13 @@ export default function CustomerLayout() {
   return (
     <div className="min-h-screen bg-surface flex flex-col">
       {/* ── Desktop/Tablet Top Navbar ── */}
-      <header className="hidden md:block sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-outline-variant shadow-sm transition-all">
+      <header className="hidden md:block sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-outline-variant shadow-sm transition-all">
         <div className="max-w-screen-xl mx-auto flex items-center justify-between gap-6 px-margin-desktop h-16">
           {/* Left: Logo & Dynamic Address (when logged in) */}
           <div className="flex items-center gap-5">
             <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-2.5 shrink-0 group">
               <Logo size={48} className="transition-transform group-hover:scale-105" />
-              <span className="font-headline-md text-headline-md font-extrabold text-primary tracking-tight">
+              <span className="font-headline-md text-headline-md font-extrabold text-primary dark:text-white tracking-tight">
                 SevaSetu
               </span>
             </Link>
@@ -63,20 +64,20 @@ export default function CustomerLayout() {
               <button
                 type="button"
                 onClick={() => setAddressModalOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/80 hover:bg-slate-200/80 border border-slate-200/90 transition-all text-left group max-w-sm"
+                className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200/90 dark:border-slate-700 transition-all text-left group max-w-sm"
                 title="Click to view or change your delivery address"
               >
-                <div className="w-7 h-7 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                <div className="w-7 h-7 rounded-lg bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
                   <span className="material-symbols-outlined text-[18px]">location_on</span>
                 </div>
                 <div className="min-w-0 pr-1">
                   <div className="flex items-center gap-1">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       {tr("Service Address")}
                     </span>
                     <span className="material-symbols-outlined text-[13px] text-slate-400">expand_more</span>
                   </div>
-                  <p className="text-xs font-semibold text-slate-800 truncate max-w-[210px]">
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate max-w-[210px]">
                     {addressSummary}
                   </p>
                 </div>
@@ -91,12 +92,15 @@ export default function CustomerLayout() {
                 <Link
                   key={l.href}
                   to={l.href}
-                  className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors font-medium"
+                  className="font-label-md text-label-md text-on-surface-variant hover:text-primary dark:hover:text-white transition-colors font-medium"
                 >
                   {tr(l.label)}
                 </Link>
               ))}
             </nav>
+
+            {/* Theme Toggle (Light / Dark / System) */}
+            <ThemeSelector />
 
             {/* PWA App Install */}
             <InstallPWAButton />
@@ -108,16 +112,16 @@ export default function CustomerLayout() {
               <div className="flex items-center gap-sm">
                 <Link
                   to="/customer/profile"
-                  className="flex items-center gap-sm px-2 py-1 rounded-full hover:bg-slate-100 transition-colors"
+                  className="flex items-center gap-sm px-2 py-1 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                 >
                   <Avatar src={currentUser?.profilePhoto} name={currentUser?.name} size="sm" />
-                  <span className="font-label-md text-label-md text-slate-800 hidden lg:block font-bold">
+                  <span className="font-label-md text-label-md text-slate-800 dark:text-slate-200 hidden lg:block font-bold">
                     {currentUser?.name?.split(" ")[0]}
                   </span>
                 </Link>
                 <button
                   onClick={handleLogout}
-                  className="font-label-md text-label-md text-on-surface-variant hover:text-primary transition-colors px-sm"
+                  className="font-label-md text-label-md text-on-surface-variant hover:text-primary dark:hover:text-white transition-colors px-sm"
                 >
                   {tr("Logout")}
                 </button>
@@ -126,7 +130,7 @@ export default function CustomerLayout() {
               <div className="flex items-center gap-3">
                 <Link
                   to="/login"
-                  className="font-label-md text-label-md text-primary font-semibold hover:text-brand-purple-dark transition-colors px-md py-sm"
+                  className="font-label-md text-label-md text-primary dark:text-indigo-300 font-semibold hover:text-brand-purple-dark dark:hover:text-indigo-200 transition-colors px-md py-sm"
                 >
                   {tr("Login")}
                 </Link>
@@ -143,13 +147,14 @@ export default function CustomerLayout() {
       </header>
 
       {/* ── Mobile Top Bar ── */}
-      <header className="md:hidden sticky top-0 z-50 bg-white/95 backdrop-blur-xl border-b border-outline-variant flex items-center justify-between gap-sm px-margin-mobile py-2.5">
+      <header className="md:hidden sticky top-0 z-50 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-outline-variant flex items-center justify-between gap-sm px-margin-mobile py-2.5">
         <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-1.5 shrink-0">
           <Logo size={40} />
-          <span className="font-label-md text-label-md font-bold text-primary">SevaSetu</span>
+          <span className="font-label-md text-label-md font-bold text-primary dark:text-white">SevaSetu</span>
         </Link>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          <ThemeSelector />
           <LanguageSelector />
         </div>
 
@@ -158,10 +163,10 @@ export default function CustomerLayout() {
             <button
               type="button"
               onClick={() => setAddressModalOpen(true)}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-left min-w-0 max-w-[170px]"
+              className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-left min-w-0 max-w-[170px]"
             >
-              <span className="material-symbols-outlined text-indigo-600 text-[15px] shrink-0">location_on</span>
-              <span className="text-xs font-semibold text-slate-800 truncate">
+              <span className="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-[15px] shrink-0">location_on</span>
+              <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">
                 {currentUser?.city || currentUser?.address?.split(",")[0] || tr("Service Address")}
               </span>
               <span className="material-symbols-outlined text-slate-400 text-[13px] shrink-0">expand_more</span>
@@ -175,7 +180,7 @@ export default function CustomerLayout() {
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <Link to="/login" className="font-label-md text-label-md text-brand-purple font-bold px-2 py-1">
+            <Link to="/login" className="font-label-md text-label-md text-brand-purple dark:text-purple-300 font-bold px-2 py-1">
               {tr("Login")}
             </Link>
             <Link

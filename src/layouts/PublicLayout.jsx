@@ -1,17 +1,19 @@
 import { Outlet, Link } from "react-router-dom";
 import Logo from "../components/Logo";
 import LanguageSelector from "../components/LanguageSelector";
+import ThemeSelector from "../components/ThemeSelector";
 
 export default function PublicLayout() {
   return (
     <div className="min-h-screen flex flex-col bg-surface">
-      {/* Minimal top bar — logo + home link + language selector */}
-      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-100 bg-white/80 backdrop-blur-sm">
+      {/* Minimal top bar — logo + home link + theme selector + language selector */}
+      <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-slate-100 dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm">
         <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
           <Logo size={38} />
-          <span className="text-lg font-bold text-primary tracking-tight">SevaSetu</span>
+          <span className="text-lg font-bold text-primary dark:text-white tracking-tight">SevaSetu</span>
         </Link>
-        <div>
+        <div className="flex items-center gap-2">
+          <ThemeSelector />
           <LanguageSelector />
         </div>
       </div>

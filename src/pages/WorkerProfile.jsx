@@ -9,6 +9,7 @@ import Button from "../components/Button";
 import Badge from "../components/Badge";
 import Avatar from "../components/Avatar";
 import ProfilePhotoUploader from "../components/ProfilePhotoUploader";
+import ThemeSelector from "../components/ThemeSelector";
 import { LoadingState, ErrorBanner } from "../components/Feedback";
 
 const CATEGORIES = [
@@ -397,7 +398,12 @@ export default function WorkerProfile() {
           </div>
         </div>
 
-        <div className="pt-2 border-t border-slate-100 flex items-center gap-3">
+        {/* Section 6: Appearance & Theme Settings */}
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+          <ThemeSelector variant="cards" />
+        </div>
+
+        <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center gap-3">
           <Button
             type="submit"
             variant="purple"
@@ -409,7 +415,7 @@ export default function WorkerProfile() {
           <button
             type="button"
             onClick={() => navigate("/worker")}
-            className="px-5 py-3 rounded-xl border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer"
+            className="px-5 py-3 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
           >
             Cancel
           </button>
