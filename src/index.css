@@ -422,6 +422,11 @@ html.dark {
   to { transform: translateX(0); }
 }
 
+@keyframes slideInFromRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
 /* ── Safe area inset for notched devices (iPhones, etc.) ── */
 .pb-safe {
   padding-bottom: env(safe-area-inset-bottom, 0px);
