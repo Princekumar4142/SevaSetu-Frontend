@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { useLanguage } from "../../context/LanguageContext";
@@ -323,25 +323,53 @@ const POPULAR_BOOKINGS = [
   },
 ];
 
+const EMPTY_SEARCH_MESSAGES = {
+  hi: "कृपया यहाँ कुछ लिखें (जैसे: इलेक्ट्रीशियन, प्लंबर, ट्रैक्टर...)",
+  en: "Please type something here (e.g. Electrician, Plumber, Tractor...)",
+  bn: "অনুগ্রহ করে এখানে কিছু লিখুন (যেমন: ইলেকট্রিশিয়ান, প্লাম্বার...)",
+  mr: "कृपया येथे काहीतरी लिहा (उदा: इलेक्ट्रिशियन, प्लंबर, ट्रॅक्टर...)",
+  ta: "தயவுசெய்து இங்கே ஏதாவது எழுதவும் (எ.கா: எலக்ட்ரீஷியன், பிளம்பர்...)",
+  te: "దయచేసి ఇక్కడ ఏదైనా రాయండి (ఉదా: ఎలక్ట్రీషియన్, ప్లంబర్...)",
+  gu: "કૃપા કરીને અહીં કંઈક લખો (દા.ત: ઇલેક્ટ્રિશિયન, પ્લમ્બર...)",
+  kn: "ದಯವಿಟ್ಟು ಇಲ್ಲಿ ಏನನ್ನಾದರೂ ಬರೆಯಿರಿ (ಉದಾ: ಎಲೆಕ್ಟ್ರಿಷಿಯನ್, ಪ್ಲಂಬರ್...)",
+};
+
+const EMPTY_SEARCH_PLACEHOLDERS = {
+  hi: "यहाँ कुछ लिखें...",
+  en: "Type something here...",
+  bn: "এখানে কিছু লিখুন...",
+  mr: "येथे काहीतरी लिहा...",
+  ta: "இங்கே ஏதாவது எழுதவும்...",
+  te: "ఇక్కడ ఏదైనా రాయండి...",
+  gu: "અહીં કંઈક લખો...",
+  kn: "ಇಲ್ಲಿ ಏನನ್ನಾದರೂ ಬರೆಯಿರಿ...",
+};
+
 export default function LandingHero() {
   const navigate = useNavigate();
   const { currentUser, isAuthenticated } = useAuth();
-  const { tr } = useLanguage();
+  const { tr, langCode } = useLanguage();
   const [searchTerm, setSearchTerm] = useState("");
+  const [searchError, setSearchError] = useState(false);
+  const inputRef = useRef(null);
   const firstName = currentUser?.name?.split(" ")[0] || "";
 
   const handleSearch = (e) => {
     if (e) e.preventDefault();
     const q = searchTerm.trim();
+    if (!q) {
+      setSearchError(true);
+      if (inputRef.current) {
+        inputRef.current.focus();
+      }
+      return;
+    }
+    setSearchError(false);
     if (!isAuthenticated) {
       navigate("/login");
       return;
     }
-    if (q) {
-      navigate(`/customer/services/${encodeURIComponent(q)}`);
-    } else {
-      navigate("/customer/services/agri-mechanization");
-    }
+    navigate(`/customer/services/${encodeURIComponent(q)}`);
   };
 
   return (
@@ -395,14 +423,38 @@ export default function LandingHero() {
 
             {/* Elevated Light Search Bar */}
             <form onSubmit={handleSearch} className="relative max-w-xl">
-              <div className="flex items-center bg-white dark:bg-[#111726] rounded-2xl p-1.5 sm:p-2 shadow-lg shadow-indigo-100/60 dark:shadow-none border border-slate-200/90 dark:border-slate-800 focus-within:border-indigo-400 dark:focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-100 dark:focus-within:ring-indigo-950/40 transition-all overflow-hidden w-full">
-                <span className="material-symbols-outlined text-indigo-500 dark:text-indigo-400 ml-2 sm:ml-3 text-[20px] sm:text-[22px] shrink-0">search</span>
+              <div
+                className={`flex items-center bg-white dark:bg-[#111726] rounded-2xl p-1.5 sm:p-2 shadow-lg shadow-indigo-100/60 dark:shadow-none border transition-all overflow-hidden w-full ${
+                  searchError
+                    ? "border-rose-500 ring-4 ring-rose-100 dark:ring-rose-950/50"
+                    : "border-slate-200/90 dark:border-slate-800 focus-within:border-indigo-400 dark:focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-100 dark:focus-within:ring-indigo-950/40"
+                }`}
+              >
+                <span
+                  className={`material-symbols-outlined ml-2 sm:ml-3 text-[20px] sm:text-[22px] shrink-0 transition-colors ${
+                    searchError ? "text-rose-500 animate-pulse" : "text-indigo-500 dark:text-indigo-400"
+                  }`}
+                >
+                  {searchError ? "error" : "search"}
+                </span>
                 <input
+                  ref={inputRef}
                   type="text"
                   value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  placeholder={tr("Search for services...")}
-                  className="min-w-0 w-full flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 dark:text-white text-sm sm:text-base placeholder:text-slate-400 dark:placeholder:text-slate-500 bg-transparent font-medium"
+                  onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    if (searchError) setSearchError(false);
+                  }}
+                  placeholder={
+                    searchError
+                      ? (EMPTY_SEARCH_PLACEHOLDERS[langCode] || EMPTY_SEARCH_PLACEHOLDERS.hi)
+                      : tr("Search for services...")
+                  }
+                  className={`min-w-0 w-full flex-1 py-2 sm:py-2.5 px-2 sm:px-3 focus:outline-none text-slate-800 dark:text-white text-sm sm:text-base bg-transparent font-medium transition-colors ${
+                    searchError
+                      ? "placeholder:text-rose-500 font-semibold"
+                      : "placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                  }`}
                 />
 
                 {/* Voice Booking Trigger Button */}
@@ -420,12 +472,20 @@ export default function LandingHero() {
 
                 <button
                   type="submit"
-                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1 shrink-0"
+                  className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 sm:px-6 py-2 sm:py-2.5 rounded-xl font-bold text-sm transition-all shadow-md shadow-indigo-600/20 hover:shadow-indigo-600/30 flex items-center gap-1 shrink-0 cursor-pointer"
                 >
                   <span>{tr("Search")}</span>
                   <span className="material-symbols-outlined text-[16px] hidden sm:inline">arrow_forward</span>
                 </button>
               </div>
+
+              {/* Validation Message in Selected Language */}
+              {searchError && (
+                <div className="flex items-center gap-1.5 mt-2 px-2 text-rose-600 dark:text-rose-400 text-xs sm:text-sm font-bold animate-pulse">
+                  <span className="material-symbols-outlined text-[16px]">info</span>
+                  <span>{EMPTY_SEARCH_MESSAGES[langCode] || EMPTY_SEARCH_MESSAGES.hi}</span>
+                </div>
+              )}
             </form>
 
             {/* Quick Skilled Trade Pills */}
