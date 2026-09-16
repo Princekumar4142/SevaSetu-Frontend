@@ -11,7 +11,7 @@ import Footer from "../components/Footer";
 import Avatar from "../components/Avatar";
 import LanguageSelector from "../components/LanguageSelector";
 import ThemeSelector from "../components/ThemeSelector";
-import InstallPWAButton from "../components/InstallPWAButton";
+import InstallAppBanner from "../components/InstallAppBanner";
 import NavigationDrawer from "../components/NavigationDrawer";
 
 const PUBLIC_NAV_LINKS = [
@@ -34,6 +34,15 @@ export default function CustomerLayout() {
   const [addressModalOpen, setAddressModalOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
 
+  // Detect if running inside installed App (PWA Standalone mode)
+  const [isAppMode, setIsAppMode] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return (
+      window.matchMedia("(display-mode: standalone)").matches ||
+      window.navigator.standalone === true
+    );
+  });
+
   const isCheckoutOrTracking =
     location.pathname.includes("/checkout/") ||
     location.pathname.includes("/bookings/track/");
@@ -49,101 +58,106 @@ export default function CustomerLayout() {
 
   return (
     <div className="min-h-screen bg-surface flex flex-col">
-      {/* ── Desktop/Tablet Top Navbar (Clean, Uncluttered & Modern) ── */}
-      <header className="hidden md:block sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-outline-variant shadow-xs transition-all">
-        <div className="max-w-screen-xl mx-auto flex items-center justify-between gap-6 px-margin-desktop h-16">
-          {/* Left: Logo & Dynamic Address */}
-          <div className="flex items-center gap-4">
-            <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-2.5 shrink-0 group">
-              <Logo size={44} className="transition-transform group-hover:scale-105" />
-              <span className="font-headline-md text-headline-md font-extrabold text-primary dark:text-white tracking-tight">
-                SevaSetu
-              </span>
-            </Link>
+      {/* ── Top Install App Notification Popup ── */}
+      <InstallAppBanner />
 
-            {/* Compact Address Badge */}
-            {isAuthenticated && (
+      {/* ── Desktop/Tablet Top Navbar (Hidden when running as installed App) ── */}
+      {!isAppMode && (
+        <header className="hidden md:block sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-outline-variant shadow-xs transition-all">
+          <div className="max-w-screen-xl mx-auto flex items-center justify-between gap-6 px-margin-desktop h-16">
+            {/* Left: Logo & Dynamic Address */}
+            <div className="flex items-center gap-4">
+              <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-2.5 shrink-0 group">
+                <Logo size={44} className="transition-transform group-hover:scale-105" />
+                <span className="font-headline-md text-headline-md font-extrabold text-primary dark:text-white tracking-tight">
+                  SevaSetu
+                </span>
+              </Link>
+
+              {/* Compact Address Badge */}
+              {isAuthenticated && (
+                <button
+                  type="button"
+                  onClick={() => setAddressModalOpen(true)}
+                  className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200/90 dark:hover:bg-slate-700/90 border border-slate-200/80 dark:border-slate-700 transition-all text-left cursor-pointer group max-w-xs"
+                  title="Click to change your delivery address"
+                >
+                  <span className="material-symbols-outlined text-[16px] text-indigo-600 dark:text-indigo-400 shrink-0">location_on</span>
+                  <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[160px]">
+                    {currentUser?.city || currentUser?.address?.split(",")[0] || tr("Service Address")}
+                  </span>
+                  <span className="material-symbols-outlined text-[13px] text-slate-400">expand_more</span>
+                </button>
+              )}
+            </div>
+
+            {/* Right: Quick links, User/Auth & Hamburger Menu Button */}
+            <div className="flex items-center gap-3">
+              <nav className="hidden lg:flex items-center gap-4 mr-1">
+                <Link
+                  to="/customer/services"
+                  className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  {tr("Services")}
+                </Link>
+                <Link
+                  to="/customer/workers"
+                  className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                >
+                  {tr("Workers")}
+                </Link>
+              </nav>
+
+              {isAuthenticated ? (
+                <Link
+                  to="/customer/profile"
+                  className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200/70 dark:border-slate-700 transition-colors"
+                >
+                  <Avatar src={currentUser?.profilePhoto} name={currentUser?.name} size="xs" />
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[100px] truncate">
+                    {currentUser?.name?.split(" ")[0]}
+                  </span>
+                </Link>
+              ) : (
+                <Link
+                  to="/register"
+                  className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-sm"
+                >
+                  {tr("Sign Up")}
+                </Link>
+              )}
+
+              {/* ── Modern Hamburger Menu Button (=) ── */}
               <button
                 type="button"
-                onClick={() => setAddressModalOpen(true)}
-                className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200/90 dark:hover:bg-slate-700/90 border border-slate-200/80 dark:border-slate-700 transition-all text-left cursor-pointer group max-w-xs"
-                title="Click to change your delivery address"
+                onClick={() => setNavDrawerOpen(true)}
+                aria-label="Open Navigation Menu"
+                title="Navigation Menu"
+                className="w-10 h-10 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95 group border border-slate-200/80 dark:border-slate-700"
               >
-                <span className="material-symbols-outlined text-[16px] text-indigo-600 dark:text-indigo-400 shrink-0">location_on</span>
-                <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 truncate max-w-[160px]">
-                  {currentUser?.city || currentUser?.address?.split(",")[0] || tr("Service Address")}
-                </span>
-                <span className="material-symbols-outlined text-[13px] text-slate-400">expand_more</span>
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="w-5 h-5 transition-transform group-hover:scale-105"
+                >
+                  <line x1="4" y1="6" x2="20" y2="6" />
+                  <line x1="4" y1="12" x2="20" y2="12" />
+                  <line x1="4" y1="18" x2="20" y2="18" />
+                </svg>
               </button>
-            )}
+            </div>
           </div>
+        </header>
+      )}
 
-          {/* Right: Quick links, User/Auth & Hamburger Menu Button */}
-          <div className="flex items-center gap-3">
-            <nav className="hidden lg:flex items-center gap-4 mr-1">
-              <Link
-                to="/customer/services"
-                className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                {tr("Services")}
-              </Link>
-              <Link
-                to="/customer/workers"
-                className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                {tr("Workers")}
-              </Link>
-            </nav>
-
-            {isAuthenticated ? (
-              <Link
-                to="/customer/profile"
-                className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200/70 dark:border-slate-700 transition-colors"
-              >
-                <Avatar src={currentUser?.profilePhoto} name={currentUser?.name} size="xs" />
-                <span className="text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[100px] truncate">
-                  {currentUser?.name?.split(" ")[0]}
-                </span>
-              </Link>
-            ) : (
-              <Link
-                to="/register"
-                className="hidden sm:inline-flex items-center px-4 py-1.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs tracking-wider uppercase transition-all shadow-sm"
-              >
-                {tr("Sign Up")}
-              </Link>
-            )}
-
-            {/* ── Modern Hamburger Menu Button (=) ── */}
-            <button
-              type="button"
-              onClick={() => setNavDrawerOpen(true)}
-              aria-label="Open Navigation Menu"
-              title="Navigation Menu"
-              className="w-10 h-10 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 flex items-center justify-center transition-all cursor-pointer shadow-xs active:scale-95 group border border-slate-200/80 dark:border-slate-700"
-            >
-              <svg
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                className="w-5 h-5 transition-transform group-hover:scale-105"
-              >
-                <line x1="4" y1="6" x2="20" y2="6" />
-                <line x1="4" y1="12" x2="20" y2="12" />
-                <line x1="4" y1="18" x2="20" y2="18" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* ── Mobile Top Bar (Ultra Clean like Image 4) ── */}
-      <header className="md:hidden sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-outline-variant flex items-center justify-between px-margin-mobile py-2.5">
+      {/* ── Mobile Top Bar (Always active in App Mode, or below md breakpoint) ── */}
+      <header className={`${isAppMode ? "flex" : "md:hidden flex"} sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-outline-variant items-center justify-between px-margin-mobile py-2.5`}>
         <Link to={isAuthenticated ? "/customer" : "/"} className="flex items-center gap-2 shrink-0">
           <Logo size={36} />
           <span className="font-headline-md text-base font-bold text-primary dark:text-white">SevaSetu</span>
@@ -206,12 +220,12 @@ export default function CustomerLayout() {
         <Outlet />
       </main>
 
-      {/* ── Footer (hidden in checkout & tracking for clean focused UX) ── */}
-      {!isCheckoutOrTracking && <Footer />}
+      {/* ── Footer (hidden in checkout, tracking, and installed App mode) ── */}
+      {!isCheckoutOrTracking && !isAppMode && <Footer />}
 
-      {/* ── Mobile Bottom Tab Bar (hidden on desktop and checkout/tracking) ── */}
+      {/* ── Mobile Bottom Tab Bar (Always visible in App Mode, or mobile viewport on website) ── */}
       {!isCheckoutOrTracking && (
-        <div className="md:hidden">
+        <div className={isAppMode ? "block" : "md:hidden"}>
           <BottomTabBar />
         </div>
       )}

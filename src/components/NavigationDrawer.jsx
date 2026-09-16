@@ -6,7 +6,6 @@ import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import DayNightSwitch from "./DayNightSwitch";
 import LanguageSelector from "./LanguageSelector";
-import InstallPWAButton from "./InstallPWAButton";
 import Avatar from "./Avatar";
 
 /**
@@ -185,12 +184,14 @@ export default function NavigationDrawer({ isOpen, onClose }) {
               </div>
             )}
 
-            {/* Language & PWA Install Utility Row */}
+            {/* Language Selector Row */}
             <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/80">
+              <span className="text-[10px] font-mono font-bold tracking-[0.14em] text-slate-500 uppercase">
+                LANGUAGE
+              </span>
               <div className="flex items-center gap-2">
                 <LanguageSelector />
               </div>
-              <InstallPWAButton />
             </div>
           </div>
         </div>

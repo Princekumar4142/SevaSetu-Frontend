@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useLanguage } from "./LanguageContext";
 import { useAuth } from "../hooks/useAuth";
 import bookingService from "../services/bookingService";
+import { CATALOG, processAssistantQuery } from "../services/aiVoiceBrain";
 
 export const AGENT_STATUS = {
   IDLE: "idle",
@@ -178,7 +179,7 @@ const VoiceAgentContext = createContext(null);
 
 export function VoiceAgentProvider({ children }) {
   const navigate = useNavigate();
-  const { lang, langCode, tr } = useLanguage();
+  const { lang, langCode, setLanguage, tr } = useLanguage();
   const { currentUser, isAuthenticated } = useAuth();
   const speechLang = lang?.speechLang || "hi-IN";
 
@@ -193,10 +194,7 @@ export function VoiceAgentProvider({ children }) {
     {
       id: "init-1",
       role: "ai",
-      text:
-        langCode === "en"
-          ? "Namaste! I am SevaSetu AI Assistant. Say 'Book Electrician', 'Plumber needed', or tap any service below, and I'll book verified cooperative workers with fair wages for you!"
-          : "नमस्ते! मैं SevaSetu AI Assistant हूँ। 'इलेक्ट्रीशियन बुक करो' या 'नल ठीक कराना है' बोलिए, मैं तुरंत उचित दरों पर सरकारी प्रमाणित कारीगर बुक कर दूँगा!",
+      text: tr("ai_voice_booking_greeting"),
       timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
     },
   ]);
@@ -478,13 +476,54 @@ export function VoiceAgentProvider({ children }) {
     [currentUser, isAuthenticated, langCode, tr, addMessage, speak]
   );
 
+  // ── Auto-speak greeting whenever assistant is opened ─────────────────────
+  const prevOpenRef = useRef(false);
+  useEffect(() => {
+    if (isOpen && !prevOpenRef.current) {
+      const greeting = tr("ai_voice_booking_greeting");
+      speak(greeting);
+    }
+    prevOpenRef.current = isOpen;
+  }, [isOpen, tr, speak]);
+
+  // When language changes, update initial message and re-speak if panel is open
+  useEffect(() => {
+    const greeting = tr("ai_voice_booking_greeting");
+    setMessages((prev) => {
+      if (prev.length <= 1) {
+        return [
+          {
+            id: "init-" + langCode,
+            role: "ai",
+            text: greeting,
+            timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+          },
+        ];
+      }
+      return prev;
+    });
+    if (isOpen) {
+      speak(greeting);
+    }
+  }, [langCode, tr, isOpen, speak]);
+
   // ── Handle User Input (Spoken or Typed) ──────────────────────────────────
   const handleUserInput = useCallback(
     (text) => {
       if (!text || !text.trim()) return;
-      const parsed = parseSpokenRequest(text);
+      const parsed = processAssistantQuery(text, langCode, currentUser);
 
-      // 1. Confirm pending booking
+      // 1. Language switch intent (e.g. "can you speak in hindi")
+      if (parsed.action === "LANGUAGE_SWITCH") {
+        if (parsed.targetLang && parsed.targetLang !== langCode) {
+          setLanguage(parsed.targetLang);
+        }
+        addMessage("ai", parsed.reply);
+        speak(parsed.reply);
+        return;
+      }
+
+      // 2. Confirm pending booking
       if (parsed.action === "CONFIRM") {
         if (pendingBooking) {
           triggerConfirmBooking(pendingBooking);
@@ -499,34 +538,19 @@ export function VoiceAgentProvider({ children }) {
         return;
       }
 
-      // 2. Cancel pending booking
+      // 3. Cancel pending booking
       if (parsed.action === "CANCEL") {
         setPendingBooking(null);
-        const resp =
-          langCode === "en"
-            ? "Booking cancelled. Tell me if you need any other service!"
-            : "बुकिंग रद्द कर दी गई। यदि कोई अन्य सहायता चाहिए तो बताइए!";
-        addMessage("ai", resp);
-        speak(resp);
+        addMessage("ai", parsed.reply);
+        speak(parsed.reply);
         return;
       }
 
-      // 3. Greeting intent
-      if (parsed.action === "GREETING") {
-        const greetingResp =
-          langCode === "en"
-            ? "Namaste! I am SevaSetu Voice Assistant. I can book Electrician, Plumber, Cleaners, Carpenter, Tractor, Caregiver, or Driver. How can I help you today?"
-            : "नमस्ते! मैं SevaSetu Voice Assistant हूँ। मैं इलेक्ट्रीशियन, प्लंबर, सफाई, बढ़ई, ट्रैक्टर, केयरगिवर या ड्राइवर तुरंत बुक कर सकता हूँ। आपको क्या सेवा चाहिए?";
-        addMessage("ai", greetingResp);
-        speak(greetingResp);
-        return;
-      }
-
-      // 4. Service recognized!
+      // 4. Service recognized! Propose booking
       if (parsed.action === "SERVICE_IDENTIFIED") {
-        const { service, slot } = parsed;
-        const userCity = currentUser?.city || "Mumbai";
-        const userAddressLine = currentUser?.address || "House No. 12, Main Street";
+        const { service, slot, reply } = parsed;
+        const userCity = currentUser?.city || "Bettiah";
+        const userAddressLine = currentUser?.address || "Bettiah, West Champaran";
 
         const bookingProposal = {
           service,
@@ -534,41 +558,24 @@ export function VoiceAgentProvider({ children }) {
           address: {
             line1: userAddressLine,
             city: userCity,
-            pincode: "400001",
+            pincode: currentUser?.pincode || "845438",
           },
           price: service.price,
         };
 
         setPendingBooking(bookingProposal);
         setStatus(AGENT_STATUS.CONFIRMING);
-        setFallbackCount(0);
 
-        const translatedTrade = tr(service.trade);
-        const aiPrompt =
-          langCode === "en"
-            ? `I found verified cooperative ${translatedTrade}! Fare is ₹${service.price} (${slot.date} at ${slot.time}). Say "Yes confirm" or click Confirm & Book below.`
-            : `मैंने सत्यापित सहकारी ${translatedTrade} ढूँढ लिया है! शुल्क केवल ₹${service.price} (${slot.date}, ${slot.time}) है। 'हाँ बुक करो' बोलें या नीचे Confirm & Book दबाएं।`;
-
-        addMessage("ai", aiPrompt, { bookingPreview: bookingProposal });
-        speak(aiPrompt);
+        addMessage("ai", reply, { bookingPreview: bookingProposal });
+        speak(reply);
         return;
       }
 
-      // 5. Unknown query — intelligent alternating fallback
-      setFallbackCount((prev) => prev + 1);
-      const fallback =
-        fallbackCount % 2 === 0
-          ? (langCode === "en"
-              ? "I can book Electrician, Plumber, Cleaner, Carpenter, Tractor, Caregiver, or Driver. What service do you need?"
-              : "मैं इलेक्ट्रीशियन, प्लंबर, सफाई, बढ़ई, ट्रैक्टर, केयरगिवर या ड्राइवर बुक कर सकता हूँ। आपको क्या सेवा चाहिए?")
-          : (langCode === "en"
-              ? "Please tell me the service you need (e.g., 'Book Electrician' or 'Fix Tap Leak') or tap any option below."
-              : "कृपया अपनी सेवा बताएं (जैसे 'इलेक्ट्रीशियन बुक करो' या 'नल ठीक कराना है') या नीचे दिए गए विकल्पों में से चुनें।");
-
-      addMessage("ai", fallback);
-      speak(fallback);
+      // 5. Intelligent knowledge & conversational answer (NO repetitive robotic fallback!)
+      addMessage("ai", parsed.reply);
+      speak(parsed.reply);
     },
-    [parseSpokenRequest, pendingBooking, triggerConfirmBooking, langCode, tr, currentUser, fallbackCount, addMessage, speak]
+    [pendingBooking, triggerConfirmBooking, langCode, setLanguage, currentUser, addMessage, speak]
   );
 
   // ── Directly select a service chip ───────────────────────────────────────
@@ -653,12 +660,26 @@ export function VoiceAgentProvider({ children }) {
     }
   }, [speechLang, addMessage, status, stopListening, handleUserInput]);
 
+  const openAssistant = useCallback(
+    (autoListen = true) => {
+      setIsOpen(true);
+      const greeting = tr("ai_voice_booking_greeting");
+      speak(greeting, () => {
+        if (autoListen) {
+          startListening();
+        }
+      });
+    },
+    [tr, speak, startListening]
+  );
+
   return (
     <VoiceAgentContext.Provider
       value={{
         status,
         isOpen,
         setIsOpen,
+        openAssistant,
         messages,
         setMessages,
         transcript,

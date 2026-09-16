@@ -21,6 +21,7 @@ export default function GlobalVoiceAssistant() {
     transcript,
     pendingBooking,
     servicesCatalog,
+    openAssistant,
     startListening,
     stopListening,
     handleUserInput,
@@ -45,14 +46,11 @@ export default function GlobalVoiceAssistant() {
   // Listen for global custom event 'open-voice-assistant'
   useEffect(() => {
     const handleOpenEvent = () => {
-      setIsOpen(true);
-      setTimeout(() => {
-        startListening();
-      }, 400);
+      openAssistant?.(true);
     };
     window.addEventListener("open-voice-assistant", handleOpenEvent);
     return () => window.removeEventListener("open-voice-assistant", handleOpenEvent);
-  }, [setIsOpen, startListening]);
+  }, [openAssistant]);
 
   const handleSendText = (e) => {
     e.preventDefault();
@@ -72,10 +70,7 @@ export default function GlobalVoiceAssistant() {
         <div className="fixed bottom-[84px] right-4 sm:bottom-6 sm:right-6 z-40 flex items-center gap-3">
           {/* Pulsing Hint Tooltip */}
           <div
-            onClick={() => {
-              setIsOpen(true);
-              startListening();
-            }}
+            onClick={() => openAssistant?.(true)}
             className="hidden sm:flex items-center gap-2 bg-slate-900/90 backdrop-blur-md text-white px-3.5 py-2 rounded-2xl shadow-xl border border-white/10 cursor-pointer hover:bg-slate-900 transition-all group"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
@@ -91,10 +86,7 @@ export default function GlobalVoiceAssistant() {
           <button
             id="voice-assistant-launcher"
             type="button"
-            onClick={() => {
-              setIsOpen(true);
-              startListening();
-            }}
+            onClick={() => openAssistant?.(true)}
             className="relative w-14 h-14 rounded-full bg-gradient-to-tr from-primary via-indigo-600 to-brand-purple text-white flex items-center justify-center shadow-2xl hover:scale-110 active:scale-95 transition-all duration-300 group border-2 border-white/30"
             title={tr("Speak to Book Service")}
             aria-label="Open Voice Booking Assistant"
