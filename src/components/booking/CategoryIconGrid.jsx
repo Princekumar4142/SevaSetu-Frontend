@@ -1,10 +1,22 @@
 import { useState } from "react";
-import { SERVICE_IMAGES, getServiceImage } from "../../constants/serviceImages";
+import { SERVICE_IMAGES, getServiceImage, getServiceFallbackImage } from "../../constants/serviceImages";
 import { useLanguage } from "../../context/LanguageContext";
 
 export default function CategoryIconGrid({ title, items, onSelect, exploreLink }) {
+  const [fallbacks, setFallbacks] = useState({});
   const [imgErrors, setImgErrors] = useState({});
   const { tr } = useLanguage();
+
+  const handleImageError = (item) => {
+    // If not yet tried local guaranteed fallback, try it first
+    if (!fallbacks[item.id]) {
+      const fallbackUrl = getServiceFallbackImage(item.id, item.label);
+      setFallbacks((prev) => ({ ...prev, [item.id]: fallbackUrl }));
+    } else {
+      // If even local asset failed (virtually impossible), flag error
+      setImgErrors((prev) => ({ ...prev, [item.id]: true }));
+    }
+  };
 
   return (
     <div className="mb-8">
@@ -16,7 +28,8 @@ export default function CategoryIconGrid({ title, items, onSelect, exploreLink }
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3.5 sm:gap-4">
         {items.map((item) => {
-          const serviceImg = SERVICE_IMAGES[item.id] || getServiceImage(item.id);
+          const initialImg = SERVICE_IMAGES[item.id] || getServiceImage(item.id, item.label);
+          const serviceImg = fallbacks[item.id] || initialImg;
           const hasImgError = imgErrors[item.id];
 
           return (
@@ -53,7 +66,7 @@ export default function CategoryIconGrid({ title, items, onSelect, exploreLink }
                     alt={tr(item.label)}
                     className="w-full h-full object-cover"
                     loading="lazy"
-                    onError={() => setImgErrors((prev) => ({ ...prev, [item.id]: true }))}
+                    onError={() => handleImageError(item)}
                   />
                 ) : (
                   <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-slate-800 dark:to-slate-700 text-emerald-700 dark:text-emerald-400">

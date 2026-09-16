@@ -4,7 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useLanguage } from "../context/LanguageContext";
 import shoppingAssistantImg from "../assets/services/shopping-assistant.jpg";
 import cityGuideImg from "../assets/services/city-guide.jpg";
-import { SERVICE_IMAGES, getServiceImage } from "../constants/serviceImages";
+import { SERVICE_IMAGES, getServiceImage, getServiceFallbackImage } from "../constants/serviceImages";
 import {
   HOME_SERVICES,
   PERSONAL_SERVICES,
@@ -28,7 +28,17 @@ export default function VerifiedWorkers() {
   const { isAuthenticated } = useAuth();
   const { tr } = useLanguage();
   const [activeTab, setActiveTab] = useState("home");
+  const [fallbacks, setFallbacks] = useState({});
   const [imgErrors, setImgErrors] = useState({});
+
+  const handleImageError = (item) => {
+    if (!fallbacks[item.id]) {
+      const fallbackUrl = getServiceFallbackImage(item.id, item.label);
+      setFallbacks((prev) => ({ ...prev, [item.id]: fallbackUrl }));
+    } else {
+      setImgErrors((prev) => ({ ...prev, [item.id]: true }));
+    }
+  };
 
   const handleServiceClick = (service) => {
     if (service && service.id) {
@@ -273,7 +283,8 @@ export default function VerifiedWorkers() {
           {/* Services Visual Cards Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
             {currentTabObj.items.map((item) => {
-              const img = SERVICE_IMAGES[item.id] || getServiceImage(item.id, item.label);
+              const initialImg = SERVICE_IMAGES[item.id] || getServiceImage(item.id, item.label);
+              const img = fallbacks[item.id] || initialImg;
               const hasError = imgErrors[item.id];
 
               return (
@@ -302,7 +313,7 @@ export default function VerifiedWorkers() {
                         alt={tr(item.label)}
                         className="w-full h-full object-cover"
                         loading="lazy"
-                        onError={() => setImgErrors((prev) => ({ ...prev, [item.id]: true }))}
+                        onError={() => handleImageError(item)}
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center bg-indigo-50 text-indigo-600">

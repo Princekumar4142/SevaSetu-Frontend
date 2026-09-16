@@ -20,6 +20,11 @@ import ruralInfrastructureImg from "../assets/services/rural-infrastructure.jpg"
 import dairyLivestockImg from "../assets/services/dairy-livestock.jpg";
 import ruralEmergencyImg from "../assets/services/rural-emergency.jpg";
 import institutionalBulkImg from "../assets/services/institutional-bulk.jpg";
+import healthWellnessImg from "../assets/services/health-wellness.jpg";
+import professionalServicesImg from "../assets/services/professional-services.jpg";
+import personalServicesImg from "../assets/services/personal-services.jpg";
+import eventServicesImg from "../assets/services/event-services.jpg";
+import trendingServicesImg from "../assets/services/trending-services.jpg";
 
 export const SERVICE_IMAGES = {
   // ── Agriculture & Farm Mechanization ────────────────────────────────────
@@ -45,16 +50,16 @@ export const SERVICE_IMAGES = {
   // ── Rural Infrastructure & Community Maintenance ────────────────────────
   "rural-infrastructure": ruralInfrastructureImg,
   "panchayat-sanitation": ruralInfrastructureImg,
-  "rural-solar-rooftop": "https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=500&q=80",
+  "rural-solar-rooftop": "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=500&q=80",
   "water-pipeline-repair": "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&w=500&q=80",
-  "rural-mason-biogas": "https://images.unsplash.com/photo-1541888946425-d0fbb186c5f7?auto=format&fit=crop&w=500&q=80",
+  "rural-mason-biogas": "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=500&q=80",
   "rural-electrician": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=500&q=80",
 
   // ── Dairy, Livestock & Paravet ──────────────────────────────────────────
   "dairy-livestock": dairyLivestockImg,
   "paravet-health-check": dairyLivestockImg,
   "paravet-dairy": dairyLivestockImg,
-  "dairy-farm-helper": "https://images.unsplash.com/photo-1527153857715-3908f2ae5e81?auto=format&fit=crop&w=500&q=80",
+  "dairy-farm-helper": "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=500&q=80",
   "poultry-goat-assistant": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80",
   "cattle-feed-silage": "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=500&q=80",
 
@@ -100,8 +105,8 @@ export const SERVICE_IMAGES = {
   "caregiver": "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=500&q=80",
   "drivers": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=500&q=80",
   "driver": "https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&w=500&q=80",
-  "gardeners": "https://images.unsplash.com/photo-1592417817098-8f3d69109853?auto=format&fit=crop&w=500&q=80",
-  "gardener": "https://images.unsplash.com/photo-1592417817098-8f3d69109853?auto=format&fit=crop&w=500&q=80",
+  "gardeners": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=500&q=80",
+  "gardener": "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?auto=format&fit=crop&w=500&q=80",
   "cleaners": cleaningPestImg,
   "cleaner": cleaningPestImg,
   "technicians": acRepairImg,
@@ -162,20 +167,20 @@ export const SERVICE_IMAGES = {
   // ── Sub-service specific IDs for Rural Infrastructure ───────────────────
   "ri-1": ruralInfrastructureImg,
   "ri-2": ruralInfrastructureImg,
-  "ri-3": "https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=500&q=80",
-  "ri-4": "https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=500&q=80",
+  "ri-3": "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=500&q=80",
+  "ri-4": "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?auto=format&fit=crop&w=500&q=80",
   "ri-5": "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&w=500&q=80",
   "ri-6": "https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&w=500&q=80",
-  "ri-7": "https://images.unsplash.com/photo-1541888946425-d0fbb186c5f7?auto=format&fit=crop&w=500&q=80",
-  "ri-8": "https://images.unsplash.com/photo-1541888946425-d0fbb186c5f7?auto=format&fit=crop&w=500&q=80",
+  "ri-7": "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=500&q=80",
+  "ri-8": "https://images.unsplash.com/photo-1590381105924-c72589b9ef3f?auto=format&fit=crop&w=500&q=80",
   "ri-9": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=500&q=80",
   "ri-10": "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=500&q=80",
 
   // ── Sub-service specific IDs for Dairy & Livestock ──────────────────────
   "dl-1": dairyLivestockImg,
   "dl-2": dairyLivestockImg,
-  "dl-3": "https://images.unsplash.com/photo-1527153857715-3908f2ae5e81?auto=format&fit=crop&w=500&q=80",
-  "dl-4": "https://images.unsplash.com/photo-1527153857715-3908f2ae5e81?auto=format&fit=crop&w=500&q=80",
+  "dl-3": "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=500&q=80",
+  "dl-4": "https://images.unsplash.com/photo-1570042225831-d98fa7577f1e?auto=format&fit=crop&w=500&q=80",
   "dl-5": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80",
   "dl-6": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=500&q=80",
   "dl-7": "https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=500&q=80",
@@ -208,6 +213,13 @@ export const SERVICE_IMAGES = {
   "cg-2": cityGuideImg,
   "cg-3": cityGuideImg,
   "cg-4": cityGuideImg,
+
+  // ── Primary Category Shell Fallbacks ──
+  "health-wellness": healthWellnessImg,
+  "professional-services": professionalServicesImg,
+  "personal-services": personalServicesImg,
+  "event-services": eventServicesImg,
+  "trending-services": trendingServicesImg,
 };
 
 export function getServiceImage(serviceId, serviceName = "", categoryId = "") {
@@ -318,3 +330,151 @@ export function getServiceImage(serviceId, serviceName = "", categoryId = "") {
 
   return SERVICE_IMAGES["agri-mechanization"];
 }
+
+/**
+ * Guaranteed local bundled image fallback that NEVER makes an external network request
+ * and can NEVER 404 or fail to load.
+ */
+export function getServiceFallbackImage(serviceId = "", serviceName = "", categoryId = "") {
+  const q = `${serviceId} ${serviceName} ${categoryId}`.toLowerCase();
+
+  if (
+    q.includes("dairy") ||
+    q.includes("pashu") ||
+    q.includes("vet") ||
+    q.includes("cow") ||
+    q.includes("cattle") ||
+    q.includes("milk") ||
+    q.includes("livestock") ||
+    q.includes("poultry") ||
+    q.includes("goat") ||
+    q.includes("silage") ||
+    q.includes("fodder") ||
+    q.startsWith("dl-")
+  ) {
+    return dairyLivestockImg;
+  }
+
+  if (
+    q.includes("solar") ||
+    q.includes("pump") ||
+    q.includes("tube") ||
+    q.includes("emergency") ||
+    q.includes("motor") ||
+    q.startsWith("re-")
+  ) {
+    return ruralEmergencyImg;
+  }
+
+  if (
+    q.includes("panchayat") ||
+    q.includes("water") ||
+    q.includes("pipeline") ||
+    q.includes("handpump") ||
+    q.includes("mason") ||
+    q.includes("biogas") ||
+    q.includes("sanitation") ||
+    q.includes("drainage") ||
+    q.includes("rooftop") ||
+    q.startsWith("ri-")
+  ) {
+    return ruralInfrastructureImg;
+  }
+
+  if (
+    q.includes("cold") ||
+    q.includes("mill") ||
+    q.includes("flour") ||
+    q.includes("grain") ||
+    q.includes("packaging") ||
+    q.includes("jaggery") ||
+    q.includes("food") ||
+    q.startsWith("fp-")
+  ) {
+    return foodtechProcessingImg;
+  }
+
+  if (
+    q.includes("bulk") ||
+    q.includes("harvest") ||
+    q.includes("mandi") ||
+    q.includes("squad") ||
+    q.startsWith("ib-")
+  ) {
+    return institutionalBulkImg;
+  }
+
+  if (q.includes("electric") || q.startsWith("elec-")) {
+    return electricalPlumbingImg;
+  }
+
+  if (q.includes("plumb") || q.startsWith("plumb-")) {
+    return electricalPlumbingImg;
+  }
+
+  if (q.includes("carpenter") || q.includes("carpentry") || q.startsWith("carp-")) {
+    return homePaintingImg;
+  }
+
+  if (q.includes("clean") || q.includes("pest") || q.startsWith("cln-")) {
+    return cleaningPestImg;
+  }
+
+  if (q.includes("paint") || q.startsWith("paint-")) {
+    return homePaintingImg;
+  }
+
+  if (q.includes("ac") || q.includes("appliance") || q.includes("tech") || q.startsWith("tech-")) {
+    return acRepairImg;
+  }
+
+  if (q.includes("guide") || q.startsWith("cg-")) {
+    return cityGuideImg;
+  }
+
+  if (q.includes("shop") || q.startsWith("sa-")) {
+    return shoppingAssistantImg;
+  }
+
+  if (q.includes("dj") || q.includes("music") || q.includes("event") || q.includes("cater") || q.includes("decor") || q.includes("photo")) {
+    return eventServicesImg;
+  }
+
+  if (
+    q.includes("health") ||
+    q.includes("nurse") ||
+    q.includes("physio") ||
+    q.includes("caregiver") ||
+    q.includes("elder") ||
+    q.includes("yoga") ||
+    q.includes("lab")
+  ) {
+    return healthWellnessImg;
+  }
+
+  if (
+    q.includes("ca") ||
+    q.includes("legal") ||
+    q.includes("tax") ||
+    q.includes("insurance") ||
+    q.includes("interior") ||
+    q.includes("account")
+  ) {
+    return professionalServicesImg;
+  }
+
+  if (q.includes("men") || q.includes("barber")) {
+    return salonMenImg;
+  }
+
+  if (q.includes("spa")) {
+    return spaWomenImg;
+  }
+
+  if (q.includes("salon") || q.includes("facial") || q.includes("hair") || q.includes("skin") || q.includes("manicure")) {
+    return salonWomenImg;
+  }
+
+  return agriMechanizationImg;
+}
+

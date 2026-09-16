@@ -9,7 +9,7 @@ import CartBar from "../components/booking/CartBar";
 import QuantityStepper from "../components/booking/QuantityStepper";
 import { EmptyState } from "../components/Feedback";
 import api from "../services/api";
-import { getServiceImage } from "../constants/serviceImages";
+import { getServiceImage, getServiceFallbackImage } from "../constants/serviceImages";
 
 export default function BookingCategory() {
   const { categoryId } = useParams();
@@ -498,6 +498,12 @@ export default function BookingCategory() {
                                   alt={tr(service.name)}
                                   className="w-full h-full object-cover"
                                   loading="lazy"
+                                  onError={(e) => {
+                                    const fallback = getServiceFallbackImage(service.id, service.name, category.id);
+                                    if (e.target.src !== fallback) {
+                                      e.target.src = fallback;
+                                    }
+                                  }}
                                 />
                               ) : (
                                 <span className="material-symbols-outlined text-[24px] text-brand-purple">
