@@ -81,6 +81,7 @@ export default function EmailOtpVerifier({ email, onEmailChange, verified, onVer
             disabled={stage === "verified"}
             onChange={(e) => {
               onEmailChange(e.target.value);
+              setError(null);
               if (stage !== "enter-email") setStage("enter-email"); // email changed — must re-verify
             }}
             required
