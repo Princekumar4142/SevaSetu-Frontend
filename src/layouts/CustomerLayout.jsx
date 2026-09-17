@@ -11,7 +11,6 @@ import Footer from "../components/Footer";
 import Avatar from "../components/Avatar";
 import LanguageSelector from "../components/LanguageSelector";
 import ThemeSelector from "../components/ThemeSelector";
-import InstallAppBanner from "../components/InstallAppBanner";
 import NavigationDrawer from "../components/NavigationDrawer";
 
 const PUBLIC_NAV_LINKS = [
@@ -56,11 +55,9 @@ export default function CustomerLayout() {
     ? `${currentUser.address}${currentUser.city ? `, ${currentUser.city}` : ""}`
     : tr("Add your service address");
 
+
   return (
     <div className="min-h-screen bg-surface flex flex-col">
-      {/* ── Top Install App Notification Popup ── */}
-      <InstallAppBanner />
-
       {/* ── Desktop/Tablet Top Navbar (Hidden when running as installed App) ── */}
       {!isAppMode && (
         <header className="hidden md:block sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-b border-outline-variant shadow-xs transition-all">

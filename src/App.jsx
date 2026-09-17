@@ -8,6 +8,7 @@ import { SocketProvider } from "./context/SocketContext";
 import { VoiceAgentProvider } from "./context/VoiceAgentContext";
 import IncomingOrderModal from "./components/IncomingOrderModal";
 import GlobalVoiceAssistant from "./components/GlobalVoiceAssistant";
+import InstallAppBanner from "./components/InstallAppBanner";
 
 export default function App() {
   const { dispatch, token, currentUser } = useAuth();
@@ -25,6 +26,7 @@ export default function App() {
       <VoiceAgentProvider>
         <SocketProvider>
           <ScrollToTop />
+          <InstallAppBanner />
           <AppRoutes />
           <IncomingOrderModal />
           <GlobalVoiceAssistant />
