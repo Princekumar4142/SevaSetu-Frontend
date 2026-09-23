@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { ROLE_HOME } from "../constants/roles";
+import { getHomePath } from "../constants/roles";
 
 /**
  * Guards a subtree of routes:
@@ -24,7 +24,7 @@ export default function ProtectedRoute({ allowedRoles }) {
   if (!isAuthenticated) return <Navigate to="/login" replace />;
 
   if (allowedRoles && !allowedRoles.includes(role)) {
-    return <Navigate to={ROLE_HOME[role] || "/"} replace />;
+    return <Navigate to={getHomePath(role)} replace />;
   }
 
   return <Outlet />;

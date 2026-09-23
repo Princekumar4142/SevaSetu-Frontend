@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
 import { useLanguage } from "../context/LanguageContext";
+import { ROLES, getProfilePath, getHomePath } from "../constants/roles";
 import BottomTabBar from "../components/booking/BottomTabBar";
 import Logo from "../components/Logo";
 import AddressModal from "../components/AddressModal";
@@ -106,15 +107,34 @@ export default function CustomerLayout() {
               </nav>
 
               {isAuthenticated ? (
-                <Link
-                  to="/customer/profile"
-                  className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200/70 dark:border-slate-700 transition-colors"
-                >
-                  <Avatar src={currentUser?.profilePhoto} name={currentUser?.name} size="xs" />
-                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[100px] truncate">
-                    {currentUser?.name?.split(" ")[0]}
-                  </span>
-                </Link>
+                <div className="flex items-center gap-2">
+                  {currentUser?.role && currentUser.role !== ROLES.CUSTOMER && (
+                    <Link
+                      to={getHomePath(currentUser.role)}
+                      className="hidden sm:inline-flex items-center gap-1 px-3 py-1 rounded-full bg-purple-100 dark:bg-purple-950/50 text-purple-700 dark:text-purple-300 text-xs font-bold border border-purple-200 dark:border-purple-800 hover:bg-purple-200 dark:hover:bg-purple-900/50 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[15px]">dashboard</span>
+                      <span>
+                        {currentUser.role === ROLES.PLATFORM_ADMIN
+                          ? "Admin Portal"
+                          : currentUser.role === ROLES.WORKER
+                          ? "Worker Portal"
+                          : currentUser.role === ROLES.FEDERATION_ADMIN
+                          ? "Federation"
+                          : "Cooperative"}
+                      </span>
+                    </Link>
+                  )}
+                  <Link
+                    to={getProfilePath(currentUser?.role)}
+                    className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200/70 dark:border-slate-700 transition-colors"
+                  >
+                    <Avatar src={currentUser?.profilePhoto} name={currentUser?.name} size="xs" />
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 max-w-[100px] truncate">
+                      {currentUser?.name?.split(" ")[0]}
+                    </span>
+                  </Link>
+                </div>
               ) : (
                 <Link
                   to="/register"

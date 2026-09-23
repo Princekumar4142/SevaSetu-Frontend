@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useLanguage } from "../context/LanguageContext";
 import { login, clearAuthError } from "../store/slices/authSlice";
-import { ROLE_HOME } from "../constants/roles";
+import { ROLE_HOME, getHomePath } from "../constants/roles";
 import Input from "../components/Input";
 import Button from "../components/Button";
 import { ErrorBanner } from "../components/Feedback";
@@ -15,7 +15,7 @@ export default function Login() {
   const [form, setForm] = useState({ identifier: "", password: "" });
 
   useEffect(() => {
-    if (isAuthenticated && role) navigate(ROLE_HOME[role] || "/", { replace: true });
+    if (isAuthenticated && role) navigate(getHomePath(role), { replace: true });
   }, [isAuthenticated, role, navigate]);
 
   useEffect(() => () => dispatch(clearAuthError()), [dispatch]);

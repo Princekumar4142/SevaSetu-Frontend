@@ -1,5 +1,6 @@
-import { Routes, Route } from "react-router-dom";
-import { ROLES } from "../constants/roles";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { ROLES, getProfilePath } from "../constants/roles";
+import { useAuth } from "../hooks/useAuth";
 
 import PublicLayout from "../layouts/PublicLayout";
 import CustomerLayout from "../layouts/CustomerLayout";
@@ -54,6 +55,13 @@ import FederationAnalytics from "../pages/FederationAnalytics";
 import AdminUsers from "../pages/AdminUsers";
 import AdminCooperatives from "../pages/AdminCooperatives";
 
+function ProfileRedirect() {
+  const { isAuthenticated, role, booting } = useAuth();
+  if (booting) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return <Navigate to={getProfilePath(role)} replace />;
+}
+
 export default function AppRoutes() {
   return (
     <Routes>
@@ -79,6 +87,9 @@ export default function AppRoutes() {
       <Route path="/register" element={<RegisterChoose />} />
       <Route path="/register/choose" element={<RegisterChoose />} />
       <Route path="/signup" element={<RegisterChoose />} />
+
+      {/* Universal /profile redirector */}
+      <Route path="/profile" element={<ProfileRedirect />} />
 
       {/* Customer Protected Routes */}
       <Route element={<ProtectedRoute allowedRoles={[ROLES.CUSTOMER]} />}>

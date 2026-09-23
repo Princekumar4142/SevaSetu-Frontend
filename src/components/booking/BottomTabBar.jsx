@@ -1,18 +1,19 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
+import { getProfilePath } from "../../constants/roles";
 
 const TABS = [
   { key: "uc", label: "Home", icon: "storefront", paths: ["/", "/customer", "/customer/services"] },
   { key: "bookings", label: "Bookings", icon: "receipt_long", paths: ["/customer/bookings"] },
   { key: "workers", label: "Workers", icon: "engineering", paths: ["/customer/workers"] },
   { key: "plus", label: "Plus", icon: "diamond", paths: ["/customer/plus"] },
-  { key: "account", label: "Account", icon: "person", paths: ["/customer/profile"] },
+  { key: "account", label: "Account", icon: "person", paths: ["/profile", "/customer/profile", "/worker/profile", "/cooperative/profile", "/federation/profile", "/admin/profile"] },
 ];
 
 export default function BottomTabBar() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, role } = useAuth();
 
   const isActive = (tab) =>
     tab.paths.some((p) => location.pathname === p || location.pathname.startsWith(p + "/"));
@@ -22,7 +23,7 @@ export default function BottomTabBar() {
     else if (tab.key === "bookings") navigate(isAuthenticated ? "/customer/bookings" : "/login");
     else if (tab.key === "workers") navigate("/customer/workers");
     else if (tab.key === "plus") navigate(isAuthenticated ? "/customer/plus" : "/customer/plus");
-    else if (tab.key === "account") navigate(isAuthenticated ? "/customer/profile" : "/login");
+    else if (tab.key === "account") navigate(isAuthenticated ? getProfilePath(role) : "/login");
   };
 
   return (

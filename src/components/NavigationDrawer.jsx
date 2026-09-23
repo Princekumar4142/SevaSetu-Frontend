@@ -4,6 +4,7 @@ import { useAuth } from "../hooks/useAuth";
 import { useLanguage } from "../context/LanguageContext";
 import { useDispatch } from "react-redux";
 import { logout } from "../store/slices/authSlice";
+import { ROLES, getProfilePath, getHomePath } from "../constants/roles";
 import DayNightSwitch from "./DayNightSwitch";
 import LanguageSelector from "./LanguageSelector";
 import Avatar from "./Avatar";
@@ -54,6 +55,21 @@ export default function NavigationDrawer({ isOpen, onClose }) {
 
   const navLinks = [
     { label: "HOME", href: "/" },
+    ...(isAuthenticated && currentUser?.role && currentUser.role !== ROLES.CUSTOMER
+      ? [
+          {
+            label:
+              currentUser.role === ROLES.PLATFORM_ADMIN
+                ? "ADMIN PORTAL"
+                : currentUser.role === ROLES.WORKER
+                ? "WORKER DASHBOARD"
+                : currentUser.role === ROLES.FEDERATION_ADMIN
+                ? "FEDERATION PORTAL"
+                : "COOPERATIVE PORTAL",
+            href: getHomePath(currentUser.role),
+          },
+        ]
+      : []),
     { label: "SERVICES", href: "/customer/services" },
     { label: "VERIFIED WORKERS", href: "/customer/workers" },
     ...(isAuthenticated ? [{ label: "MY BOOKINGS", href: "/customer/bookings" }] : []),
@@ -128,7 +144,7 @@ export default function NavigationDrawer({ isOpen, onClose }) {
               <div className="space-y-2.5 pt-0.5">
                 {/* User Info Bar */}
                 <Link
-                  to="/customer/profile"
+                  to={getProfilePath(currentUser?.role)}
                   onClick={onClose}
                   className="flex items-center gap-2.5 p-2.5 rounded-2xl bg-slate-100/70 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/70 dark:border-slate-700/60 transition-colors group"
                 >
@@ -137,8 +153,8 @@ export default function NavigationDrawer({ isOpen, onClose }) {
                     <p className="text-xs font-black text-slate-900 dark:text-white truncate group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
                       {currentUser?.name}
                     </p>
-                    <p className="text-[10px] text-slate-400 truncate">
-                      {currentUser?.phone || currentUser?.email || "Customer Account"}
+                    <p className="text-[10px] text-slate-400 truncate capitalize">
+                      {currentUser?.role ? currentUser.role.replace(/_/g, " ").toLowerCase() : "Account"}
                     </p>
                   </div>
                   <span className="material-symbols-outlined text-[16px] text-slate-400">chevron_right</span>
@@ -147,7 +163,7 @@ export default function NavigationDrawer({ isOpen, onClose }) {
                 {/* Profile and Logout Actions */}
                 <div className="flex items-center gap-2">
                   <Link
-                    to="/customer/profile"
+                    to={getProfilePath(currentUser?.role)}
                     onClick={onClose}
                     className="flex-1 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] tracking-wider uppercase text-center shadow-md shadow-blue-600/20 transition-all"
                   >
